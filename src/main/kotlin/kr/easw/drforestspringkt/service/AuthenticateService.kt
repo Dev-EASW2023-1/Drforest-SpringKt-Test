@@ -52,8 +52,8 @@ class AuthenticateService(
         return userAccountRepository.existsByUserId(name)
     }
 
-    fun checkAccountDuplicatesResponse(dto: CheckAccountDuplicateDto): CheckAccountDuplicateResponse {
-        return CheckAccountDuplicateResponse(isAccountExists(dto.account))
+    fun checkAccountDuplicatesResponse(id: String): CheckAccountDuplicateResponse {
+        return CheckAccountDuplicateResponse(isAccountExists(id))
     }
 
 }

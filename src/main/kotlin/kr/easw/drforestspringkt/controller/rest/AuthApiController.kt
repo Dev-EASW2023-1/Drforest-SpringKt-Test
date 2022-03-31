@@ -20,8 +20,4 @@ class AuthApiController(
         return ResponseEntity.ok(authService.login(data))
     }
 
-    @PostMapping("/refresh")
-    fun onRefreshToken(@RequestBody data: RefreshTokenDto): ResponseEntity<Any> {
-        return ResponseEntity.ok(authService.refreshToken(data))
-    }
 }

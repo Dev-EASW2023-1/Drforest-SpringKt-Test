@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class UserApiController(
-    val service: UserActivityDataService
-    ) {
+    val service: UserActivityDataService,
+) {
     @PutMapping("/upload")
     fun onUploadData(
         @AuthenticationPrincipal user: UserAccountData,
