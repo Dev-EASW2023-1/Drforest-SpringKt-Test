@@ -1,0 +1,22 @@
+server:
+  port: 8080
+logging:
+  file:
+    path: '/logs'
+  level:
+    root: 'info'
+spring:
+  thymeleaf:
+    prefix: 'classpath:/templates/'
+    suffix: '.html'
+  datasource:
+    url: 'jdbc:mysql://localhost:3306?createDatabaseIfNotExist=true&useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC'
+    username: 'root'
+    password: 'root'
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    database: mysql
+    database-platform: 'org.hibernate.dialect.MySQL5Dialect'
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create
