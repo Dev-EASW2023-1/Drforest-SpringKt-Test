@@ -1,4 +1,4 @@
-package kr.easw.drforestspringkt.model.dto
+package kr.easw.drforest.model.dto
 
 
 data class ListRegionResponse(val regions: List<String>)

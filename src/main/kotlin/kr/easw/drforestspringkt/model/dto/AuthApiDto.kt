@@ -1,4 +1,4 @@
-package kr.easw.drforestspringkt.model.dto
+package kr.easw.drforest.model.dto
 
 data class CheckAccountDuplicateResponse(val duplicated: Boolean)
 

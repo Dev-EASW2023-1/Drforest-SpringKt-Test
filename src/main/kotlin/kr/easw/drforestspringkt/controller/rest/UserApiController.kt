@@ -1,8 +1,8 @@
 package kr.easw.drforestspringkt.controller.rest
 
+import kr.easw.drforest.model.dto.UserDataUploadDto
+import kr.easw.drforest.model.dto.UserDataUploadResponse
 import kr.easw.drforestspringkt.auth.UserAccountData
-import kr.easw.drforestspringkt.model.dto.UserDataUploadDto
-import kr.easw.drforestspringkt.model.dto.UserDataUploadResponse
 import kr.easw.drforestspringkt.service.UserActivityDataService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
