@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configurers.CsrfConfig
 import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer
 import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer
+import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 @EnableWebSecurity
@@ -33,7 +34,7 @@ class SecurityConfiguration(val filter: JwtAuthenticateFilter) : WebSecurityConf
     }
 
     private fun SessionManagementConfigurer<HttpSecurity>.configureSessionManagement() {
-
+        sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     }
 
     private fun ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry.configureRoutePermission() {
@@ -42,8 +43,7 @@ class SecurityConfiguration(val filter: JwtAuthenticateFilter) : WebSecurityConf
         antMatchers("/api/**").hasAnyRole(Roles.API.name)
         antMatchers("/**").permitAll()
         antMatchers("/board/admin/**").hasAnyRole(Roles.ADMIN.name)
-        antMatchers("/board/**")
-
+        antMatchers("/board/**").hasAnyRole(Roles.USER.name)
     }
 
 

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 @Service
 class RegionManagementService(val regionRepository: RegionRepository) {
     fun listRegion(): List<RegionEntity> {
-        return regionRepository.getAll()
+        return regionRepository.getAllBy()
     }
 
     fun listRegionResponse(): ListRegionResponse {
@@ -21,6 +21,10 @@ class RegionManagementService(val regionRepository: RegionRepository) {
 
     fun deleteRegion(name: String) {
         regionRepository.delete(RegionEntity(regionName = name))
+    }
+
+    fun getRegion(region: String): RegionEntity? {
+        return regionRepository.getByRegionName(region).orElseGet { null }
     }
 
 }

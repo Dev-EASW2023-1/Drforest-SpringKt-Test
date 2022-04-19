@@ -9,5 +9,5 @@ import java.util.*
 interface RegionRepository : JpaRepository<RegionEntity, Long>{
     fun getByRegionName(regionName: String) : Optional<RegionEntity>
 
-    fun getAll() : List<RegionEntity>
+    fun getAllBy() : List<RegionEntity>
 }

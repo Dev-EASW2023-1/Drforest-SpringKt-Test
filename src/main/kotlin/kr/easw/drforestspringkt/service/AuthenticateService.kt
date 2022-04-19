@@ -3,19 +3,29 @@ package kr.easw.drforestspringkt.service
 import kr.easw.drforestspringkt.auth.UserAccountData
 import kr.easw.drforestspringkt.model.dto.*
 import kr.easw.drforestspringkt.model.entity.UserAccountEntity
+import kr.easw.drforestspringkt.model.entity.UserDataEntity
 import kr.easw.drforestspringkt.model.repository.UserAccountRepository
+import kr.easw.drforestspringkt.model.repository.UserDataRepository
 import kr.easw.drforestspringkt.util.JwtUtil
 import kr.easw.drforestspringkt.util.logInfo
 import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
 class AuthenticateService(
     private val userAccountRepository: UserAccountRepository,
+    private val userDataRepository: UserDataRepository,
+    private val regionManagementService: RegionManagementService,
+    private val encoder: BCryptPasswordEncoder
 ) {
     fun login(dto: LoginDataDto): LoginDataResponse {
-        userAccountRepository.findByUserIdAndPassword(dto.id, dto.pw)
+        userAccountRepository.findByUserId(dto.id)
             .orElseThrow { BadCredentialsException("Bad credential") }.apply {
+                if (!encoder.matches(dto.pw, password)) {
+                    throw BadCredentialsException("Bad credential")
+                }
                 return LoginDataResponse(
                     JwtUtil.generateToken(this.userId),
                     JwtUtil.generateRefreshToken(this.userId)
@@ -23,12 +33,19 @@ class AuthenticateService(
             }
     }
 
-    fun toAccount(user: UserAccountData) : UserAccountEntity {
+    fun toAccount(user: UserAccountData): UserAccountEntity {
         return userAccountRepository.findByUserId(user.username).orElseThrow {
             BadCredentialsException("Bad credential")
         }
     }
 
+    fun changePassword(user: UserAccountData, password: String) {
+        userAccountRepository.save(
+            toAccount(user).apply {
+                this.password = encoder.encode(password)
+            }
+        )
+    }
 
     fun refreshToken(dto: RefreshTokenDto): RefreshTokenResponse {
         if (!JwtUtil.validateRefreshToken(dto.refreshToken).valid) {
@@ -54,6 +71,30 @@ class AuthenticateService(
 
     fun checkAccountDuplicatesResponse(id: String): CheckAccountDuplicateResponse {
         return CheckAccountDuplicateResponse(isAccountExists(id))
+    }
+
+    fun register(data: RegisterDataRequest): RegisterDataResponse {
+        if (isAccountExists(data.accountData.id)) {
+            return RegisterDataResponse(false, "ID가 중복됩니다.")
+        }
+        // TODO 추가 보안 절차 추가
+        val region = regionManagementService.getRegion(data.userData.region)
+            ?: return RegisterDataResponse(false, "잘못된 지역입니다.")
+        val user = userAccountRepository.save(
+            UserAccountEntity(
+                data.accountData.id,
+                encoder.encode(data.accountData.pw)
+            )
+        )
+        userDataRepository.save(
+            UserDataEntity(
+                user,
+                data.userData.nickName,
+                data.userData.phone,
+                region
+            )
+        )
+        return RegisterDataResponse(true, "회원가입에 성공하였습니다.")
     }
 
 }

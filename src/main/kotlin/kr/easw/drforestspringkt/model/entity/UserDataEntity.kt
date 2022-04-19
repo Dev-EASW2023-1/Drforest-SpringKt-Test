@@ -1,18 +1,35 @@
 package kr.easw.drforestspringkt.model.entity
 
+import lombok.AllArgsConstructor
+import lombok.Builder
+import lombok.NoArgsConstructor
+import lombok.RequiredArgsConstructor
+import org.hibernate.annotations.CreationTimestamp
+import java.util.*
 import javax.persistence.*
 
 @Entity
-class UserDataEntity(
+@Table(name = "User")
+class UserDataEntity(user: UserAccountEntity, name: String, phone: String, region: RegionEntity) {
     @Id
-    var id: Long = 0L,
+    @GeneratedValue
+    var id: Long = 0
 
     @OneToOne
-    @Column
-    var account: UserAccountEntity,
+    var account: UserAccountEntity = user
 
-    @Column
+    @Column(unique = true, length = 30)
+    var name: String = name
+
+    @Column(length = 30)
+    var phone: String = phone
+
+    @Column(nullable = true)
+    var fcmToken: String? = null
+
     @ManyToOne
-    @JoinColumn(name = "region_id")
-    var region: RegionEntity,
-)
+    var region: RegionEntity = region
+
+    @CreationTimestamp
+    var createdTimestamp: Date? = null
+}

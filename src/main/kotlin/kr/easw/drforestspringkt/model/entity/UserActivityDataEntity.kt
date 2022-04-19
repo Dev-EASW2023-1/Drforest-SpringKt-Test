@@ -1,28 +1,32 @@
 package kr.easw.drforestspringkt.model.entity
 
+import lombok.AllArgsConstructor
+import lombok.Builder
+import lombok.NoArgsConstructor
 import org.hibernate.annotations.CreationTimestamp
 import java.util.*
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.ManyToOne
-import javax.persistence.OneToMany
+import javax.persistence.*
 
 @Entity
+@javax.persistence.Table(name = "UserActivity")
 class UserActivityDataEntity(
-    @field:Id
-    val id: Long = 0L,
+    entity: UserAccountEntity,
+    fieldName: String,
+    fieldValue: Float
+) {
+    @Id
+    @GeneratedValue
+    var id: Long = 0
 
-    @field:Column
-    @field:ManyToOne
-    val entity: UserAccountEntity,
+    @ManyToOne
+    var entity: UserAccountEntity = entity
 
-    @field:Column
-    val fieldName: String,
+    @Column
+    var fieldName: String = fieldName
 
-    @field:Column
-    val fieldValue: Float,
+    @Column
+    var fieldValue = fieldValue
 
     @CreationTimestamp
-    val timestamp: Date? = null,
-)
+    var timestamp: Date? = null
+}

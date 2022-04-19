@@ -1,6 +1,6 @@
 package kr.easw.drforestspringkt.service
 
-import kr.easw.drforest.model.dto.UserDataUploadDto
+import kr.easw.drforestspringkt.model.dto.UserDataUploadDto
 import kr.easw.drforestspringkt.auth.UserAccountData
 import kr.easw.drforestspringkt.model.entity.UserActivityDataEntity
 import kr.easw.drforestspringkt.model.repository.UserActivityDataRepository
@@ -19,11 +19,7 @@ class UserActivityDataService(val authService: AuthenticateService, val repo: Us
         val user = authService.toAccount(entity)
         data.data.forEach { (name, value) ->
             repo.save(
-                UserActivityDataEntity(
-                    entity = user,
-                    fieldName = name,
-                    fieldValue = value
-                )
+                UserActivityDataEntity(user, name, value)
             )
         }
     }

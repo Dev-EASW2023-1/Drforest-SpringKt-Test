@@ -1,3 +1,17 @@
-<html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
 
+    </head>
+    <body>
+        <form action="/account" method="post">
+
+            ID <input type="text" name="Id"/><br/>
+            PW <input type="password" name="Password"/><br/>
+            이름 <input type="text" name="Name"/><br/>
+            직장 <input type="text" name="Job"/><br/>
+            지역 <input type="text" name="Area"/><br/>
+            <input type="submit">
+        </form>
+    </body>
 </html>

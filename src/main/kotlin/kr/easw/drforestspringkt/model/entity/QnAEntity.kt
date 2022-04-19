@@ -1,34 +1,42 @@
 package kr.easw.drforestspringkt.model.entity
 
+import lombok.AllArgsConstructor
+import lombok.Builder
+import lombok.NoArgsConstructor
+import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 import java.util.*
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.ManyToOne
+import javax.persistence.*
 
 @Entity
+@javax.persistence.Table(name = "QnA")
 class QnAEntity(
-    @field:Id
-    val id: Long = 0,
+    user: UserAccountEntity,
+    title: String,
+    content: String
+) {
+    @Id
+    @GeneratedValue
+    var id: Long? = null
 
-    @field:Column
     @ManyToOne
-    val user: UserAccountEntity,
+    var user: UserAccountEntity = user
 
-    @field:Column
-    val title: String,
-    @field:Column
-    val contents: String,
-    @field:UpdateTimestamp
-    val createdTime: Date? = null,
+    @Column
+    var title: String = title
 
-    @field:Column(nullable = true)
-    val answerTitle: String?,
+    @Column
+    var content: String = content
 
-    @field:Column(nullable = true)
-    val answerContents: String?,
+    @CreationTimestamp
+    var createdTime: Date? = null
 
-    @field:UpdateTimestamp
-    val updateTime: Date? = null,
-)
+    @UpdateTimestamp
+    var updatedTime: Date? = null
+
+    @Column(nullable = true)
+    var answerTitle: String? = null
+
+    @Column(nullable = true)
+    var answerContent: String? = null
+}

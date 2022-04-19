@@ -20,4 +20,6 @@ class AuthApiController(
         return ResponseEntity.ok(authService.login(data))
     }
 
+
+
 }

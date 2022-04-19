@@ -12,4 +12,5 @@ interface UserAccountRepository : JpaRepository<UserAccountEntity, Long> {
     fun findByUserIdAndPassword(userId: String, password: String): Optional<UserAccountEntity>
 
     fun existsByUserId(userId: String): Boolean
+
 }

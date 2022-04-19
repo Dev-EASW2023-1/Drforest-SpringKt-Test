@@ -1,6 +1,5 @@
 package kr.easw.drforestspringkt.controller.rest
 
-import kr.easw.drforest.model.dto.*
 import kr.easw.drforestspringkt.model.dto.*
 import kr.easw.drforestspringkt.service.AnnouncementService
 import kr.easw.drforestspringkt.service.AuthenticateService
@@ -14,9 +13,12 @@ class PublicApiController(
     private val announcementService: AnnouncementService,
     private val authenticateService: AuthenticateService,
     private val regionManagementService: RegionManagementService,
-
     ) {
 
+    @PostMapping("/register")
+    fun onCheckDuplicate(@RequestBody data : RegisterDataRequest): ResponseEntity<RegisterDataResponse> {
+        return ResponseEntity.ok(authenticateService.register(data))
+    }
 
     @PostMapping("/account-exists/{id}")
     fun onCheckDuplicate(@PathVariable id: String): ResponseEntity<CheckAccountDuplicateResponse> {

@@ -7,11 +7,11 @@ import java.util.Date
 
 @Repository
 interface UserActivityDataRepository : JpaRepository<UserActivityDataEntity, Long> {
-    fun getAllBy(
+    fun getAllByFieldNameAndTimestampBetween(
         fieldName: String,
         from: Date,
         to: Date
-    ) : List<UserActivityDataEntity>
+    ): List<UserActivityDataEntity>
 
     fun getAllByFieldName(fieldName: String)
 }
