@@ -15,7 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @EnableWebSecurity
 @Configuration
-class SecurityConfiguration(val filter: JwtAuthenticateFilter) : WebSecurityConfigurerAdapter() {
+class SecurityConfiguration() : WebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity) {
         http
             .sessionManagement {
@@ -30,7 +30,7 @@ class SecurityConfiguration(val filter: JwtAuthenticateFilter) : WebSecurityConf
             .csrf {
                 it.configureCsrf()
             }
-            .addFilterBefore(filter, UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterBefore(JwtAuthenticateFilter(), UsernamePasswordAuthenticationFilter::class.java)
     }
 
     private fun SessionManagementConfigurer<HttpSecurity>.configureSessionManagement() {
