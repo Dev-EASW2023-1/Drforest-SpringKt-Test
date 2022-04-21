@@ -20,7 +20,7 @@ class PublicApiController(
         return ResponseEntity.ok(authenticateService.register(data))
     }
 
-    @PostMapping("/account-exists/{id}")
+    @GetMapping("/account-exists/{id}")
     fun onCheckDuplicate(@PathVariable id: String): ResponseEntity<CheckAccountDuplicateResponse> {
         return ResponseEntity.ok(authenticateService.checkAccountDuplicatesResponse(id))
     }

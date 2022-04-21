@@ -9,6 +9,7 @@ import kr.easw.drforestspringkt.model.repository.UserDataRepository
 import kr.easw.drforestspringkt.util.JwtUtil
 import kr.easw.drforestspringkt.util.logInfo
 import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -95,6 +96,15 @@ class AuthenticateService(
             )
         )
         return RegisterDataResponse(true, "회원가입에 성공하였습니다.")
+    }
+
+    fun findUserByName(userName: String): UserAccountEntity? {
+        return userAccountRepository.findByUserId(userName).orElseGet { null }
+    }
+
+    fun getUserData(user: UserAccountData) : UserDataDto{
+        val userData = userDataRepository.findByAccount_UserId(user.username).orElseThrow { BadCredentialsException("Not found") }
+        return UserDataDto(userData.region.regionName, userData.name, userData.phone)
     }
 
 }

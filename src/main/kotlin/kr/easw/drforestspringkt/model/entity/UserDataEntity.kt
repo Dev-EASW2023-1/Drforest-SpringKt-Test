@@ -18,7 +18,7 @@ class UserDataEntity(user: UserAccountEntity, name: String, phone: String, regio
     @OneToOne
     var account: UserAccountEntity = user
 
-    @Column(unique = true, length = 30)
+    @Column(unique = false, length = 30)
     var name: String = name
 
     @Column(length = 30)

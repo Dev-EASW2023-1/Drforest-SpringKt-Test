@@ -13,10 +13,13 @@ import org.springframework.security.config.annotation.web.configurers.SessionMan
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
+// IJ에서 인식을 못하여 오류 발생, Suppression으로 해결
+@Suppress("SpringJavaInjectionPointsAutowiringInspection")
 @EnableWebSecurity
 @Configuration
-class SecurityConfiguration() : WebSecurityConfigurerAdapter() {
+class SecurityConfiguration(val jwtFilter : JwtAuthenticateFilter) : WebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity) {
+        println("Filter: $jwtFilter")
         http
             .sessionManagement {
                 it.configureSessionManagement()
@@ -30,7 +33,7 @@ class SecurityConfiguration() : WebSecurityConfigurerAdapter() {
             .csrf {
                 it.configureCsrf()
             }
-            .addFilterBefore(JwtAuthenticateFilter(), UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter::class.java)
     }
 
     private fun SessionManagementConfigurer<HttpSecurity>.configureSessionManagement() {
@@ -40,6 +43,8 @@ class SecurityConfiguration() : WebSecurityConfigurerAdapter() {
     private fun ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry.configureRoutePermission() {
         antMatchers("/api/public/**").permitAll()
         antMatchers("/api/auth/**").permitAll()
+        // 임시로 허용
+        antMatchers("/api/admin/**").permitAll()
         antMatchers("/api/**").hasAnyRole(Roles.API.name)
         antMatchers("/**").permitAll()
         antMatchers("/board/admin/**").hasAnyRole(Roles.ADMIN.name)

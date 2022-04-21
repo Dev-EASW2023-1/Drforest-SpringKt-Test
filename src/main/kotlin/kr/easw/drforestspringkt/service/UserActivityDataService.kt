@@ -2,6 +2,7 @@ package kr.easw.drforestspringkt.service
 
 import kr.easw.drforestspringkt.model.dto.UserDataUploadDto
 import kr.easw.drforestspringkt.auth.UserAccountData
+import kr.easw.drforestspringkt.model.dto.UserDataDto
 import kr.easw.drforestspringkt.model.entity.UserActivityDataEntity
 import kr.easw.drforestspringkt.model.repository.UserActivityDataRepository
 import org.springframework.stereotype.Service
@@ -23,4 +24,6 @@ class UserActivityDataService(val authService: AuthenticateService, val repo: Us
             )
         }
     }
+
+
 }

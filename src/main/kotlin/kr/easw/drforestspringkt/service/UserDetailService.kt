@@ -20,7 +20,7 @@ class UserDetailService() : UserDetailsService {
 
     override fun loadUserByUsername(username: String): UserDetails {
         return userRepo.findByUserId(username)
-            .orElseThrow { UsernameNotFoundException("") }
+            .orElseThrow { UsernameNotFoundException("401 Authenticate failed") }
             .run {
                 UserAccountData(
                     username = username,
