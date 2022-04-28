@@ -9,7 +9,7 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
-@javax.persistence.Table(name = "QnA")
+@Table(name = "QnA")
 class QnAEntity(
     user: UserAccountEntity,
     title: String,

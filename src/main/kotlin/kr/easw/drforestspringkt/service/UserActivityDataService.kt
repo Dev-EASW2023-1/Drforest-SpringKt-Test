@@ -17,6 +17,7 @@ class UserActivityDataService(val authService: AuthenticateService, val repo: Us
 
     @Transactional
     fun upload(entity: UserAccountData, data: UserDataUploadDto) {
+        println("User ${entity.username} uploaded / ${data.data}")
         val user = authService.toAccount(entity)
         data.data.forEach { (name, value) ->
             repo.save(

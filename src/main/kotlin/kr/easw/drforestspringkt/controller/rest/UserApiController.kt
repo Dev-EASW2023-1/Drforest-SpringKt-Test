@@ -4,6 +4,7 @@ import kr.easw.drforestspringkt.model.dto.UserDataUploadDto
 import kr.easw.drforestspringkt.model.dto.UserDataUploadResponse
 import kr.easw.drforestspringkt.auth.UserAccountData
 import kr.easw.drforestspringkt.model.dto.UserDataDto
+import kr.easw.drforestspringkt.service.AnnouncementService
 import kr.easw.drforestspringkt.service.AuthenticateService
 import kr.easw.drforestspringkt.service.UserActivityDataService
 import org.springframework.http.ResponseEntity
@@ -13,12 +14,14 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import org.thymeleaf.model.IAttribute
 
 @RestController
 @RequestMapping("/api/user")
 class UserApiController(
     val authenticateService: AuthenticateService,
     val userDataService: UserActivityDataService,
+    val notificationService: AnnouncementService,
 ) {
     @PutMapping("/upload")
     fun onUploadData(
@@ -44,6 +47,25 @@ class UserApiController(
         @AuthenticationPrincipal user: UserAccountData
     ): ResponseEntity<UserDataDto> {
         println("Data get")
+        println(authenticateService.getUserData(user))
+        return ResponseEntity.ok(authenticateService.getUserData(user))
+    }
+
+
+    @GetMapping("/notice")
+    fun onGetUserNotice(
+        @AuthenticationPrincipal user: UserAccountData
+    ): ResponseEntity<UserDataDto> {
+        println("Data get")
+        println(authenticateService.getUserData(user))
+        return ResponseEntity.ok(authenticateService.getUserData(user))
+    }
+
+    @PutMapping("/notice/read")
+    fun onUserNoticeRead(
+        @AuthenticationPrincipal user: UserAccountData
+    ): ResponseEntity<UserDataDto> {
+        println("Data put")
         println(authenticateService.getUserData(user))
         return ResponseEntity.ok(authenticateService.getUserData(user))
     }
