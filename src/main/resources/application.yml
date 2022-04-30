@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 60103
 logging:
   file:
     path: '/logs'
@@ -10,16 +10,23 @@ spring:
     jdbc:
       initialize-schema: always
   thymeleaf:
-    prefix: 'classpath:/templates/'
-    suffix: '.html'
+    cache: false
+    check-template: true
+    check-template-location: true
+    content-type: text/html
+    enabled: true
+    encoding: UTF-8
+    mode: HTML
+    prefix: classpath:/templates/
+    suffix: .html
   datasource:
     url: 'jdbc:mysql://localhost:3306/drforest?createDatabaseIfNotExist=true&useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC'
     username: 'root'
-    password: '1111'
+    password: 'easw409'
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     database: mysql
     database-platform: 'org.hibernate.dialect.MySQL5Dialect'
     generate-ddl: true
-    hibernate:
-      ddl-auto: update
+  config:
+    location: 'config.yml'

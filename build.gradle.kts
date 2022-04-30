@@ -70,3 +70,7 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
+
+springBoot {
+    mainClass.set("kr.easw.drforestspringkt.DrforestSpringKtApplicationKt")
+}

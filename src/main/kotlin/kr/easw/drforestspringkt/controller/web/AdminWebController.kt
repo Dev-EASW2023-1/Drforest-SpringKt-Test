@@ -6,12 +6,12 @@ import org.springframework.web.bind.annotation.GetMapping
 @Controller
 class AdminWebController {
     @GetMapping("/admin/panel/")
-    fun adminPanel() = "/admin/panel.html"
+    fun adminPanel() = "admin/panel.html"
 
     @GetMapping("/admin/panel/list-user")
-    fun listUser() = "/admin/panel.html"
+    fun listUser() = "admin/panel.html"
 
     @GetMapping("/admin/panel/user-status")
-    fun userStatus() = "/admin/panel.html"
+    fun userStatus() = "admin/panel.html"
 
 }
