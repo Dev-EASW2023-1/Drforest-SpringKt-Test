@@ -1,0 +1,366 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+        <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.0/dist/chartjs-adapter-moment.min.js"></script>
+        <title> DrForest - User Graph </title>
+    </head>
+
+    <body>
+        <div style="height: 100%;width: 100%;">
+            <div style="height: 20%;width: 100%;">
+                <canvas id="line-chart1"></canvas>
+            </div>
+            <div style="height: 20%;width: 100%;">
+                <canvas id="line-chart2"></canvas>
+            </div>
+
+            <div style="height: 20%;width: 100%;">
+                <canvas id="line-chart3"></canvas>
+            </div>
+
+            <div style="height: 20%;width: 100%;">
+                <canvas id="line-chart4"></canvas>
+            </div>
+
+            <div style="height: 20%;width: 100%;">
+                <canvas id="line-chart5"></canvas>
+            </div>
+            <script lang="text/javascript" th:inline="javascript">
+                "use strict";
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000 * 60 * 15);
+                let startTimeCurrent = /*[[${start}]]*/ 'default';
+                let endTimeCurrent = /*[[${end}]]*/ 'default';
+                let data = /*[[${graph}]]*/ 'default';
+                let chartColors = {
+                    inaccurateBorder: 'rgb(186,81,0)',
+                    nonFilledGraphColor: 'rgba(222, 60, 60, 0.4)',
+                    accurateBorder: 'rgb(0, 80, 30)',
+                    background: 'rgb(0, 162, 72)',
+                    realTimeDataLine: 'rgba(0,72,255, 0.4)'
+                };
+
+                let timeArray = [];
+                let colorArray = [];
+                let dateGpsArray = [];
+                let dateStepArray = [];
+                let dateTrafficArray = [];
+                let dateOnOffArray = [];
+                let dateDozeArray = [];
+
+                let minuteGpsArray = [];
+                let minuteStepArray = [];
+                let minuteTrafficArray = [];
+                let minuteOnOffArray = [];
+                let minuteDozeArray = [];
+
+                data["data"].forEach(dto => {
+                    timeArray.push(dto["time"])
+                    minuteGpsArray.push({
+                        x: moment(dto["time"]),
+                        y: (dto["data"]["GPS"] ?? 0)
+                    })
+
+                    minuteStepArray.push({
+                        x: moment(dto["time"]),
+                        y: (dto["data"]["Step"] ?? 0)
+                    })
+
+                    minuteOnOffArray.push({
+                        x: moment(dto["time"]),
+                        y: (dto["data"]["OnOff"] ?? 0)
+                    })
+
+                    minuteDozeArray.push({
+                        x: moment(dto["time"]),
+                        y: (dto["data"]["Idle"] ?? 0)
+                    })
+
+                    minuteTrafficArray.push({
+                        x: moment(dto["time"]),
+                        y: (dto["data"]["Traffic"] ?? 0)
+                    })
+                });
+
+                makeChart(null, "line-chart1", "km  ", false, 1, false, colorArray, timeArray, dateGpsArray, "사회적 관계 수치", minuteGpsArray, "이동거리 (미터)");
+                makeChart(null, "line-chart2", "걸음  ", true, 1, false, colorArray, timeArray, dateStepArray, "정신운동성 수치", minuteStepArray, "운동량 (걸음)");
+
+
+                makeChart(null, "line-chart3", "MB ", false, 1, false, colorArray, timeArray, dateTrafficArray, "관심 / 흥미 수치", minuteTrafficArray, "스마트폰 데이터 사용량 (바이트)");
+
+
+                makeFilledChart(null, "line-chart4", "분      ", true, colorArray, timeArray, dateOnOffArray, "하루간 정신건강결과 수치", minuteOnOffArray, "스마트폰 사용여부 (분)");
+
+
+                makeFilledChart(null, "line-chart5", "분      ", true, colorArray, timeArray, dateDozeArray, "신체적운동 수치", minuteDozeArray, "수면시간 (분)");
+
+
+                function makeChart(mentalData, strChartId, suffix, floorToTicks, lineWidth, fill, colorMap, strXLabel1, strData1, strLabel1, strData2, strLabel2) {
+                    let ctx = document.getElementById(strChartId);
+                    // noinspection JSVoidFunctionReturnValueUsed
+                    let chartGps = new Chart(ctx, {
+                        plugins: [ChartDataLabels],
+                        data: {
+                            labels: strXLabel1,
+                            datasets: [
+                                {
+                                    xAxisID: 'x2',
+                                    yAxisID: 'y2',
+                                    type: 'line',
+                                    label: strLabel2,
+                                    // backgroundColor: chartColors.realTimeDataLine,
+                                    backgroundColor: chartColors.realTimeDataLine,
+                                    borderColor: chartColors.realTimeDataLine,
+                                    data: strData2,
+                                    fill: fill,
+                                    borderWidth: lineWidth,
+                                    pointRadius: 0,
+                                    spanGaps: false,
+                                    datalabels: {
+                                        display: false,
+                                    },
+
+                                },
+                                {
+                                    type: 'bar',
+                                    label: strLabel1,
+                                    backgroundColor: chartColors.background,
+                                    borderColor: colorMap,
+                                    borderWidth: 3,
+                                    data: strData1,
+                                    fill: false,
+                                    pointRadius: 0,
+                                    barThickness: 30,
+                                    spanGaps: false,
+                                    datalabels: {
+                                        display: true,
+                                        color: '#000000',
+                                        align: 'end',
+                                        anchor: 'end',
+                                        formatter: function (value, context) {
+                                            if (value === undefined || value['y'] === undefined)
+                                                return "";
+                                            if (value['y'] === 0)
+                                                return "";
+                                            // let keys = Object.keys(mentalData["mentalHealthScore"]);
+                                            // if (mentalData["mentalHealthScore"][keys[context.dataIndex]]["accurate"] === true) {
+                                            //     return value['y'];
+                                            // }
+                                            return value['y'] + "?";
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        options: {
+                            spanGaps: false,
+                            maintainAspectRatio: false,
+                            title: {
+                                display: true,
+                                text: '정신 건강 데이터 (0-5, 정상 상태 3)'
+                            },
+                            plugins: {
+                                legend: {
+                                    reverse: true,
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function (context) {
+                                            let label = context.dataset.label || '';
+
+                                            if (context.parsed.y !== null) {
+                                                label = moment(context.parsed.x).utcOffset(+540).format("HH:mm:ss");
+                                            }
+                                            return label;
+                                        }
+                                    }
+                                },
+                            },
+                            axis: {
+                                x: {
+                                    autoSkip: true,
+                                    gridLines: {
+                                        drawOnChartArea: false
+                                    }
+                                },
+                            },
+                            scales: {
+                                x: {
+                                    grid: {
+                                        display: true,
+                                        drawBorder: true,
+                                        drawTicks: true,
+                                        drawOnChartArea: true
+                                    },
+                                },
+                                y: {
+                                    gridLines: {
+                                        display: false,
+                                    },
+                                    suggestedMin: 0,
+                                    suggestedMax: 5,
+                                    ticks: {
+                                        callback: function (value, index, ticks) {
+                                            if (Math.floor(value) === value) {
+                                                return value;
+                                            }
+                                        }
+                                    }
+                                },
+                                x2: {
+                                    type: 'time',
+                                    display: false,
+                                    position: 'bottom',
+                                    min: startTimeCurrent,
+                                    max: endTimeCurrent
+                                },
+                                y2: {
+                                    type: 'linear',
+                                    display: true,
+                                    position: 'right',
+                                    ticks: {
+                                        precision: floorToTicks ? 0 : 1,
+
+                                        callback: function (value, index, ticks) {
+                                            return value + suffix;
+                                        }
+                                    }
+                                },
+                            },
+                        }
+                    });
+                }
+
+                function makeFilledChart(data, strChartId, suffix, floorToTicks, colorMap, strXLabel1, strData1, strLabel1, strData2, strLabel2) {
+                    let ctx = document.getElementById(strChartId);
+                    // noinspection JSVoidFunctionReturnValueUsed
+                    let chartGps = new Chart(ctx, {
+                        plugins: [ChartDataLabels],
+                        data: {
+                            labels: strXLabel1,
+                            datasets: [
+                                {
+                                    xAxisID: 'x2',
+                                    yAxisID: 'y2',
+                                    type: 'line',
+                                    label: strLabel2,
+                                    backgroundColor: chartColors.realTimeDataLine,
+                                    borderColor: chartColors.realTimeDataLine,
+                                    data: strData2,
+                                    borderWidth: 3,
+                                    pointRadius: 0,
+                                    spanGaps: false,
+                                    fill: true,
+                                    datalabels: {
+                                        display: false,
+                                    },
+                                },
+                                {
+                                    type: 'bar',
+                                    label: strLabel1,
+                                    backgroundColor: chartColors.background,
+                                    borderColor: colorMap,
+                                    borderWidth: 3,
+                                    data: strData1,
+                                    fill: 'start',
+                                    pointRadius: 0,
+                                    barThickness: 30,
+                                    spanGaps: false,
+                                    datalabels: {
+                                        display: true,
+                                        color: '#000000',
+                                        align: 'end',
+                                        anchor: 'end',
+                                        formatter: function (value, context) {
+                                            if (value === undefined || value['y'] === undefined)
+                                                return "";
+                                            if (value['y'] === 0)
+                                                return "";
+                                            let keys = Object.keys(data["mentalHealthScore"]);
+                                            if (data["mentalHealthScore"][keys[context.dataIndex]]["accurate"] === true) {
+                                                return value['y'];
+                                            }
+                                            return value['y'] + "?";
+                                        }
+
+                                    }
+                                }
+
+                            ]
+                        },
+                        options: {
+                            spanGaps: false,
+                            maintainAspectRatio: false,
+                            title: {
+                                display: true,
+                                text: '정신 건강 데이터 (0-5, 정상 상태 3)'
+                            },
+                            plugins: {
+                                legend: {
+                                    reverse: true,
+                                },
+                            },
+
+                            showXLabels: 7,
+                            axis: {
+                                x: {
+                                    autoSkip: true,
+                                    gridLines: {
+                                        drawOnChartArea: false
+                                    }
+                                },
+                            },
+                            scales: {
+                                x: {
+                                    grid: {
+                                        display: true,
+                                        drawBorder: true,
+                                        drawTicks: true,
+                                        drawOnChartArea: true
+                                    },
+                                },
+                                y: {
+
+                                    gridLines: {
+                                        display: false,
+                                    },
+                                    suggestedMin: 0,
+                                    suggestedMax: 5,
+                                    ticks: {
+                                        callback: function (value, index, ticks) {
+                                            if (Math.floor(value) === value) {
+                                                return value;
+                                            }
+                                        }
+                                    }
+                                },
+                                x2: {
+                                    type: 'time',
+                                    display: false,
+                                    position: 'bottom',
+                                    min: startTimeCurrent,
+                                    max: endTimeCurrent
+                                },
+                                y2: {
+                                    type: 'linear',
+                                    display: true,
+                                    position: 'right',
+                                    ticks: {
+                                        precision: floorToTicks ? 0 : 1,
+                                        callback: function (value, index, ticks) {
+                                            return value + suffix;
+                                        }
+                                    }
+                                },
+                            },
+                        }
+                    });
+                }
+            </script>
+        </div>
+    </body>
+</html>

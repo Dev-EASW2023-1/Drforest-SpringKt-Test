@@ -13,5 +13,11 @@ interface UserActivityDataRepository : JpaRepository<UserActivityDataEntity, Lon
         to: Date
     ): List<UserActivityDataEntity>
 
+    fun getAllByEntity_UserIdAndTimestampBetween(
+        userName: String,
+        from: Date,
+        to: Date
+    ): List<UserActivityDataEntity>
+
     fun getAllByFieldName(fieldName: String)
 }

@@ -14,6 +14,7 @@ class JWTAuthenticateProvider(
 ) : AuthenticationProvider {
     override fun authenticate(authentication: Authentication): Authentication {
         logInfo("Try to authenticate userName ${authentication.name}..")
+        logInfo()
         return createAuthentication(
             authentication
         )

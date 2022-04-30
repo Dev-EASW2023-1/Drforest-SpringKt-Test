@@ -24,6 +24,10 @@ data class UserNoticeResponseDto(val notice: List<UserNoticeDataDto>)
 
 data class NoticeReadMarkRequest(val id: Int)
 
+data class UserActivityDataDto(val time: Date, val data: Map<String, Float>)
+data class UserActivityContainerDto(val data: List<UserActivityDataDto>)
+
+
 data class UserNoticeDataDto(
     val id: Int,
     val timestamp: Date,

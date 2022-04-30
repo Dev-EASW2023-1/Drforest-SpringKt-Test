@@ -27,10 +27,11 @@ class JwtAuthenticateFilter(val userDetailService: UserDetailService) : OncePerR
         response: HttpServletResponse,
         filterChain: FilterChain,
     ) {
-        println(request.headerNames.toList())
+
         if (request.getHeader("Authorization") != null) {
             // JWT Authorization request..
             val token = request.getHeader("Authorization")
+            println("JWT header detected - $token")
             when (JwtUtil.validateToken(token)) {
                 VALID -> {
                     val userName: String = JwtUtil.getUserFromToken(token)

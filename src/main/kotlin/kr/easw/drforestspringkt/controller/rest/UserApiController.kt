@@ -9,6 +9,7 @@ import kr.easw.drforestspringkt.service.AuthenticateService
 import kr.easw.drforestspringkt.service.UserActivityDataService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -69,4 +70,6 @@ class UserApiController(
         println(authenticateService.getUserData(user))
         return ResponseEntity.ok(authenticateService.getUserData(user))
     }
+
+
 }
