@@ -1,0 +1,23 @@
+<html>
+    <head>
+        <title> Test </title>
+        <script type="text/javascript">
+            let param = window.location.search.substr(1)
+            if (param.startsWith("msg=")) {
+                alert(decodeURI(window.location.search.replace("+", " ")).substr(5).replace("+", " "))
+            }
+        </script>
+    </head>
+    <body>
+        <form action="/add-share-temp/" method="post">
+            유저 ID: <input type="text" id="name" name="name"><br>
+            대상 유저 ID: <input type="text" id="target" name="target"><br>
+            대상 유저 수락 여부:
+            <select id="doShare" name="doShare">
+                <option>true</option>
+                <option>false</option>
+            </select>
+            <input type="submit">
+        </form>
+    </body>
+</html>

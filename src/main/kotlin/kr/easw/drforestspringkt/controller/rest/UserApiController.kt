@@ -3,10 +3,7 @@ package kr.easw.drforestspringkt.controller.rest
 import kr.easw.drforest.model.dto.*
 import kr.easw.drforestspringkt.auth.UserAccountData
 import kr.easw.drforestspringkt.model.dto.UserDataDto
-import kr.easw.drforestspringkt.service.AnnouncementService
-import kr.easw.drforestspringkt.service.AuthenticateService
-import kr.easw.drforestspringkt.service.SharedUserService
-import kr.easw.drforestspringkt.service.UserActivityDataService
+import kr.easw.drforestspringkt.service.*
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.ui.Model
@@ -24,7 +21,7 @@ import org.thymeleaf.model.IAttribute
 class UserApiController(
     val authenticateService: AuthenticateService,
     val userDataService: UserActivityDataService,
-    val notificationService: AnnouncementService,
+    val notificationService: UserNoticeService,
     val sharedUserService: SharedUserService
 ) {
     @PutMapping("/upload")
@@ -58,20 +55,19 @@ class UserApiController(
 
     @GetMapping("/notice")
     fun onGetUserNotice(
-        @AuthenticationPrincipal user: UserAccountData
-    ): ResponseEntity<UserDataDto> {
-        println("Data get")
-        println(authenticateService.getUserData(user))
-        return ResponseEntity.ok(authenticateService.getUserData(user))
+        @AuthenticationPrincipal user: UserAccountData,
+        @RequestBody req: UserNoticeRequestDto
+    ): ResponseEntity<UserNoticeResponseDto> {
+        return ResponseEntity.ok(notificationService.getNotice(user, req))
     }
 
     @PutMapping("/notice/read")
     fun onUserNoticeRead(
-        @AuthenticationPrincipal user: UserAccountData
-    ): ResponseEntity<UserDataDto> {
-        println("Data put")
-        println(authenticateService.getUserData(user))
-        return ResponseEntity.ok(authenticateService.getUserData(user))
+        @AuthenticationPrincipal user: UserAccountData,
+        @RequestBody req: NoticeReadMarkRequest
+    ): ResponseEntity<Void> {
+        notificationService.markRead(user, req.id)
+        return ResponseEntity.ok().build()
     }
 
 

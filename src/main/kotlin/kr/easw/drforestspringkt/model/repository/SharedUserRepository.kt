@@ -8,6 +8,6 @@ import java.util.*
 @Repository
 interface SharedUserRepository : JpaRepository<SharedUserEntity, Long> {
     fun findAllByUser_Account_UserId(userId: String): List<SharedUserEntity>
-    fun findAllByUser_Account_UserIdAndTarget_Account_UserId(userId: String, targetId: String): Optional<SharedUserEntity>
+    fun findAllByUser_Account_UserIdAndTarget_Account_UserId(userId: String, targetId: String): List<SharedUserEntity>
 
 }
