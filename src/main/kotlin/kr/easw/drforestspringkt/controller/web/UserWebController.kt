@@ -45,4 +45,6 @@ class UserWebController(val userActivityDataService: UserActivityDataService, va
         model.addAttribute("graph", userActivityDataService.fetchResult(userId, time))
         return "user/graph.html"
     }
+
+
 }

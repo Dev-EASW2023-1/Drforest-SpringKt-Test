@@ -1,9 +1,9 @@
 package kr.easw.drforestspringkt.service
 
+import kr.easw.drforest.model.dto.QnADataDto
+import kr.easw.drforest.model.dto.QnAQuestionDto
+import kr.easw.drforest.model.dto.QnaAnswerDto
 import kr.easw.drforestspringkt.auth.UserAccountData
-import kr.easw.drforestspringkt.model.dto.QnADataDto
-import kr.easw.drforestspringkt.model.dto.QnAQuestionDto
-import kr.easw.drforestspringkt.model.dto.QnaAnswerDto
 import kr.easw.drforestspringkt.model.entity.QnAEntity
 import kr.easw.drforestspringkt.model.repository.QnARepository
 import org.springframework.stereotype.Service

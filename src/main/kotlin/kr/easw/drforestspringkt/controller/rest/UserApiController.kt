@@ -1,16 +1,18 @@
 package kr.easw.drforestspringkt.controller.rest
 
-import kr.easw.drforestspringkt.model.dto.UserDataUploadDto
-import kr.easw.drforestspringkt.model.dto.UserDataUploadResponse
+import kr.easw.drforest.model.dto.*
 import kr.easw.drforestspringkt.auth.UserAccountData
 import kr.easw.drforestspringkt.model.dto.UserDataDto
 import kr.easw.drforestspringkt.service.AnnouncementService
 import kr.easw.drforestspringkt.service.AuthenticateService
+import kr.easw.drforestspringkt.service.SharedUserService
 import kr.easw.drforestspringkt.service.UserActivityDataService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -23,6 +25,7 @@ class UserApiController(
     val authenticateService: AuthenticateService,
     val userDataService: UserActivityDataService,
     val notificationService: AnnouncementService,
+    val sharedUserService: SharedUserService
 ) {
     @PutMapping("/upload")
     fun onUploadData(
@@ -69,6 +72,29 @@ class UserApiController(
         println("Data put")
         println(authenticateService.getUserData(user))
         return ResponseEntity.ok(authenticateService.getUserData(user))
+    }
+
+
+    @GetMapping("/share/")
+    fun onRequestSharedList(@AuthenticationPrincipal user: UserAccountData): SharedUserListResponse {
+        return sharedUserService.findAllUser(user)
+    }
+
+    @PutMapping("/share/")
+    fun onRequestShareToUser(
+        @AuthenticationPrincipal user: UserAccountData,
+        @RequestBody req: ShareToUserRequest
+    ): ShareToUserResponse {
+        return sharedUserService.addShare(user, req)
+    }
+
+
+    @PatchMapping("/user/")
+    fun onChangeUserDAta(
+        @AuthenticationPrincipal user: UserAccountData,
+        @RequestBody req: ChangeUserDataRequest
+    ): ChangeUserDataResponse {
+        return TODO()
     }
 
 

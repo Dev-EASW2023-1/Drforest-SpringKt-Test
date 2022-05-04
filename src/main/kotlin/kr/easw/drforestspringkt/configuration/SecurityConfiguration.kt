@@ -20,7 +20,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 class SecurityConfiguration(val jwtFilter : JwtAuthenticateFilter) : WebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity) {
-        println("Filter: $jwtFilter")
         http
             .sessionManagement {
                 it.configureSessionManagement()
