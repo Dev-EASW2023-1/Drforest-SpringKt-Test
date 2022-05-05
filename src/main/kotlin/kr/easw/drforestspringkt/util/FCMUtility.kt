@@ -2,7 +2,6 @@ package kr.easw.drforestspringkt.util
 
 import kr.easw.drforestspringkt.FCM_URL
 import kr.easw.drforestspringkt.GOOGLE_API_KEY
-import org.json.simple.JSONObject
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod

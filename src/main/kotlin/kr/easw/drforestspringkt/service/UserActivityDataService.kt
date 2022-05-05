@@ -1,10 +1,9 @@
 package kr.easw.drforestspringkt.service
 
-import kr.easw.drforest.model.dto.UserActivityContainerDto
-import kr.easw.drforest.model.dto.UserActivityDataDto
-import kr.easw.drforest.model.dto.UserDataUploadDto
 import kr.easw.drforestspringkt.auth.UserAccountData
-import kr.easw.drforestspringkt.model.dto.UserDataDto
+import kr.easw.drforestspringkt.model.dto.UserActivityContainerData
+import kr.easw.drforestspringkt.model.dto.UserActivityDataData
+import kr.easw.drforestspringkt.model.dto.UserDataUploadRequest
 import kr.easw.drforestspringkt.model.entity.UserActivityDataEntity
 import kr.easw.drforestspringkt.model.repository.UserActivityDataRepository
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -20,7 +19,7 @@ class UserActivityDataService(val authService: AuthenticateService, val repo: Us
     }
 
     @Transactional
-    fun upload(@AuthenticationPrincipal entity: UserAccountData, data: UserDataUploadDto) {
+    fun upload(@AuthenticationPrincipal entity: UserAccountData, data: UserDataUploadRequest) {
         println("User ${entity.username} uploaded / ${data.data}")
         val user = authService.toAccount(entity)
         data.data.forEach { (name, value) ->
@@ -30,7 +29,7 @@ class UserActivityDataService(val authService: AuthenticateService, val repo: Us
         }
     }
 
-    fun fetchResult(user: String, time: Long): UserActivityContainerDto {
+    fun fetchResult(user: String, time: Long): UserActivityContainerData {
         val end = System.currentTimeMillis()
         val data = mutableMapOf<Long, MutableMap<String, Float>>()
         repo.getAllByEntity_UserIdAndTimestampBetween(user, Date(end - time), Date(end)).forEach {
@@ -40,7 +39,7 @@ class UserActivityDataService(val authService: AuthenticateService, val repo: Us
             map[it.fieldName] = map.getOrDefault(it.fieldName, 0f) + it.fieldValue
         }
 
-        return UserActivityContainerDto(data.map { x -> UserActivityDataDto(Date(x.key), x.value) })
+        return UserActivityContainerData(data.map { x -> UserActivityDataData(Date(x.key), x.value) })
     }
 
 

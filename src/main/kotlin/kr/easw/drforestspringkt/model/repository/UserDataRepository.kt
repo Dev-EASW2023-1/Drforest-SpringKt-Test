@@ -2,11 +2,11 @@ package kr.easw.drforestspringkt.model.repository
 
 import kr.easw.drforestspringkt.model.entity.UserDataEntity
 import org.springframework.data.jpa.repository.JpaRepository
-import java.util.Optional
-import javax.persistence.Table
+import org.springframework.stereotype.Repository
+import java.util.*
 
 @Suppress("FunctionName")
-@Table(name = "UserData")
+@Repository
 interface UserDataRepository : JpaRepository<UserDataEntity, Long> {
     fun findByAccount_UserId(id: String): Optional<UserDataEntity>
 

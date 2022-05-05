@@ -1,7 +1,6 @@
 package kr.easw.drforestspringkt.model.repository
 
 import kr.easw.drforestspringkt.model.entity.QnAEntity
-import kr.easw.drforestspringkt.model.entity.UserAccountEntity
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 import java.util.*

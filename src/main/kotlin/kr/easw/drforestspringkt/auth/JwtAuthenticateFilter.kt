@@ -1,20 +1,13 @@
 package kr.easw.drforestspringkt.auth
 
 import kr.easw.drforestspringkt.enumeration.Roles
-import kr.easw.drforestspringkt.model.entity.UserAccountEntity
-import kr.easw.drforestspringkt.service.AuthenticateService
-import kr.easw.drforestspringkt.service.UserDataService
 import kr.easw.drforestspringkt.service.UserDetailService
 import kr.easw.drforestspringkt.util.JwtUtil
-import kr.easw.drforestspringkt.util.JwtUtil.ValidateStatus
 import kr.easw.drforestspringkt.util.JwtUtil.ValidateStatus.*
 import kr.easw.drforestspringkt.util.logInfo
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Component
-import org.springframework.stereotype.Service
 import org.springframework.web.filter.OncePerRequestFilter
-import java.util.List
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse

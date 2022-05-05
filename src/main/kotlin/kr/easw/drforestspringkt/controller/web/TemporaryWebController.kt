@@ -1,8 +1,9 @@
 package kr.easw.drforestspringkt.controller.web
 
-import kr.easw.drforest.model.dto.ShareToUserRequest
 import kr.easw.drforestspringkt.auth.UserAccountData
+import kr.easw.drforestspringkt.model.dto.ShareToUserRequest
 import kr.easw.drforestspringkt.service.SharedUserService
+import kr.easw.drforestspringkt.service.UserNoticeService
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -11,7 +12,7 @@ import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
 @Controller
-class TemporaryWebController(val share: SharedUserService) {
+class TemporaryWebController(val share: SharedUserService, val noticeService: UserNoticeService) {
     @GetMapping("/regions")
     fun addRegions() = "init/add_region.html"
 
@@ -25,6 +26,12 @@ class TemporaryWebController(val share: SharedUserService) {
     @GetMapping("/share")
     fun shareTemp(): String {
         return "init/share_to_user.html"
+    }
+
+
+    @GetMapping("/notice")
+    fun noticeTemp(): String {
+        return "init/add_notification.html"
     }
 
     @PostMapping("/add-share-temp")
@@ -43,6 +50,24 @@ class TemporaryWebController(val share: SharedUserService) {
                     ShareToUserRequest(target),
                     isShared
                 ).message, StandardCharsets.UTF_8
+            )
+        }"
+    }
+
+    @PostMapping("/add-notification-temp")
+    fun addNotification(
+        @RequestParam("name") user: String,
+        @RequestParam("notice") notice: String,
+    ): String {
+        return "redirect:/notice?msg=${
+            URLEncoder.encode(
+                noticeService.addNotice(
+                    UserAccountData(
+                        user, "", false, accountNonExpired = false,
+                        credentialsNonExpired = false, accountNonLocked = false
+                    ),
+                    notice
+                ), StandardCharsets.UTF_8
             )
         }"
     }

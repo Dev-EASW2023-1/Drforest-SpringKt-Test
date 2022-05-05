@@ -2,7 +2,7 @@ package kr.easw.drforestspringkt.model.dto
 
 data class CheckAccountDuplicateResponse(val duplicated: Boolean)
 
-data class LoginDataDto(val id: String, val pw: String)
+data class LoginDataRequest(val id: String, val pw: String)
 data class LoginDataResponse(val token: String, val refreshToken: String)
 
 

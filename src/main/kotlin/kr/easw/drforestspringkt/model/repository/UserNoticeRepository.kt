@@ -2,13 +2,12 @@
 
 package kr.easw.drforestspringkt.model.repository
 
-import kr.easw.drforestspringkt.model.entity.AnnouncementEntity
 import kr.easw.drforestspringkt.model.entity.UserNoticeEntity
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
-import java.util.*
+import org.springframework.stereotype.Repository
 
-@org.springframework.stereotype.Repository
+@Repository
 interface UserNoticeRepository : JpaRepository<UserNoticeEntity, Long> {
 
 //    fun findById(id: Long): Optional<AnnouncementEntity>

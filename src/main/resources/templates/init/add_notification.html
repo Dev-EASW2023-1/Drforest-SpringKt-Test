@@ -1,0 +1,18 @@
+<html>
+    <head>
+        <title> Test </title>
+        <script type="text/javascript">
+            let param = window.location.search.substr(1)
+            if (param.startsWith("msg=")) {
+                alert(decodeURI(window.location.search.replace("+", " ")).substr(5).replace("+", " "))
+            }
+        </script>
+    </head>
+    <body>
+        <form action="/add-notification-temp/" method="post">
+            유저 ID: <input type="text" id="name" name="name"><br>
+            공지사항: <input type="text" id="notice" name="notice"><br>
+            <input type="submit">
+        </form>
+    </body>
+</html>

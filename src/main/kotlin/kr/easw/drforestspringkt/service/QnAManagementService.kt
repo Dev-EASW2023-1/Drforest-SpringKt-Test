@@ -1,26 +1,25 @@
 package kr.easw.drforestspringkt.service
 
-import kr.easw.drforest.model.dto.QnADataDto
-import kr.easw.drforest.model.dto.QnAQuestionDto
-import kr.easw.drforest.model.dto.QnaAnswerDto
 import kr.easw.drforestspringkt.auth.UserAccountData
-import kr.easw.drforestspringkt.model.entity.QnAEntity
+import kr.easw.drforestspringkt.model.dto.QnADataData
+import kr.easw.drforestspringkt.model.dto.QnAQuestionData
+import kr.easw.drforestspringkt.model.dto.QnaAnswerData
 import kr.easw.drforestspringkt.model.repository.QnARepository
 import org.springframework.stereotype.Service
 
 @Service
 class QnAManagementService(val qnARepository: QnARepository) {
-    fun findQnA(user: UserAccountData): List<QnADataDto> {
+    fun findQnA(user: UserAccountData): List<QnADataData> {
         return qnARepository.getAllByUser_UserId(user.username).map { x ->
-            QnADataDto(
+            QnADataData(
                 x.id!!.toInt(),
-                QnAQuestionDto(
+                QnAQuestionData(
                     x.createdTime!!,
                     x.title,
                     x.content
                 ),
                 if (x.answerTitle != null) {
-                    QnaAnswerDto(
+                    QnaAnswerData(
                         x.updatedTime!!,
                         x.answerTitle!!,
                         x.answerContent!!

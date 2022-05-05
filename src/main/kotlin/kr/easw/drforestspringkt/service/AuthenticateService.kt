@@ -19,7 +19,7 @@ class AuthenticateService(
     private val regionManagementService: RegionManagementService,
     private val encoder: BCryptPasswordEncoder
 ) {
-    fun login(dto: LoginDataDto): LoginDataResponse {
+    fun login(dto: LoginDataRequest): LoginDataResponse {
         userAccountRepository.findByUserId(dto.id)
             .orElseThrow { BadCredentialsException("Bad credential") }.apply {
                 if (!encoder.matches(dto.pw, password)) {
@@ -46,7 +46,7 @@ class AuthenticateService(
         )
     }
 
-    fun refreshToken(dto: RefreshTokenDto): RefreshTokenResponse {
+    fun refreshToken(dto: RefreshTokenRequest): RefreshTokenResponse {
         if (!JwtUtil.validateRefreshToken(dto.refreshToken).valid) {
             throw BadCredentialsException("만료되었거나 잘못된 JWT 토큰")
         }
@@ -60,7 +60,7 @@ class AuthenticateService(
         }
     }
 
-    fun checkValidationResponse(dto: CheckTokenValidDto): CheckTokenValidResponse {
+    fun checkValidationResponse(dto: CheckTokenValidRequest): CheckTokenValidResponse {
         return CheckTokenValidResponse(JwtUtil.validateToken(dto.token).valid)
     }
 
@@ -107,6 +107,10 @@ class AuthenticateService(
 
     fun findAccountByUserId(userId: String): UserDataEntity? {
         return userDataRepository.findByAccount_UserId(userId).orElseGet { null }
+    }
+
+    fun findAllUser() : List<UserDataEntity> {
+        return userDataRepository.findAll()
     }
 
 }

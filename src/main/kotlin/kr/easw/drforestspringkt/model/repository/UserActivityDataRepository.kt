@@ -3,7 +3,7 @@ package kr.easw.drforestspringkt.model.repository
 import kr.easw.drforestspringkt.model.entity.UserActivityDataEntity
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
-import java.util.Date
+import java.util.*
 
 @Repository
 interface UserActivityDataRepository : JpaRepository<UserActivityDataEntity, Long> {

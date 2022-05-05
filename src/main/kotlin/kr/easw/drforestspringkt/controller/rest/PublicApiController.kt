@@ -31,13 +31,13 @@ class PublicApiController(
     }
 
     @PostMapping("/verify-token")
-    fun onValidateToken(@RequestBody dto: CheckTokenValidDto): ResponseEntity<CheckTokenValidResponse> {
+    fun onValidateToken(@RequestBody dto: CheckTokenValidRequest): ResponseEntity<CheckTokenValidResponse> {
         return ResponseEntity.ok(authenticateService.checkValidationResponse(dto))
     }
 
 
     @PostMapping("/refresh")
-    fun onRefreshToken(@RequestBody data: RefreshTokenDto): ResponseEntity<Any> {
+    fun onRefreshToken(@RequestBody data: RefreshTokenRequest): ResponseEntity<Any> {
         return ResponseEntity.ok(authenticateService.refreshToken(data))
     }
 
@@ -47,7 +47,7 @@ class PublicApiController(
     }
 
     @GetMapping("/announcement/{id}")
-    fun getAnnouncement(@PathVariable id: Long): ResponseEntity<AnnouncementDto> {
+    fun getAnnouncement(@PathVariable id: Long): ResponseEntity<AnnouncementData> {
         return ResponseEntity.ok(announcementService.getAnnouncement(id))
     }
 }

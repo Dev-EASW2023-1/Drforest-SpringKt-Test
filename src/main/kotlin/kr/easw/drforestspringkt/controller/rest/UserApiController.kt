@@ -1,20 +1,14 @@
 package kr.easw.drforestspringkt.controller.rest
 
-import kr.easw.drforest.model.dto.*
 import kr.easw.drforestspringkt.auth.UserAccountData
-import kr.easw.drforestspringkt.model.dto.UserDataDto
-import kr.easw.drforestspringkt.service.*
+import kr.easw.drforestspringkt.model.dto.*
+import kr.easw.drforestspringkt.service.AuthenticateService
+import kr.easw.drforestspringkt.service.SharedUserService
+import kr.easw.drforestspringkt.service.UserActivityDataService
+import kr.easw.drforestspringkt.service.UserNoticeService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.ui.Model
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PatchMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import org.thymeleaf.model.IAttribute
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/user")
@@ -27,7 +21,7 @@ class UserApiController(
     @PutMapping("/upload")
     fun onUploadData(
         @AuthenticationPrincipal user: UserAccountData,
-        @RequestBody dto: UserDataUploadDto,
+        @RequestBody dto: UserDataUploadRequest,
     ): ResponseEntity<UserDataUploadResponse> {
         userDataService.upload(user, dto)
         return ResponseEntity.ok(UserDataUploadResponse(true))
@@ -37,7 +31,7 @@ class UserApiController(
     @PutMapping("/token")
     fun onUploadToken(
         @AuthenticationPrincipal user: UserAccountData,
-        @RequestBody dto: UserDataUploadDto,
+        @RequestBody dto: UserDataUploadRequest,
     ): ResponseEntity<UserDataUploadResponse> {
         userDataService.upload(user, dto)
         return ResponseEntity.ok(UserDataUploadResponse(true))
@@ -47,18 +41,16 @@ class UserApiController(
     fun onGetUserData(
         @AuthenticationPrincipal user: UserAccountData
     ): ResponseEntity<UserDataDto> {
-        println("Data get")
-        println(authenticateService.getUserData(user))
         return ResponseEntity.ok(authenticateService.getUserData(user))
     }
 
 
-    @GetMapping("/notice")
+    @GetMapping("/notice/{amount}")
     fun onGetUserNotice(
         @AuthenticationPrincipal user: UserAccountData,
-        @RequestBody req: UserNoticeRequestDto
+        @PathVariable("amount") amount: Int
     ): ResponseEntity<UserNoticeResponseDto> {
-        return ResponseEntity.ok(notificationService.getNotice(user, req))
+        return ResponseEntity.ok(notificationService.getNotice(user, amount))
     }
 
     @PutMapping("/notice/read")
@@ -82,6 +74,14 @@ class UserApiController(
         @RequestBody req: ShareToUserRequest
     ): ShareToUserResponse {
         return sharedUserService.addShare(user, req)
+    }
+
+
+    @GetMapping("/list/")
+    fun onRequestListUser(
+        @AuthenticationPrincipal user: UserAccountData
+    ): ListUserResponse {
+        return sharedUserService.getAllUsers(user)
     }
 
 
