@@ -2,10 +2,7 @@ package kr.easw.drforestspringkt.controller.rest
 
 import kr.easw.drforestspringkt.auth.UserAccountData
 import kr.easw.drforestspringkt.model.dto.*
-import kr.easw.drforestspringkt.service.AuthenticateService
-import kr.easw.drforestspringkt.service.SharedUserService
-import kr.easw.drforestspringkt.service.UserActivityDataService
-import kr.easw.drforestspringkt.service.UserNoticeService
+import kr.easw.drforestspringkt.service.*
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
@@ -16,7 +13,8 @@ class UserApiController(
     val authenticateService: AuthenticateService,
     val userDataService: UserActivityDataService,
     val notificationService: UserNoticeService,
-    val sharedUserService: SharedUserService
+    val sharedUserService: SharedUserService,
+    val qnaManagementService : QnAManagementService
 ) {
     @PutMapping("/upload")
     fun onUploadData(
@@ -62,6 +60,10 @@ class UserApiController(
         return ResponseEntity.ok().build()
     }
 
+    @GetMapping("/QnA/")
+    fun onRequestQnAList(@AuthenticationPrincipal user: UserAccountData): QnADataResponse {
+        return qnaManagementService.findQnA(user)
+    }
 
     @GetMapping("/share/")
     fun onRequestSharedList(@AuthenticationPrincipal user: UserAccountData): SharedUserListResponse {

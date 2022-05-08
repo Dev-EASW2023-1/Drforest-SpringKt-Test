@@ -63,3 +63,5 @@ data class UserActivityDataData(
 )
 
 data class QnADataData(val index: Int, val question: QnAQuestionData, val answer: QnaAnswerData?)
+
+data class QnADataResponse(val qna: List<QnADataData>)
