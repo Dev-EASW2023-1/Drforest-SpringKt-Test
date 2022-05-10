@@ -1,9 +1,13 @@
 package kr.easw.drforestspringkt.model.dto
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import java.util.*
 
 
-data class UserDataUploadRequest(val time: Date, val data: Map<String, Float>)
+data class UserDataUploadRequest(
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss[.SSS][.SS][.S]")
+    val time: Date, val data: Map<String, Float>
+)
 
 data class UserDataUploadResponse(val isSuccess: Boolean)
 

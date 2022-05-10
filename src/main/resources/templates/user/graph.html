@@ -58,7 +58,7 @@
                 let minuteOnOffArray = [];
                 let minuteDozeArray = [];
 
-                data["data"].forEach(dto => {
+                data["list"].forEach(dto => {
                     timeArray.push(dto["time"])
                     minuteGpsArray.push({
                         x: moment(dto["time"]),
