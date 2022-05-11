@@ -14,7 +14,7 @@ class UserApiController(
     val userDataService: UserActivityDataService,
     val notificationService: UserNoticeService,
     val sharedUserService: SharedUserService,
-    val qnaManagementService : QnAManagementService
+    val qnaManagementService: QnAManagementService,
 ) {
     @PutMapping("/upload")
     fun onUploadData(
@@ -67,7 +67,7 @@ class UserApiController(
 
     @GetMapping("/share/")
     fun onRequestSharedList(@AuthenticationPrincipal user: UserAccountData): SharedUserListResponse {
-        return sharedUserService.findAllUser(user)
+        return sharedUserService.findAllSharedUser(user)
     }
 
     @PutMapping("/share/")
@@ -75,7 +75,9 @@ class UserApiController(
         @AuthenticationPrincipal user: UserAccountData,
         @RequestBody req: ShareToUserRequest
     ): ShareToUserResponse {
-        return sharedUserService.addShare(user, req)
+        // TODO : 프로덕션에서는 제거할것
+//        return sharedUserService.addShare(user, req)
+        return sharedUserService.addShare(user, req, true)
     }
 
 
@@ -93,6 +95,22 @@ class UserApiController(
         @RequestBody req: ChangeUserDataRequest
     ): ChangeUserDataResponse {
         return TODO()
+    }
+
+
+    @GetMapping("/score/")
+    fun onRequestSelfScore(
+        @AuthenticationPrincipal user: UserAccountData
+    ): ResponseEntity<UserStatusResponse> {
+        return ResponseEntity.ok(UserStatusResponse(userDataService.calculateTodayScore(user.username)))
+    }
+
+
+    @GetMapping("/score/share")
+    fun onRequestSharedScore(
+        @AuthenticationPrincipal user: UserAccountData
+    ): ResponseEntity<SharedUserScoreResponse> {
+        return ResponseEntity.ok(userDataService.fetchSharedScore(user))
     }
 
 

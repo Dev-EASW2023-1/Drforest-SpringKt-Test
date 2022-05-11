@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service
 @Service
 class SharedUserService(val repo: SharedUserRepository, val userService: AuthenticateService) {
 
-    fun findAllUser(user: UserAccountData): SharedUserListResponse {
+    fun findAllSharedUser(user: UserAccountData): SharedUserListResponse {
         return SharedUserListResponse(
             repo.findAllByUser_Account_UserId(user.username).map {
                 SharedUserData(
-                    it.user.account.userId,
-                    it.user.name,
+                    it.target.account.userId,
+                    it.target.name,
                     it.isShared
                 )
             }

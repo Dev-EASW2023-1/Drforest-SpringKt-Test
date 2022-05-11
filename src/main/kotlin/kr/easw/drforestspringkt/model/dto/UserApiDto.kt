@@ -5,11 +5,15 @@ import java.util.*
 
 
 data class UserDataUploadRequest(
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss[.SSS][.SS][.S]")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     val time: Date, val data: Map<String, Float>
 )
 
 data class UserDataUploadResponse(val isSuccess: Boolean)
+
+data class UserStatusResponse(val data: UserScoreData)
+
+data class SharedUserScoreResponse(val data: List<UserScoreData>)
 
 data class UploadQnARequest(val title: String, val content: String)
 
@@ -69,3 +73,5 @@ data class UserActivityDataData(
 data class QnADataData(val index: Int, val question: QnAQuestionData, val answer: QnaAnswerData?)
 
 data class QnADataResponse(val qna: List<QnADataData>)
+
+data class UserScoreData(var name: String, val score : Map<String, Int>)

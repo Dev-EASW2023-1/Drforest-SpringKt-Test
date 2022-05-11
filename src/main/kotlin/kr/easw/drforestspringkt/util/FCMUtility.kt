@@ -33,7 +33,6 @@ object FCMUtility {
                 HttpHeaders().apply {
                     contentType = MediaType.APPLICATION_JSON
                     set("Authorization", "key=$GOOGLE_API_KEY")
-
                 }
             ),
             String::class.java

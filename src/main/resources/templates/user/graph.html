@@ -62,27 +62,27 @@
                     timeArray.push(dto["time"])
                     minuteGpsArray.push({
                         x: moment(dto["time"]),
-                        y: (dto["data"]["GPS"] ?? 0)
+                        y: (dto["value"]["GPS"] ?? 0) / 1024
                     })
 
                     minuteStepArray.push({
                         x: moment(dto["time"]),
-                        y: (dto["data"]["Step"] ?? 0)
+                        y: (dto["value"]["Step"] ?? 0)
                     })
 
                     minuteOnOffArray.push({
                         x: moment(dto["time"]),
-                        y: (dto["data"]["OnOff"] ?? 0)
+                        y: (dto["value"]["OnOff"] ?? 0) / 60
                     })
 
                     minuteDozeArray.push({
                         x: moment(dto["time"]),
-                        y: (dto["data"]["Idle"] ?? 0)
+                        y: (dto["value"]["Idle"] ?? 0) / 60
                     })
 
                     minuteTrafficArray.push({
                         x: moment(dto["time"]),
-                        y: (dto["data"]["Traffic"] ?? 0)
+                        y: (dto["value"]["Traffic"] ?? 0) / 1024 / 1024
                     })
                 });
 
@@ -169,14 +169,7 @@
                                 },
                                 tooltip: {
                                     callbacks: {
-                                        label: function (context) {
-                                            let label = context.dataset.label || '';
 
-                                            if (context.parsed.y !== null) {
-                                                label = moment(context.parsed.x).utcOffset(+540).format("HH:mm:ss");
-                                            }
-                                            return label;
-                                        }
                                     }
                                 },
                             },
@@ -190,12 +183,25 @@
                             },
                             scales: {
                                 x: {
+                                    type: 'timeseries',
                                     grid: {
                                         display: true,
                                         drawBorder: true,
                                         drawTicks: true,
                                         drawOnChartArea: true
                                     },
+                                    time: {
+                                        unit: 'day',  // <-- that does the trick here
+                                        displayFormats: {
+                                            day: 'YYYY-MM-DD'
+                                        },
+                                        tooltipFormat: 'YYYY-MM-DD'  // <-- same format for tooltip
+                                    },
+                                    ticks: {
+                                        callback: function(tick, index, array) {
+                                            return (index % 15) ? "" : tick;
+                                        }
+                                    }
                                 },
                                 y: {
                                     gridLines: {
@@ -321,6 +327,13 @@
                                         drawBorder: true,
                                         drawTicks: true,
                                         drawOnChartArea: true
+                                    },
+                                    time: {
+                                        unit: 'day',  // <-- that does the trick here
+                                        displayFormats: {
+                                            day: 'YYYY-MM-DD'
+                                        },
+                                        tooltipFormat: 'YYYY-MM-DD'  // <-- same format for tooltip
                                     },
                                 },
                                 y: {
