@@ -103,6 +103,8 @@ class UserActivityDataService(
     fun fetchSharedScore(user: UserAccountData): SharedUserScoreResponse {
         val map = mutableListOf<UserScoreData>()
         sharedUserService.findAllSharedUser(user).users.forEach {
+            if (!it.isShared)
+                return@forEach
             map += calculateTodayScore(it.userId).apply {
                 this.name = it.userName
             }
