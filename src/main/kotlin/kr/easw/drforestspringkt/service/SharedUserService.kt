@@ -15,6 +15,7 @@ class SharedUserService(val repo: SharedUserRepository, val userService: Authent
                 SharedUserData(
                     it.target.account.userId,
                     it.target.name,
+                    it.target.phone,
                     it.isShared
                 )
             }
@@ -49,7 +50,7 @@ class SharedUserService(val repo: SharedUserRepository, val userService: Authent
             users.map { x ->
                 val userId = x.account.userId
                 SharedUserData(
-                    userId, x.name, sharedUser[userId] ?: false
+                    userId, x.name, x.phone, sharedUser[userId] ?: false
                 )
             }
         )
