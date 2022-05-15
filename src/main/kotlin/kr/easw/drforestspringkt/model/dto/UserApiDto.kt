@@ -53,7 +53,7 @@ data class UserNoticeData(
     val isRead: Boolean
 )
 
-data class SharedUserData(val userId: String, val userName: String, val phoneNumber: String, val isShared: Boolean)
+data class SharedUserData(val userId: String, val userName: String, val phoneNumber: String?, val isShared: Boolean)
 
 
 data class QnAQuestionData(val timestamp: Date, val title: String, val question: String)
