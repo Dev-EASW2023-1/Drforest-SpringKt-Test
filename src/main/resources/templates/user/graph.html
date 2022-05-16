@@ -194,7 +194,7 @@
                             datasets: [
                                 {
                                     type: 'bar',
-                                    yAxisId: 'barChartY',
+                                    yAxisId: 'y3',
                                     label: charts[0].name,
                                     borderWidth: 3,
                                     data: charts[0].data,
@@ -205,6 +205,7 @@
                                 },
                                 {
                                     type: 'line',
+                                    yAxisId: 'y',
                                     label: charts[1].name,
                                     borderWidth: 3,
                                     data: charts[1].data,
@@ -214,6 +215,7 @@
                                 },
                                 {
                                     type: 'line',
+                                    yAxisId: 'y2',
                                     label: charts[2].name,
                                     borderWidth: 3,
                                     data: charts[2].data,
@@ -301,10 +303,20 @@
                                     }
                                 },
 
-                                barChartY: {
+                                y2: {
                                     type: 'linear',
                                     display: true,
                                     position: 'right',
+                                    ticks: {
+                                        min: 1,
+                                        max: 4,
+                                    }
+                                },
+
+
+                                y3: {
+                                    type: 'linear',
+                                    display: false,
                                     ticks: {
                                         min: 1,
                                         max: 4,
