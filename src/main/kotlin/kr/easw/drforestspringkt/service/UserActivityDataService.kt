@@ -93,11 +93,11 @@ class UserActivityDataService(
             }
 
 
-            scoreMap["Social"] = foldScore(scoreMap["GPS"]!!) + foldScore(scoreMap["Traffic"]!!)
+            it["Social"] = foldScore(scoreMap["GPS"]!!) + foldScore(scoreMap["Traffic"]!!).toFloat()
 
-            scoreMap["Health"] = foldScore(scoreMap["GPS"]!!) + foldScore(scoreMap["Step"]!!, true)
+            it["Health"] = foldScore(scoreMap["GPS"]!!) + foldScore(scoreMap["Step"]!!, true).toFloat()
 
-            scoreMap["Mental"] = foldScore(scoreMap["OnOff"]!!) + foldScore(scoreMap["Idle"]!!)
+            it["Mental"] = foldScore(scoreMap["OnOff"]!!) + foldScore(scoreMap["Idle"]!!).toFloat()
         }
 
         return UserActivityContainerData(data.map { x -> UserActivityDataData(Date(x.key), x.value) })

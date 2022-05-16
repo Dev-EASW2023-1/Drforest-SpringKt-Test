@@ -90,25 +90,25 @@
 
                     minuteSocialArray.push({
                         x: moment(dto["time"]),
-                        y: (dto["value"]["Social"] ?? 0) / 1024 / 1024
+                        y: (dto["value"]["Social"] ?? 0)
                     })
 
 
                     minuteHealthArray.push({
                         x: moment(dto["time"]),
-                        y: (dto["value"]["Health"] ?? 0) / 1024 / 1024
+                        y: (dto["value"]["Health"] ?? 0)
                     })
 
 
                     minuteMentalArray.push({
                         x: moment(dto["time"]),
-                        y: (dto["value"]["Mental"] ?? 0) / 1024 / 1024
+                        y: (dto["value"]["Mental"] ?? 0)
                     })
                 });
 
                 makeFullChart("line-chart1", timeArray, [
                     {
-                        name: "",
+                        name: "사회 활동",
                         data: minuteSocialArray,
                     },
                     {
@@ -122,7 +122,7 @@
 
                 makeFullChart("line-chart2", timeArray, [
                     {
-                        name: "",
+                        name: "신체 활동",
                         data: minuteHealthArray,
                     },
                     {
@@ -136,7 +136,7 @@
 
                 makeFullChart("line-chart3", timeArray, [
                     {
-                        name: "",
+                        name: "정서 상태",
                         data: minuteMentalArray,
                     },
                     {
@@ -194,6 +194,7 @@
                             datasets: [
                                 {
                                     type: 'bar',
+                                    yAxisId: 'barChartY',
                                     label: charts[0].name,
                                     borderWidth: 3,
                                     data: charts[0].data,
@@ -281,7 +282,6 @@
                                     },
                                     ticks: {
                                         callback: function (tick, index, array) {
-                                            console.log(tick)
                                             return (index % 15 === 0) ? tick : "";
                                         }
                                     },
@@ -292,8 +292,6 @@
                                     gridLines: {
                                         display: false,
                                     },
-                                    suggestedMin: 0,
-                                    suggestedMax: 5,
                                     ticks: {
                                         callback: function (value, index, ticks) {
                                             if (Math.floor(value) === value) {
@@ -303,22 +301,18 @@
                                     }
                                 },
 
-                                y2: {
+                                barChartY: {
                                     type: 'linear',
                                     display: true,
                                     position: 'right',
                                     ticks: {
-                                        precision: 0,
-
-                                        callback: function (value, index, ticks) {
-                                            return value;
-                                        }
+                                        min: 1,
+                                        max: 4,
                                     }
                                 },
                             },
                         }
                     })
-                    console.log(chart.scales)
                 }
             </script>
         </div>
