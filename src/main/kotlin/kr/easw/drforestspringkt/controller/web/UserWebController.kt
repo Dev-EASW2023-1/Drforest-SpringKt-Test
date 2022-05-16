@@ -39,8 +39,8 @@ class UserWebController(val userActivityDataService: UserActivityDataService, va
     ): String? {
         val time = 1000L * 60 * 60 * 24 * 5
         val endTime = System.currentTimeMillis()
-        model.addAttribute("start", endTime - time)
-        model.addAttribute("end", endTime)
+        model.addAttribute("start", (endTime - time) - (endTime - time) % (15 * 60 * 1000))
+        model.addAttribute("end", endTime - endTime % (15 * 60 * 1000))
         model.addAttribute("graph", userActivityDataService.fetchResult(userId, time))
         return "user/graph.html"
     }
