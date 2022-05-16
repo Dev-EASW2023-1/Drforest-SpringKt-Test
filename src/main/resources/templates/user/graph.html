@@ -165,282 +165,140 @@
                                         display: false
                                     }
                                 },
-                            ]
+                            ],
+                            options: {
+                                spanGaps: false,
+                                maintainAspectRatio: false,
+                                title: {
+                                    display: true,
+                                    text: '정신 건강 데이터 (0-5, 정상 상태 3)'
+                                },
+                                plugins: {
+                                    legend: {
+                                        reverse: true,
+                                    },
+                                    tooltip: {
+                                        callbacks: {}
+                                    },
+                                },
+                                axis: {
+                                    x: {
+                                        autoSkip: true,
+                                        gridLines: {
+                                            drawOnChartArea: false
+                                        }
+                                    },
+                                },
+                                scales: {
+                                    barChartX: {
+                                        type: 'timeseries',
+                                        grid: {
+                                            display: true,
+                                            drawBorder: true,
+                                            drawTicks: true,
+                                            drawOnChartArea: true
+                                        },
+                                        time: {
+                                            unit: 'day',
+                                            displayFormats: {
+                                                day: 'YYYY-MM-DD'
+                                            },
+                                            tooltipFormat: 'YYYY-MM-DD'
+                                        },
+                                        ticks: {
+                                            callback: function (tick, index, array) {
+                                                return (index % 15) ? "" : tick;
+                                            }
+                                        }
+                                    },
+                                    barChartY: {
+                                        gridLines: {
+                                            display: false,
+                                        },
+                                        suggestedMin: 0,
+                                        suggestedMax: 5,
+                                        ticks: {
+                                            callback: function (value, index, ticks) {
+                                                if (Math.floor(value) === value) {
+                                                    return value;
+                                                }
+                                            }
+                                        }
+                                    },
+                                    firstLineChartX: {
+                                        type: 'timeseries',
+                                        grid: {
+                                            display: true,
+                                            drawBorder: true,
+                                            drawTicks: true,
+                                            drawOnChartArea: true
+                                        },
+                                        time: {
+                                            unit: 'day',
+                                            displayFormats: {
+                                                day: 'YYYY-MM-DD'
+                                            },
+                                            tooltipFormat: 'YYYY-MM-DD'
+                                        },
+                                        ticks: {
+                                            callback: function (tick, index, array) {
+                                                return (index % 15) ? "" : tick;
+                                            }
+                                        }
+                                    },
+                                    firstLineChartY: {
+                                        gridLines: {
+                                            display: false,
+                                        },
+                                        suggestedMin: 0,
+                                        suggestedMax: 5,
+                                        ticks: {
+                                            callback: function (value, index, ticks) {
+                                                if (Math.floor(value) === value) {
+                                                    return value;
+                                                }
+                                            }
+                                        }
+                                    },
+                                    secondLineChartX: {
+                                        type: 'timeseries',
+                                        grid: {
+                                            display: true,
+                                            drawBorder: true,
+                                            drawTicks: true,
+                                            drawOnChartArea: true
+                                        },
+                                        time: {
+                                            unit: 'day',
+                                            displayFormats: {
+                                                day: 'YYYY-MM-DD'
+                                            },
+                                            tooltipFormat: 'YYYY-MM-DD'
+                                        },
+                                        ticks: {
+                                            callback: function (tick, index, array) {
+                                                return (index % 15) ? "" : tick;
+                                            }
+                                        }
+                                    },
+                                    secondLineChartY: {
+                                        gridLines: {
+                                            display: false,
+                                        },
+                                        suggestedMin: 0,
+                                        suggestedMax: 5,
+                                        ticks: {
+                                            callback: function (value, index, ticks) {
+                                                if (Math.floor(value) === value) {
+                                                    return value;
+                                                }
+                                            }
+                                        }
+                                    },
+                                },
+                            }
                         }
                     })
-                }
-
-                function makeChart(mentalData, strChartId, suffix, floorToTicks, lineWidth, fill, colorMap, strXLabel1, strData1, strLabel1, strData2, strLabel2) {
-                    let ctx = document.getElementById(strChartId);
-                    // noinspection JSVoidFunctionReturnValueUsed
-                    let chartGps = new Chart(ctx, {
-                        plugins: [ChartDataLabels],
-                        data: {
-                            labels: strXLabel1,
-                            datasets: [
-                                {
-                                    xAxisID: 'x2',
-                                    yAxisID: 'y2',
-                                    type: 'line',
-                                    label: strLabel2,
-                                    // backgroundColor: chartColors.realTimeDataLine,
-                                    backgroundColor: chartColors.realTimeDataLine,
-                                    borderColor: chartColors.realTimeDataLine,
-                                    data: strData2,
-                                    fill: fill,
-                                    borderWidth: lineWidth,
-                                    pointRadius: 0,
-                                    spanGaps: false,
-                                    datalabels: {
-                                        display: false,
-                                    },
-
-                                },
-                                {
-                                    type: 'bar',
-                                    label: strLabel1,
-                                    backgroundColor: chartColors.background,
-                                    borderColor: colorMap,
-                                    borderWidth: 3,
-                                    data: strData1,
-                                    fill: false,
-                                    pointRadius: 0,
-                                    barThickness: 30,
-                                    spanGaps: false,
-                                    datalabels: {
-                                        display: true,
-                                        color: '#000000',
-                                        align: 'end',
-                                        anchor: 'end',
-                                        formatter: function (value, context) {
-                                            if (value === undefined || value['y'] === undefined)
-                                                return "";
-                                            if (value['y'] === 0)
-                                                return "";
-                                            // let keys = Object.keys(mentalData["mentalHealthScore"]);
-                                            // if (mentalData["mentalHealthScore"][keys[context.dataIndex]]["accurate"] === true) {
-                                            //     return value['y'];
-                                            // }
-                                            return value['y'] + "?";
-                                        }
-                                    }
-                                }
-                            ]
-                        },
-                        options: {
-                            spanGaps: false,
-                            maintainAspectRatio: false,
-                            title: {
-                                display: true,
-                                text: '정신 건강 데이터 (0-5, 정상 상태 3)'
-                            },
-                            plugins: {
-                                legend: {
-                                    reverse: true,
-                                },
-                                tooltip: {
-                                    callbacks: {}
-                                },
-                            },
-                            axis: {
-                                x: {
-                                    autoSkip: true,
-                                    gridLines: {
-                                        drawOnChartArea: false
-                                    }
-                                },
-                            },
-                            scales: {
-                                x: {
-                                    type: 'timeseries',
-                                    grid: {
-                                        display: true,
-                                        drawBorder: true,
-                                        drawTicks: true,
-                                        drawOnChartArea: true
-                                    },
-                                    time: {
-                                        unit: 'day',  // <-- that does the trick here
-                                        displayFormats: {
-                                            day: 'YYYY-MM-DD'
-                                        },
-                                        tooltipFormat: 'YYYY-MM-DD'  // <-- same format for tooltip
-                                    },
-                                    ticks: {
-                                        callback: function (tick, index, array) {
-                                            return (index % 15) ? "" : tick;
-                                        }
-                                    }
-                                },
-                                y: {
-                                    gridLines: {
-                                        display: false,
-                                    },
-                                    suggestedMin: 0,
-                                    suggestedMax: 5,
-                                    ticks: {
-                                        callback: function (value, index, ticks) {
-                                            if (Math.floor(value) === value) {
-                                                return value;
-                                            }
-                                        }
-                                    }
-                                },
-                                x2: {
-                                    type: 'time',
-                                    display: false,
-                                    position: 'bottom',
-                                    min: startTimeCurrent,
-                                    max: endTimeCurrent
-                                },
-                                y2: {
-                                    type: 'linear',
-                                    display: true,
-                                    position: 'right',
-                                    ticks: {
-                                        precision: floorToTicks ? 0 : 1,
-
-                                        callback: function (value, index, ticks) {
-                                            return value + suffix;
-                                        }
-                                    }
-                                },
-                            },
-                        }
-                    });
-                }
-
-                function makeFilledChart(data, strChartId, suffix, floorToTicks, colorMap, strXLabel1, strData1, strLabel1, strData2, strLabel2) {
-                    let ctx = document.getElementById(strChartId);
-                    // noinspection JSVoidFunctionReturnValueUsed
-                    let chartGps = new Chart(ctx, {
-                        plugins: [ChartDataLabels],
-                        data: {
-                            labels: strXLabel1,
-                            datasets: [
-                                {
-                                    xAxisID: 'x2',
-                                    yAxisID: 'y2',
-                                    type: 'line',
-                                    label: strLabel2,
-                                    backgroundColor: chartColors.realTimeDataLine,
-                                    borderColor: chartColors.realTimeDataLine,
-                                    data: strData2,
-                                    borderWidth: 3,
-                                    pointRadius: 0,
-                                    spanGaps: false,
-                                    fill: true,
-                                    datalabels: {
-                                        display: false,
-                                    },
-                                },
-                                {
-                                    type: 'bar',
-                                    label: strLabel1,
-                                    backgroundColor: chartColors.background,
-                                    borderColor: colorMap,
-                                    borderWidth: 3,
-                                    data: strData1,
-                                    fill: 'start',
-                                    pointRadius: 0,
-                                    barThickness: 30,
-                                    spanGaps: false,
-                                    datalabels: {
-                                        display: true,
-                                        color: '#000000',
-                                        align: 'end',
-                                        anchor: 'end',
-                                        formatter: function (value, context) {
-                                            if (value === undefined || value['y'] === undefined)
-                                                return "";
-                                            if (value['y'] === 0)
-                                                return "";
-                                            let keys = Object.keys(data["mentalHealthScore"]);
-                                            if (data["mentalHealthScore"][keys[context.dataIndex]]["accurate"] === true) {
-                                                return value['y'];
-                                            }
-                                            return value['y'] + "?";
-                                        }
-
-                                    }
-                                }
-
-                            ]
-                        },
-                        options: {
-                            spanGaps: false,
-                            maintainAspectRatio: false,
-                            title: {
-                                display: true,
-                                text: '정신 건강 데이터 (0-5, 정상 상태 3)'
-                            },
-                            plugins: {
-                                legend: {
-                                    reverse: true,
-                                },
-                            },
-
-                            showXLabels: 7,
-                            axis: {
-                                x: {
-                                    autoSkip: true,
-                                    gridLines: {
-                                        drawOnChartArea: false
-                                    }
-                                },
-                            },
-                            scales: {
-                                x: {
-                                    grid: {
-                                        display: true,
-                                        drawBorder: true,
-                                        drawTicks: true,
-                                        drawOnChartArea: true
-                                    },
-                                    time: {
-                                        unit: 'day',  // <-- that does the trick here
-                                        displayFormats: {
-                                            day: 'YYYY-MM-DD'
-                                        },
-                                        tooltipFormat: 'YYYY-MM-DD'  // <-- same format for tooltip
-                                    },
-                                },
-                                y: {
-
-                                    gridLines: {
-                                        display: false,
-                                    },
-                                    suggestedMin: 0,
-                                    suggestedMax: 5,
-                                    ticks: {
-                                        callback: function (value, index, ticks) {
-                                            if (Math.floor(value) === value) {
-                                                return value;
-                                            }
-                                        }
-                                    }
-                                },
-                                x2: {
-                                    type: 'time',
-                                    display: false,
-                                    position: 'bottom',
-                                    min: startTimeCurrent,
-                                    max: endTimeCurrent
-                                },
-                                y2: {
-                                    type: 'linear',
-                                    display: true,
-                                    position: 'right',
-                                    ticks: {
-                                        precision: floorToTicks ? 0 : 1,
-                                        callback: function (value, index, ticks) {
-                                            return value + suffix;
-                                        }
-                                    }
-                                },
-                            },
-                        }
-                    });
                 }
             </script>
         </div>
