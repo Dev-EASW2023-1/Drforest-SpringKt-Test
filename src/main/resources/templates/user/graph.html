@@ -88,6 +88,8 @@
                 makeFilledChart(null, "line-chart4", "분      ", true, colorArray, timeArray, dateOnOffArray, "하루간 정신건강결과 수치", minuteOnOffArray, "스마트폰 사용여부 (분)");
                 makeFilledChart(null, "line-chart5", "분      ", true, colorArray, timeArray, dateDozeArray, "신체적운동 수치", minuteDozeArray, "수면시간 (분)");
 
+
+                makeFullChart("line-chart")
                 /**
                  * Display chart with one bar, and two line.
                  * @param chartElementId Chart ID on HTML.
@@ -97,7 +99,7 @@
                  *              "MM-dd HH:mm:ss",
                  *              "MM-dd HH:mm:ss"...
                  *          ]
-                 * @param charts Chart meta-data.
+                 * @param charts Chart metadata.
                  *          Schema: [
                  *              {
                  *                  name: "Bar chart name",
