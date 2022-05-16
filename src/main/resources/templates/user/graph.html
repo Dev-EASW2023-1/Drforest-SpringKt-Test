@@ -112,10 +112,10 @@
                         data: minuteSocialArray,
                     },
                     {
-                        name: "",
+                        name: "이동 거리",
                         data: minuteGpsArray,
                     }, {
-                        name: "",
+                        name: "트래픽",
                         data: minuteTrafficArray,
                     },
                 ]);
@@ -126,10 +126,10 @@
                         data: minuteHealthArray,
                     },
                     {
-                        name: "",
+                        name: "이동 거리",
                         data: minuteGpsArray,
                     }, {
-                        name: "",
+                        name: "걸음 수",
                         data: minuteStepArray,
                     },
                 ]);
@@ -140,10 +140,10 @@
                         data: minuteMentalArray,
                     },
                     {
-                        name: "",
+                        name: "기기 활성화 수치",
                         data: minuteOnOffArray,
                     }, {
-                        name: "",
+                        name: "대기 시간",
                         data: minuteDozeArray,
                     },
                 ]);
@@ -194,34 +194,39 @@
                             datasets: [
                                 {
                                     type: 'bar',
-                                    yAxisId: 'y3',
+                                    yAxisID: 'yAxisBg01',
                                     label: charts[0].name,
-                                    borderWidth: 3,
+                                    borderWidth: 0.4,
                                     data: charts[0].data,
                                     fill: true,
+                                    backgroundColor: 'rgb(0, 162, 72)',
                                     pointRadius: 0,
-                                    barThickness: 30,
+                                    barThickness: 5,
                                     spanGaps: false,
                                 },
                                 {
                                     type: 'line',
-                                    yAxisId: 'y',
+                                    backgroundColor: 'rgba(0,72,255, 0.4)',
+                                    borderColor: 'rgba(0,72,255, 0.4)',
                                     label: charts[1].name,
                                     borderWidth: 3,
                                     data: charts[1].data,
                                     fill: false,
                                     pointRadius: 0,
                                     spanGaps: false,
+                                    yAxisID: 'yAxis01'
                                 },
                                 {
                                     type: 'line',
-                                    yAxisId: 'y2',
+                                    backgroundColor: 'rgba(0,72,255, 0.4)',
+                                    borderColor: 'rgba(0,72,255, 0.4)',
                                     label: charts[2].name,
                                     borderWidth: 3,
                                     data: charts[2].data,
                                     fill: false,
                                     pointRadius: 0,
                                     spanGaps: false,
+                                    yAxisID: 'yAxis02'
                                 },
                             ],
 
@@ -290,33 +295,29 @@
                                     min: startTimeCurrent,
                                     max: endTimeCurrent
                                 },
-                                y: {
-                                    gridLines: {
-                                        display: false,
-                                    },
-                                    ticks: {
-                                        callback: function (value, index, ticks) {
-                                            if (Math.floor(value) === value) {
-                                                return value;
-                                            }
-                                        }
-                                    }
+                                yAxis01: {
+                                    type: 'linear',
+                                    display: true,
+                                    position: 'left',
                                 },
-
-                                y2: {
+                                yAxis02: {
                                     type: 'linear',
                                     display: true,
                                     position: 'right',
+                                },
+
+                                yAxisBg01: {
+                                    type: 'linear',
+                                    display: false,
                                     ticks: {
-                                        min: 1,
-                                        max: 4,
+                                        display: false
                                     }
                                 },
 
-
-                                y3: {
+                                barChartY: {
                                     type: 'linear',
-                                    display: false,
+                                    display: true,
+                                    position: 'right',
                                     ticks: {
                                         min: 1,
                                         max: 4,
