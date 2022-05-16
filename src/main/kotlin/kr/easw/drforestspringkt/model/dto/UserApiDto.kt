@@ -74,4 +74,4 @@ data class QnADataData(val index: Int, val question: QnAQuestionData, val answer
 
 data class QnADataResponse(val qna: List<QnADataData>)
 
-data class UserScoreData(var name: String, val score: Map<String, Int>)
+data class UserScoreData(var name: String, val score: MutableMap<String, Int>)

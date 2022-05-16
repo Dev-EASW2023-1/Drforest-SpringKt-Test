@@ -41,18 +41,17 @@
                 };
 
                 let timeArray = [];
-                let colorArray = [];
-                let dateGpsArray = [];
-                let dateStepArray = [];
-                let dateTrafficArray = [];
-                let dateOnOffArray = [];
-                let dateDozeArray = [];
 
                 let minuteGpsArray = [];
                 let minuteStepArray = [];
                 let minuteTrafficArray = [];
                 let minuteOnOffArray = [];
                 let minuteDozeArray = [];
+
+
+                let minuteSocialArray = [];
+                let minuteHealthArray = [];
+                let minuteMentalArray = [];
 
                 data["list"].forEach(dto => {
                     timeArray.push(dto["time"])
@@ -80,16 +79,68 @@
                         x: moment(dto["time"]),
                         y: (dto["value"]["Traffic"] ?? 0) / 1024 / 1024
                     })
+
+
+                    minuteSocialArray.push({
+                        x: moment(dto["time"]),
+                        y: (dto["value"]["Social"] ?? 0) / 1024 / 1024
+                    })
+
+
+                    minuteHealthArray.push({
+                        x: moment(dto["time"]),
+                        y: (dto["value"]["Health"] ?? 0) / 1024 / 1024
+                    })
+
+
+                    minuteMentalArray.push({
+                        x: moment(dto["time"]),
+                        y: (dto["value"]["Mental"] ?? 0) / 1024 / 1024
+                    })
                 });
 
-                makeChart(null, "line-chart1", "km  ", false, 1, false, colorArray, timeArray, dateGpsArray, "사회적 관계 수치", minuteGpsArray, "이동거리 (미터)");
-                makeChart(null, "line-chart2", "걸음  ", true, 1, false, colorArray, timeArray, dateStepArray, "정신운동성 수치", minuteStepArray, "운동량 (걸음)");
-                makeChart(null, "line-chart3", "MB ", false, 1, false, colorArray, timeArray, dateTrafficArray, "관심 / 흥미 수치", minuteTrafficArray, "스마트폰 데이터 사용량 (바이트)");
-                makeFilledChart(null, "line-chart4", "분      ", true, colorArray, timeArray, dateOnOffArray, "하루간 정신건강결과 수치", minuteOnOffArray, "스마트폰 사용여부 (분)");
-                makeFilledChart(null, "line-chart5", "분      ", true, colorArray, timeArray, dateDozeArray, "신체적운동 수치", minuteDozeArray, "수면시간 (분)");
+                makeFullChart("line-chart1", timeArray, [
+                    {
+                        name: "",
+                        data: minuteSocialArray,
+                    },
+                    {
+                        name: "",
+                        data: minuteGpsArray,
+                    },{
+                        name: "",
+                        data: minuteTrafficArray,
+                    },
+                ]);
 
+                makeFullChart("line-chart2", timeArray, [
+                    {
+                        name: "",
+                        data: minuteHealthArray,
+                    },
+                    {
+                        name: "",
+                        data: minuteGpsArray,
+                    },{
+                        name: "",
+                        data: minuteStepArray,
+                    },
+                ]);
 
-                makeFullChart("line-chart")
+                makeFullChart("line-chart3", timeArray, [
+                    {
+                        name: "",
+                        data: minuteMentalArray,
+                    },
+                    {
+                        name: "",
+                        data: minuteOnOffArray,
+                    },{
+                        name: "",
+                        data: minuteDozeArray,
+                    },
+                ]);
+
                 /**
                  * Display chart with one bar, and two line.
                  * @param chartElementId Chart ID on HTML.
@@ -128,15 +179,13 @@
                  *          ]
                  */
                 function makeFullChart(chartElementId, time, charts) {
-                    let ctx = document.getElementsByName(chartElementId);
+                    let ctx = document.getElementById(chartElementId);
                     let chart = new Chart(ctx, {
                         plugins: [ChartDataLabels],
                         data: {
                             labels: time,
                             datasets: [
                                 {
-                                    xAxisID: 'barChartX',
-                                    yAxisID: 'barChartY',
                                     type: "bar",
                                     data: charts[0].data,
                                     label: charts[0].name,
@@ -146,8 +195,6 @@
                                     }
                                 },
                                 {
-                                    xAxisID: 'firstLineChartX',
-                                    yAxisID: 'firstLineChartY',
                                     type: "line",
                                     data: charts[1].data,
                                     label: charts[1].name,
@@ -157,8 +204,6 @@
                                     }
                                 },
                                 {
-                                    xAxisID: 'secondLineChartX',
-                                    yAxisID: 'secondLineChartY',
                                     type: "line",
                                     data: charts[2].data,
                                     label: charts[2].name,
@@ -192,8 +237,8 @@
                                     },
                                 },
                                 scales: {
-                                    barChartX: {
-                                        type: 'timeseries',
+                                    x: {
+                                        type: 'time',
                                         grid: {
                                             display: true,
                                             drawBorder: true,
@@ -201,19 +246,20 @@
                                             drawOnChartArea: true
                                         },
                                         time: {
-                                            unit: 'day',
+                                            unit: 'day',  // <-- that does the trick here
                                             displayFormats: {
                                                 day: 'YYYY-MM-DD'
                                             },
-                                            tooltipFormat: 'YYYY-MM-DD'
+                                            tooltipFormat: 'YYYY-MM-DD'  // <-- same format for tooltip
                                         },
                                         ticks: {
-                                            callback: function (tick, index, array) {
+                                            source: "data",
+                                            callback: function(tick, index, array) {
                                                 return (index % 15) ? "" : tick;
                                             }
                                         }
                                     },
-                                    barChartY: {
+                                    y: {
                                         gridLines: {
                                             display: false,
                                         },
@@ -227,73 +273,22 @@
                                             }
                                         }
                                     },
-                                    firstLineChartX: {
-                                        type: 'timeseries',
-                                        grid: {
-                                            display: true,
-                                            drawBorder: true,
-                                            drawTicks: true,
-                                            drawOnChartArea: true
-                                        },
-                                        time: {
-                                            unit: 'day',
-                                            displayFormats: {
-                                                day: 'YYYY-MM-DD'
-                                            },
-                                            tooltipFormat: 'YYYY-MM-DD'
-                                        },
-                                        ticks: {
-                                            callback: function (tick, index, array) {
-                                                return (index % 15) ? "" : tick;
-                                            }
-                                        }
+                                    x2: {
+                                        type: 'time',
+                                        display: false,
+                                        position: 'bottom',
+                                        min: startTimeCurrent,
+                                        max: endTimeCurrent
                                     },
-                                    firstLineChartY: {
-                                        gridLines: {
-                                            display: false,
-                                        },
-                                        suggestedMin: 0,
-                                        suggestedMax: 5,
+                                    y2: {
+                                        type: 'linear',
+                                        display: true,
+                                        position: 'right',
                                         ticks: {
+                                            precision: 1,
+
                                             callback: function (value, index, ticks) {
-                                                if (Math.floor(value) === value) {
-                                                    return value;
-                                                }
-                                            }
-                                        }
-                                    },
-                                    secondLineChartX: {
-                                        type: 'timeseries',
-                                        grid: {
-                                            display: true,
-                                            drawBorder: true,
-                                            drawTicks: true,
-                                            drawOnChartArea: true
-                                        },
-                                        time: {
-                                            unit: 'day',
-                                            displayFormats: {
-                                                day: 'YYYY-MM-DD'
-                                            },
-                                            tooltipFormat: 'YYYY-MM-DD'
-                                        },
-                                        ticks: {
-                                            callback: function (tick, index, array) {
-                                                return (index % 15) ? "" : tick;
-                                            }
-                                        }
-                                    },
-                                    secondLineChartY: {
-                                        gridLines: {
-                                            display: false,
-                                        },
-                                        suggestedMin: 0,
-                                        suggestedMax: 5,
-                                        ticks: {
-                                            callback: function (value, index, ticks) {
-                                                if (Math.floor(value) === value) {
-                                                    return value;
-                                                }
+                                                return value + suffix;
                                             }
                                         }
                                     },
