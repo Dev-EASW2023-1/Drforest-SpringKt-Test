@@ -184,14 +184,7 @@ class UserActivityDataService(
      */
     fun foldScore(score: Int, isStep: Boolean = false): Int {
         if (isStep && score == 2)
-            return 1;
+            return 0
         return abs(score - 3)
-    }
-
-    fun convertToNewScore(resp: SharedUserScoreResponse) {
-        val originData = resp.data
-        resp.data.forEach {
-            it.score
-        }
     }
 }

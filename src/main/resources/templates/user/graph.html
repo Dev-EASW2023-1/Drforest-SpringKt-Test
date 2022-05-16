@@ -3,7 +3,7 @@
         <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
         <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.0/dist/chartjs-adapter-moment.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
         <title> DrForest - User Graph </title>
     </head>
 
@@ -181,38 +181,35 @@
                 function makeFullChart(chartElementId, time, charts) {
                     let ctx = document.getElementById(chartElementId);
                     let chart = new Chart(ctx, {
-                        plugins: [ChartDataLabels],
                         data: {
                             labels: time,
                             datasets: [
                                 {
-                                    type: "bar",
-                                    data: charts[0].data,
+                                    type: 'bar',
                                     label: charts[0].name,
+                                    backgroundColor: chartColors.background,
+                                    borderWidth: 3,
+                                    data: charts[0].data,
+                                    fill: false,
+                                    pointRadius: 0,
+                                    barThickness: 30,
                                     spanGaps: false,
-                                    datalabels: {
-                                        display: true
-                                    }
-                                },
-                                {
-                                    type: "line",
-                                    data: charts[1].data,
-                                    label: charts[1].name,
-                                    spanGaps: false,
-                                    datalabels: {
-                                        display: false
-                                    }
-                                },
-                                {
-                                    type: "line",
-                                    data: charts[2].data,
-                                    label: charts[2].name,
-                                    spanGaps: false,
-                                    datalabels: {
-                                        display: false
-                                    }
                                 },
                             ],
+                            plugins: {
+                                tooltip: {
+                                    callbacks: {
+                                        label: function (context) {
+                                            let label = context.dataset.label || '';
+
+                                            if (context.parsed.y !== null) {
+                                                label = moment(context.parsed.x).utcOffset(+540).format("HH:mm:ss");
+                                            }
+                                            return label;
+                                        }
+                                    }
+                                },
+                            },
                             options: {
                                 spanGaps: false,
                                 maintainAspectRatio: false,
@@ -238,7 +235,7 @@
                                 },
                                 scales: {
                                     x: {
-                                        type: 'time',
+                                        type: 'timeseries',
                                         grid: {
                                             display: true,
                                             drawBorder: true,
@@ -253,8 +250,7 @@
                                             tooltipFormat: 'YYYY-MM-DD'  // <-- same format for tooltip
                                         },
                                         ticks: {
-                                            source: "data",
-                                            callback: function(tick, index, array) {
+                                            callback: function (tick, index, array) {
                                                 return (index % 15) ? "" : tick;
                                             }
                                         }
@@ -285,7 +281,7 @@
                                         display: true,
                                         position: 'right',
                                         ticks: {
-                                            precision: 1,
+                                            precision: 0,
 
                                             callback: function (value, index, ticks) {
                                                 return value + suffix;
