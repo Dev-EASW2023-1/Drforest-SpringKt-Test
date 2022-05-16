@@ -1,5 +1,4 @@
-<html xmlns:th="http://www.thymeleaf.org"
->
+<html xmlns:th="http://www.thymeleaf.org">
     <head>
         <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
@@ -30,9 +29,6 @@
             </div>
             <script lang="text/javascript" th:inline="javascript">
                 "use strict";
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000 * 60 * 15);
                 let startTimeCurrent = /*[[${start}]]*/ 'default';
                 let endTimeCurrent = /*[[${end}]]*/ 'default';
                 let data = /*[[${graph}]]*/ 'default';
@@ -88,16 +84,91 @@
 
                 makeChart(null, "line-chart1", "km  ", false, 1, false, colorArray, timeArray, dateGpsArray, "사회적 관계 수치", minuteGpsArray, "이동거리 (미터)");
                 makeChart(null, "line-chart2", "걸음  ", true, 1, false, colorArray, timeArray, dateStepArray, "정신운동성 수치", minuteStepArray, "운동량 (걸음)");
-
-
                 makeChart(null, "line-chart3", "MB ", false, 1, false, colorArray, timeArray, dateTrafficArray, "관심 / 흥미 수치", minuteTrafficArray, "스마트폰 데이터 사용량 (바이트)");
-
-
                 makeFilledChart(null, "line-chart4", "분      ", true, colorArray, timeArray, dateOnOffArray, "하루간 정신건강결과 수치", minuteOnOffArray, "스마트폰 사용여부 (분)");
-
-
                 makeFilledChart(null, "line-chart5", "분      ", true, colorArray, timeArray, dateDozeArray, "신체적운동 수치", minuteDozeArray, "수면시간 (분)");
 
+                /**
+                 * Display chart with one bar, and two line.
+                 * @param chartElementId Chart ID on HTML.
+                 * @param time Time array.
+                 *          Schema: [
+                 *              "MM-dd HH:mm:ss",
+                 *              "MM-dd HH:mm:ss",
+                 *              "MM-dd HH:mm:ss"...
+                 *          ]
+                 * @param charts Chart meta-data.
+                 *          Schema: [
+                 *              {
+                 *                  name: "Bar chart name",
+                 *                  data: [
+                 *                      {x: "MM-dd HH:mm:ss", y: 1},
+                 *                      {x: "MM-dd HH:mm:ss", y: 2},
+                 *                      {x: "MM-dd HH:mm:ss", y: 3}...
+                 *                  ]
+                 *              },
+                 *              {
+                 *                  name: "First line chart name",
+                 *                  data: [
+                 *                      {x: "MM-dd HH:mm:ss", y: 1},
+                 *                      {x: "MM-dd HH:mm:ss", y: 2},
+                 *                      {x: "MM-dd HH:mm:ss", y: 3}...
+                 *                  ]
+                 *              },
+                 *              {
+                 *                  name: "Second line chart name",
+                 *                  data: [
+                 *                      {x: "MM-dd HH:mm:ss", y: 1},
+                 *                      {x: "MM-dd HH:mm:ss", y: 2},
+                 *                      {x: "MM-dd HH:mm:ss", y: 3}...
+                 *                  ]
+                 *              }
+                 *          ]
+                 */
+                function makeFullChart(chartElementId, time, charts) {
+                    let ctx = document.getElementsByName(chartElementId);
+                    let chart = new Chart(ctx, {
+                        plugins: [ChartDataLabels],
+                        data: {
+                            labels: time,
+                            datasets: [
+                                {
+                                    xAxisID: 'barChartX',
+                                    yAxisID: 'barChartY',
+                                    type: "bar",
+                                    data: charts[0].data,
+                                    label: charts[0].name,
+                                    spanGaps: false,
+                                    datalabels: {
+                                        display: true
+                                    }
+                                },
+                                {
+                                    xAxisID: 'firstLineChartX',
+                                    yAxisID: 'firstLineChartY',
+                                    type: "line",
+                                    data: charts[1].data,
+                                    label: charts[1].name,
+                                    spanGaps: false,
+                                    datalabels: {
+                                        display: false
+                                    }
+                                },
+                                {
+                                    xAxisID: 'secondLineChartX',
+                                    yAxisID: 'secondLineChartY',
+                                    type: "line",
+                                    data: charts[2].data,
+                                    label: charts[2].name,
+                                    spanGaps: false,
+                                    datalabels: {
+                                        display: false
+                                    }
+                                },
+                            ]
+                        }
+                    })
+                }
 
                 function makeChart(mentalData, strChartId, suffix, floorToTicks, lineWidth, fill, colorMap, strXLabel1, strData1, strLabel1, strData2, strLabel2) {
                     let ctx = document.getElementById(strChartId);
@@ -168,9 +239,7 @@
                                     reverse: true,
                                 },
                                 tooltip: {
-                                    callbacks: {
-
-                                    }
+                                    callbacks: {}
                                 },
                             },
                             axis: {
@@ -198,7 +267,7 @@
                                         tooltipFormat: 'YYYY-MM-DD'  // <-- same format for tooltip
                                     },
                                     ticks: {
-                                        callback: function(tick, index, array) {
+                                        callback: function (tick, index, array) {
                                             return (index % 15) ? "" : tick;
                                         }
                                     }
