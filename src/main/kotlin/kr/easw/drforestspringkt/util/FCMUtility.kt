@@ -18,7 +18,7 @@ object FCMUtility {
 
     fun sendPush(title: String, contents: String, id: Int) {
         val requestString = constructJson(
-            "to" to "/topic/notice",
+            "to" to "/topics/notice",
             "data" to constructJsonObject(
                 "title" to title,
                 "message" to contents,

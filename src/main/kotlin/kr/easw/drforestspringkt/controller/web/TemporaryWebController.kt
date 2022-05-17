@@ -2,6 +2,7 @@ package kr.easw.drforestspringkt.controller.web
 
 import kr.easw.drforestspringkt.auth.UserAccountData
 import kr.easw.drforestspringkt.model.dto.ShareToUserRequest
+import kr.easw.drforestspringkt.service.AnnouncementService
 import kr.easw.drforestspringkt.service.SharedUserService
 import kr.easw.drforestspringkt.service.UserNoticeService
 import org.springframework.stereotype.Controller
@@ -12,7 +13,7 @@ import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
 @Controller
-class TemporaryWebController(val share: SharedUserService, val noticeService: UserNoticeService) {
+class TemporaryWebController(val share: SharedUserService, val noticeService: UserNoticeService, val announcementService: AnnouncementService) {
     @GetMapping("/regions")
     fun addRegions() = "init/add_region.html"
 
@@ -32,6 +33,12 @@ class TemporaryWebController(val share: SharedUserService, val noticeService: Us
     @GetMapping("/notice")
     fun noticeTemp(): String {
         return "init/add_notification.html"
+    }
+
+
+    @GetMapping("/announcement")
+    fun announcementTemp(): String {
+        return "init/add_announcement.html"
     }
 
     @PostMapping("/add-share-temp")
@@ -68,6 +75,19 @@ class TemporaryWebController(val share: SharedUserService, val noticeService: Us
                     ),
                     notice
                 ), StandardCharsets.UTF_8
+            )
+        }"
+    }
+
+    @PostMapping("/add-announcement-temp")
+    fun addAnnouncement(
+        @RequestParam("title") title: String,
+        @RequestParam("contents") contents: String,
+    ): String {
+        announcementService.addAnnouncement(title, contents)
+        return "redirect:/announcement?msg=${
+            URLEncoder.encode(
+                "공지사항이 추가되었습니다.", StandardCharsets.UTF_8
             )
         }"
     }

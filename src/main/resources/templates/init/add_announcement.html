@@ -1,0 +1,18 @@
+<html>
+    <head>
+        <title> Test </title>
+        <script type="text/javascript">
+            let param = window.location.search.substr(1)
+            if (param.startsWith("msg=")) {
+                alert(decodeURI(window.location.search.replace("+", " ")).substr(5).replace("+", " "))
+            }
+        </script>
+    </head>
+    <body>
+        <form action="/add-announcement-temp/" method="post">
+            제목: <input type="text" id="title" name="title"><br>
+            내용: <input type="text" id="contents" name="contents"><br>
+            <input type="submit">
+        </form>
+    </body>
+</html>

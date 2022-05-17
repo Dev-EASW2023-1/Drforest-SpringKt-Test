@@ -5,6 +5,7 @@ import kr.easw.drforestspringkt.model.dto.UserNoticeData
 import kr.easw.drforestspringkt.model.dto.UserNoticeResponseDto
 import kr.easw.drforestspringkt.model.entity.UserNoticeEntity
 import kr.easw.drforestspringkt.model.repository.UserNoticeRepository
+import kr.easw.drforestspringkt.util.FCMUtility
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 
