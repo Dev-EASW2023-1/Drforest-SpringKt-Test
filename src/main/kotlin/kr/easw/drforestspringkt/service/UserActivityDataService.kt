@@ -32,11 +32,11 @@ class UserActivityDataService(
         }
     }
 
-    fun fetchResult(user: String, time: Long): UserActivityContainerData {
+    fun fetchResult(user: String, time: Long, duration: Long): UserActivityContainerData {
         val end = System.currentTimeMillis()
         val data = mutableMapOf<Long, MutableMap<String, Float>>()
         repo.getAllByEntity_UserIdAndTimestampBetween(user, Date(end - time), Date(end)).forEach {
-            val map = data.getOrPut(it.timestamp!!.time - it.timestamp!!.time % (1000 * 60 * 15)) {
+            val map = data.getOrPut(it.timestamp!!.time - it.timestamp!!.time % duration) {
                 mutableMapOf()
             }
             map[it.fieldName] = map.getOrDefault(it.fieldName, 0f) + it.fieldValue
@@ -104,7 +104,7 @@ class UserActivityDataService(
     }
 
     fun calculateTodayScore(user: String): UserScoreData {
-        val fetch = fetchResult(user, 1000 * 60 * 60 * 24)
+        val fetch = fetchResult(user, 1000 * 60 * 60 * 24, 1000 * 60 * 15)
         val scoreMap = mutableMapOf<String, Int>()
         val totalMap = mutableMapOf<String, Float>()
         fetch.list.forEach { data ->

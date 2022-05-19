@@ -27,11 +27,16 @@
             <div style="height: 20%;width: 100%;">
                 <canvas id="line-chart5"></canvas>
             </div>
+
+            <div style="height: 20%;width: 100%;">
+                <canvas id="line-chart6"></canvas>
+            </div>
             <script lang="text/javascript" th:inline="javascript">
                 "use strict";
                 let startTimeCurrent = /*[[${start}]]*/ 'default';
                 let endTimeCurrent = /*[[${end}]]*/ 'default';
                 let data = /*[[${graph}]]*/ 'default';
+                let dataDate = /*[[${graphDay}]]*/ 'default';
                 let chartColors = {
                     inaccurateBorder: 'rgb(186,81,0)',
                     nonFilledGraphColor: 'rgba(222, 60, 60, 0.4)',
@@ -41,6 +46,7 @@
                 };
 
                 let timeArray = [];
+                let timeArrayDate = [];
 
                 let minuteGpsArray = [];
                 let minuteStepArray = [];
@@ -52,12 +58,23 @@
                 let minuteSocialArray = [];
                 let minuteHealthArray = [];
                 let minuteMentalArray = [];
+
+
+                let dateSocialArray = [];
+                let dateHealthArray = [];
+                let dateMentalArray = [];
                 let timeUnit = 15 * 60 * 1000
+                let timeUnitDate = 60 * 60 * 24 * 1000
 
                 let length = (endTimeCurrent - startTimeCurrent) / timeUnit
+                let lengthDate = (endTimeCurrent - startTimeCurrent) / timeUnitDate
 
                 for (let index = 0; index < length; index++) {
                     timeArray.push(moment(startTimeCurrent + index * timeUnit))
+                }
+
+                for (let index = 0; index < lengthDate; index++) {
+                    timeArrayDate.push(moment(startTimeCurrent + index * timeUnitDate))
                 }
 
                 data["list"].forEach(dto => {
@@ -106,6 +123,25 @@
                     })
                 });
 
+                dataDate["list"].forEach(dto => {
+
+                    dateSocialArray.push({
+                        x: moment(dto["time"]),
+                        y: (dto["value"]["Social"] ?? 0)
+                    })
+
+
+                    dateHealthArray.push({
+                        x: moment(dto["time"]),
+                        y: (dto["value"]["Health"] ?? 0)
+                    })
+
+
+                    dateMentalArray.push({
+                        x: moment(dto["time"]),
+                        y: (dto["value"]["Mental"] ?? 0)
+                    })
+                })
                 makeFullChart("line-chart1", timeArray, [
                     {
                         name: "사회 활동",
@@ -147,6 +183,30 @@
                         data: minuteDozeArray,
                     },
                 ]);
+
+
+                makeSingleChart("line-chart4", timeArrayDate,
+                    {
+                        name: "사회 상태",
+                        data: dateSocialArray,
+                    },
+                );
+
+
+                makeSingleChart("line-chart5", timeArrayDate,
+                    {
+                        name: "신체 상태",
+                        data: dateHealthArray,
+                    },
+                );
+
+
+                makeSingleChart("line-chart6", timeArrayDate,
+                    {
+                        name: "정서 상태",
+                        data: dateMentalArray,
+                    },
+                );
                 window.test = minuteSocialArray;
 
                 /**
@@ -312,6 +372,122 @@
                                     ticks: {
                                         display: false
                                     }
+                                },
+
+                                barChartY: {
+                                    type: 'linear',
+                                    display: true,
+                                    position: 'right',
+                                    ticks: {
+                                        min: 1,
+                                        max: 4,
+                                    }
+                                },
+                            },
+                        }
+                    })
+                }
+
+                /**
+                 * Display chart with one line chart.
+                 * @param chartElementId Chart ID on HTML.
+                 * @param time Time array.
+                 *          Schema: [
+                 *              "MM-dd HH:mm:ss",
+                 *              "MM-dd HH:mm:ss",
+                 *              "MM-dd HH:mm:ss"...
+                 *          ]
+                 * @param charts Chart metadata.
+                 *          Schema:
+                 *            {
+                 *                name: "Bar chart name",
+                 *                data: [
+                 *                    {x: "MM-dd HH:mm:ss", y: 1},
+                 *                    {x: "MM-dd HH:mm:ss", y: 2},
+                 *                    {x: "MM-dd HH:mm:ss", y: 3}...
+                 *                ]
+                 *            }
+                 */
+                function makeSingleChart(chartElementId, time, charts) {
+                    let ctx = document.getElementById(chartElementId);
+                    let chart = new Chart(ctx, {
+                        data: {
+                            labels: time,
+                            datasets: [
+                                {
+                                    type: 'line',
+                                    label: charts.name,
+                                    borderWidth: 5,
+                                    data: charts.data,
+                                    backgroundColor: 'rgba(0,72,255, 0.4)',
+                                    borderColor: 'rgba(0,72,255, 0.4)',
+                                    pointRadius: 0,
+                                    spanGaps: false,
+                                }
+                            ],
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        let label = context.dataset.label || '';
+
+                                        if (context.parsed.y !== null) {
+                                            label = moment(context.parsed.x).utcOffset(+540).format("HH:mm:ss");
+                                        }
+                                        return label;
+                                    }
+                                }
+                            },
+                        },
+                        options: {
+                            spanGaps: false,
+                            maintainAspectRatio: false,
+                            title: {
+                                display: true,
+                                text: '정신 건강 데이터 (0-5, 정상 상태 3)'
+                            },
+                            plugins: {
+                                legend: {
+                                    reverse: true,
+                                },
+                                tooltip: {
+                                    callbacks: {}
+                                },
+                            },
+                            axis: {
+                                x: {
+                                    autoSkip: true,
+                                    gridLines: {
+                                        display: false,
+                                        drawOnChartArea: false
+                                    }
+                                },
+                            },
+                            scales: {
+                                x: {
+                                    display: true,
+                                    type: 'timeseries',
+                                    time: {
+                                        unit: 'minute',
+                                        displayFormats: {
+                                            minute: 'H:mm',
+                                        },
+                                        tooltipFormat: 'H:mm'
+                                    },
+                                    grid: {
+                                        display: true,
+                                        drawBorder: true,
+                                        drawTicks: true,
+                                        drawOnChartArea: true
+                                    },
+                                    ticks: {
+                                        callback: function (tick, index, array) {
+                                            return (index % 15 === 0) ? tick : "";
+                                        }
+                                    },
+                                    min: startTimeCurrent,
+                                    max: endTimeCurrent
                                 },
 
                                 barChartY: {
