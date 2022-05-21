@@ -23,21 +23,25 @@ class SharedUserService(val repo: SharedUserRepository, val userService: Authent
     }
 
     fun addShare(user: UserAccountData, req: ShareToUserRequest, doShare: Boolean = false): ShareToUserResponse {
-        val entity = repo.findAllByUser_Account_UserIdAndTarget_Account_UserId(user.username, req.userId)
-        if (entity.isNotEmpty()) {
-            return ShareToUserResponse(req.userId, false, "이미 공유중이거나 공유 대기중인 유저입니다.")
-        }
+//        if (entity.isNotEmpty()) {
+//            return ShareToUserResponse(req.userId, false, "이미 공유중이거나 공유 대기중인 유저입니다.")
+//        }
         val userOrigin = userService.findAccountByUserId(user.username)
             ?: return ShareToUserResponse(req.userId, false, "계정 정보가 잘못되었습니다.")
 
         val userTarget = userService.findAccountByUserId(req.userId)
             ?: return ShareToUserResponse(req.userId, false, "대상 유저가 존재하지 않습니다.")
+        val entity = repo.findAllByUser_Account_UserIdAndTarget_Account_UserId(user.username, req.userId)
+        val dataToSave = SharedUserEntity(
+            userOrigin,
+            userTarget,
+            doShare
+        )
+        if (entity.isNotEmpty()) {
+            dataToSave.id = entity[0].id
+        }
         repo.save(
-            SharedUserEntity(
-                userOrigin,
-                userTarget,
-                doShare
-            )
+            dataToSave
         )
         return ShareToUserResponse(req.userId, true, "공유에 성공하였습니다.")
     }
