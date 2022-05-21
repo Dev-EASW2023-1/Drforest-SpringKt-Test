@@ -37,6 +37,10 @@ data class SharedUserListResponse(val users: List<SharedUserData>)
 
 data class ShareToUserRequest(val userId: String)
 
+data class AcceptShareRequest(val userId: String)
+
+data class AcceptShareResponse(val isSuceess: Boolean, val userId: String, val message: String)
+
 data class ShareToUserResponse(val userId: String, val success: Boolean, val message: String)
 
 data class ChangeUserDataRequest(val userName: String, val beforePassword: String, val changedPassword: String)

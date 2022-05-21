@@ -22,6 +22,28 @@ class SharedUserService(val repo: SharedUserRepository, val userService: Authent
         )
     }
 
+    fun acceptShare(user: UserAccountData, req: AcceptShareRequest): AcceptShareResponse {
+        val userOrigin = userService.findAccountByUserId(req.userId)
+            ?: return AcceptShareResponse(false, req.userId, "대상 유저는 공유를 신청하지 않았습니다.")
+
+        val userTarget = userService.findAccountByUserId(user.username)
+            ?: return AcceptShareResponse(false, req.userId, "인증 오류입니다.")
+
+        val dataToSave = SharedUserEntity(
+            userOrigin,
+            userTarget,
+            true
+        )
+        val entity = repo.findAllByUser_Account_UserIdAndTarget_Account_UserId(req.userId, user.username)
+        if (entity.isNotEmpty()) {
+            dataToSave.id = entity[0].id
+        }
+        repo.save(
+            dataToSave
+        )
+        return AcceptShareResponse(true, req.userId, "공유받기에 성공하였습니다.")
+    }
+
     fun addShare(user: UserAccountData, req: ShareToUserRequest, doShare: Boolean = false): ShareToUserResponse {
 //        if (entity.isNotEmpty()) {
 //            return ShareToUserResponse(req.userId, false, "이미 공유중이거나 공유 대기중인 유저입니다.")

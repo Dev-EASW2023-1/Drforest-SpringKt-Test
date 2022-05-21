@@ -75,9 +75,16 @@ class UserApiController(
         @AuthenticationPrincipal user: UserAccountData,
         @RequestBody req: ShareToUserRequest
     ): ShareToUserResponse {
-        // TODO : 프로덕션에서는 제거할것
-//        return sharedUserService.addShare(user, req)
-        return sharedUserService.addShare(user, req, true)
+        return sharedUserService.addShare(user, req)
+    }
+
+
+    @PutMapping("/share/accept")
+    fun onAcceptSharing(
+        @AuthenticationPrincipal user: UserAccountData,
+        @RequestBody req: AcceptShareRequest
+    ): AcceptShareResponse {
+        return sharedUserService.acceptShare(user, req)
     }
 
 
