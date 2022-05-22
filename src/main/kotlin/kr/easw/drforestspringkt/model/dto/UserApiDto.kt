@@ -15,6 +15,8 @@ data class UserStatusResponse(val data: UserScoreData)
 
 data class SharedUserScoreResponse(val data: List<UserScoreData>)
 
+data class PendingUserListResponse(val data: List<SharedUserData>)
+
 data class UploadQnARequest(val title: String, val content: String)
 
 data class UploadQnAResponse(val index: Int)

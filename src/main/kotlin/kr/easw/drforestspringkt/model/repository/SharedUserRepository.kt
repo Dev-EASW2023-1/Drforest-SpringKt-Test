@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository
 interface SharedUserRepository : JpaRepository<SharedUserEntity, Long> {
     fun findAllByUser_Account_UserId(userId: String): List<SharedUserEntity>
     fun findAllByUser_Account_UserIdAndTarget_Account_UserId(userId: String, targetId: String): List<SharedUserEntity>
-
+    fun findAllByTarget_Account_UserId(targetId: String) : List<SharedUserEntity>
 
 }

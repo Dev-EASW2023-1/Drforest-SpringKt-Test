@@ -66,7 +66,13 @@ class UserApiController(
     }
 
     @GetMapping("/share/")
-    fun onRequestSharedList(@AuthenticationPrincipal user: UserAccountData): SharedUserListResponse {
+    fun onRequestSharedList(@AuthenticationPrincipal user: UserAccountData): PendingUserListResponse {
+        return sharedUserService.findAllPendingUser(user)
+    }
+
+
+    @GetMapping("/share/pending")
+    fun onRequestPendingList(@AuthenticationPrincipal user: UserAccountData): SharedUserListResponse {
         return sharedUserService.findAllSharedUser(user)
     }
 

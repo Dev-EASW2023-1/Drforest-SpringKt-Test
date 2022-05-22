@@ -82,5 +82,18 @@ class SharedUserService(val repo: SharedUserRepository, val userService: Authent
         )
     }
 
+    fun findAllPendingUser(user: UserAccountData): PendingUserListResponse {
+        return PendingUserListResponse(
+            repo.findAllByTarget_Account_UserId(user.username).map {
+                SharedUserData(
+                    it.target.account.userId,
+                    it.target.name,
+                    it.target.phone,
+                    it.isShared
+                )
+            }
+        )
+    }
+
 
 }
