@@ -65,13 +65,13 @@ class UserApiController(
         return qnaManagementService.findQnA(user)
     }
 
-    @GetMapping("/share/")
+    @GetMapping("/share/pending")
     fun onRequestSharedList(@AuthenticationPrincipal user: UserAccountData): PendingUserListResponse {
         return sharedUserService.findAllPendingUser(user)
     }
 
 
-    @GetMapping("/share/pending")
+    @GetMapping("/share/")
     fun onRequestPendingList(@AuthenticationPrincipal user: UserAccountData): SharedUserListResponse {
         return sharedUserService.findAllSharedUser(user)
     }
