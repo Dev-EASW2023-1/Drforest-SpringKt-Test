@@ -60,6 +60,14 @@ class UserApiController(
         return ResponseEntity.ok().build()
     }
 
+    @PatchMapping("/change-password")
+    fun onChangePassword(
+            @AuthenticationPrincipal user: UserAccountData,
+            @RequestBody req: ChangeUserDataRequest
+    ): ResponseEntity<ChangeUserDataResponse> {
+        return ResponseEntity.ok(authenticateService.changePassword(user, req.userName, req.beforePassword, req.changedPassword))
+    }
+
     @GetMapping("/QnA/")
     fun onRequestQnAList(@AuthenticationPrincipal user: UserAccountData): QnADataResponse {
         return qnaManagementService.findQnA(user)

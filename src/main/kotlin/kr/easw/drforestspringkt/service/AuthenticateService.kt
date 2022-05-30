@@ -38,12 +38,19 @@ class AuthenticateService(
         }
     }
 
-    fun changePassword(user: UserAccountData, password: String) {
+    fun changePassword(user: UserAccountData, userName : String, beforePassword : String, changedPassword: String): ChangeUserDataResponse {
+        if (toAccount(user).userId != userName) {
+            return ChangeUserDataResponse(toAccount(user).userId, "아이디가 일치하지 않습니다.")
+        }
+        if (!encoder.matches(beforePassword,toAccount(user).password)) {
+            return ChangeUserDataResponse(toAccount(user).userId, "현재 비밀번호가 일치하지 않습니다.")
+        }
         userAccountRepository.save(
             toAccount(user).apply {
-                this.password = encoder.encode(password)
+                this.password = encoder.encode(changedPassword)
             }
         )
+        return ChangeUserDataResponse(toAccount(user).userId, "${toAccount(user).userId}님의 비밀번호가 변경되었습니다.")
     }
 
     fun refreshToken(dto: RefreshTokenRequest): RefreshTokenResponse {
