@@ -7,6 +7,7 @@ import kr.easw.drforestspringkt.model.repository.UserActivityDataRepository
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.abs
 
@@ -36,7 +37,10 @@ class UserActivityDataService(
         val end = System.currentTimeMillis()
         val data = mutableMapOf<Long, MutableMap<String, Float>>()
         repo.getAllByEntity_UserIdAndTimestampBetween(user, Date(end - time), Date(end)).forEach {
-            val map = data.getOrPut(it.timestamp!!.time - it.timestamp!!.time % duration) {
+            val map = data.getOrPut(
+                it.timestamp!!.time - it.timestamp!!.time % duration
+                        + (1000 * 60 * 60 * 16)
+            ) {
                 mutableMapOf()
             }
             map[it.fieldName] = map.getOrDefault(it.fieldName, 0f) + it.fieldValue

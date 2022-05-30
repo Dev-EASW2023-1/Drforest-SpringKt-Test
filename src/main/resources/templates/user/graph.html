@@ -66,15 +66,18 @@
                 let timeUnit = 15 * 60 * 1000
                 let timeUnitDate = 60 * 60 * 24 * 1000
 
+                let startTimeDate = startTimeCurrent - (startTimeCurrent % timeUnitDate)
+                let endTimeDate = startTimeCurrent + (timeUnit - (startTimeCurrent % timeUnitDate))
+
                 let length = (endTimeCurrent - startTimeCurrent) / timeUnit
                 let lengthDate = (endTimeCurrent - startTimeCurrent) / timeUnitDate
 
                 for (let index = 0; index < length; index++) {
-                    timeArray.push(moment(startTimeCurrent + index * timeUnit))
+                    timeArray.push(moment(startTimeDate + index * timeUnit))
                 }
 
                 for (let index = 0; index < lengthDate; index++) {
-                    timeArrayDate.push(moment(startTimeCurrent + index * timeUnitDate))
+                    timeArrayDate.push(moment(startTimeDate + index * timeUnitDate))
                 }
 
                 data["list"].forEach(dto => {
@@ -285,6 +288,7 @@
                                     data: charts[2].data,
                                     fill: false,
                                     pointRadius: 0,
+                                    barThickness: 5,
                                     spanGaps: false,
                                     yAxisID: 'yAxis02'
                                 },
@@ -337,7 +341,7 @@
                                     time: {
                                         unit: 'minute',
                                         displayFormats: {
-                                            minute: 'H:mm',
+                                            minute: 'MM-DD\nH:mm',
                                         },
                                         tooltipFormat: 'H:mm'
                                     },
@@ -415,12 +419,12 @@
                             labels: time,
                             datasets: [
                                 {
-                                    type: 'line',
+                                    type: 'bar',
                                     label: charts.name,
-                                    borderWidth: 5,
+                                    borderWidth: 3,
                                     data: charts.data,
-                                    backgroundColor: 'rgba(0,72,255, 0.4)',
-                                    borderColor: 'rgba(0,72,255, 0.4)',
+                                    backgroundColor: 'rgba(0,72,255, 1)',
+                                    borderColor: 'rgba(0,72,255, 1)',
                                     pointRadius: 0,
                                     spanGaps: false,
                                 }
@@ -457,7 +461,7 @@
                             },
                             axis: {
                                 x: {
-                                    autoSkip: true,
+                                    autoSkip: false,
                                     gridLines: {
                                         display: false,
                                         drawOnChartArea: false
@@ -469,11 +473,11 @@
                                     display: true,
                                     type: 'timeseries',
                                     time: {
-                                        unit: 'minute',
+                                        unit: 'day',
+
                                         displayFormats: {
-                                            minute: 'H:mm',
+                                            day: 'MM-DD',
                                         },
-                                        tooltipFormat: 'H:mm'
                                     },
                                     grid: {
                                         display: true,
@@ -482,15 +486,13 @@
                                         drawOnChartArea: true
                                     },
                                     ticks: {
-                                        callback: function (tick, index, array) {
-                                            return (index % 15 === 0) ? tick : "";
-                                        }
+                                      stepSize: 1
                                     },
                                     min: startTimeCurrent,
                                     max: endTimeCurrent
                                 },
 
-                                barChartY: {
+                                y: {
                                     type: 'linear',
                                     display: true,
                                     position: 'right',

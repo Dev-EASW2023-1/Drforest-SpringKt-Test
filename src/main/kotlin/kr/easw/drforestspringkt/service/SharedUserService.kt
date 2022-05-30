@@ -11,7 +11,15 @@ class SharedUserService(val repo: SharedUserRepository, val userService: Authent
 
     fun findAllSharedUser(user: UserAccountData): SharedUserListResponse {
         return SharedUserListResponse(
-            repo.findAllByUser_Account_UserId(user.username).map {
+//            repo.findAllByUser_Account_UserId(user.username).map {
+//                SharedUserData(
+//                    it.target.account.userId,
+//                    it.target.name,
+//                    it.target.phone,
+//                    it.isShared
+//                )
+//            }
+            repo.findAll().map {
                 SharedUserData(
                     it.target.account.userId,
                     it.target.name,
