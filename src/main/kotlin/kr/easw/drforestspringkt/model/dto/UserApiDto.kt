@@ -35,13 +35,19 @@ data class UserNoticeResponseDto(val notice: List<UserNoticeData>)
 data class NoticeReadMarkRequest(val id: Int)
 
 
+data class SharableUserListResponse(val users: List<SharableUserData>)
+
 data class SharedUserListResponse(val users: List<SharedUserData>)
 
 data class ShareToUserRequest(val userId: String)
 
+data class ShareToUserWithPhoneNumberRequest(val phoneNumber: String)
+
+data class ShareToUserWithPhoneNumberResponse(val isSuccess: Boolean, val userId: String, val message: String)
+
 data class AcceptShareRequest(val userId: String)
 
-data class AcceptShareResponse(val isSuceess: Boolean, val userId: String, val message: String)
+data class AcceptShareResponse(val isSuccess: Boolean, val userId: String, val message: String)
 
 data class ShareToUserResponse(val userId: String, val success: Boolean, val message: String)
 
@@ -60,6 +66,12 @@ data class UserNoticeData(
 )
 
 data class SharedUserData(val userId: String, val userName: String, val phoneNumber: String?, val isShared: Boolean)
+
+// ShareStatus
+// 0 - Not shared
+// 1 - Share request pending
+// 2 - Shared
+data class SharableUserData(val userId: String, val userName: String, val phoneNumber: String?, val shareStatus: Int)
 
 
 data class QnAQuestionData(val timestamp: Date, val title: String, val question: String)

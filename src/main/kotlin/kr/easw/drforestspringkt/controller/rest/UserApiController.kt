@@ -74,22 +74,40 @@ class UserApiController(
     }
 
     @GetMapping("/share/pending")
-    fun onRequestSharedList(@AuthenticationPrincipal user: UserAccountData): PendingUserListResponse {
+    fun onRequestSharePendingList(@AuthenticationPrincipal user: UserAccountData): PendingUserListResponse {
         return sharedUserService.findAllPendingUser(user)
     }
 
 
-    @GetMapping("/share/")
+    @GetMapping("/sharable/")
+    fun onRequestSharableUserList(@AuthenticationPrincipal user: UserAccountData): SharableUserListResponse {
+        return sharedUserService.findAllSharableUser(user)
+    }
+
+    @GetMapping("/share/incoming")
     fun onRequestPendingList(@AuthenticationPrincipal user: UserAccountData): SharedUserListResponse {
+        return sharedUserService.findAllIncomingSharedUser(user)
+    }
+
+    @GetMapping("/share/")
+    fun onRequestSharedList(@AuthenticationPrincipal user: UserAccountData): SharedUserListResponse {
         return sharedUserService.findAllSharedUser(user)
     }
 
     @PutMapping("/share/")
-    fun onRequestShareToUser(
+    fun onRequestInfoToUser(
         @AuthenticationPrincipal user: UserAccountData,
         @RequestBody req: ShareToUserRequest
     ): ShareToUserResponse {
-        return sharedUserService.addShare(user, req)
+        return sharedUserService.addShareWithNotice(user, req)
+    }
+
+    @PutMapping("/share/phone/")
+    fun onRequestInfoToUserWithPhoneNumber(
+        @AuthenticationPrincipal user: UserAccountData,
+        @RequestBody req: ShareToUserWithPhoneNumberRequest
+    ): ShareToUserWithPhoneNumberResponse {
+        return sharedUserService.addShareWithNotice(user, req)
     }
 
 

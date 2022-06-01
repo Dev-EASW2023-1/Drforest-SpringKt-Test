@@ -38,11 +38,16 @@ class AuthenticateService(
         }
     }
 
-    fun changePassword(user: UserAccountData, userName : String, beforePassword : String, changedPassword: String): ChangeUserDataResponse {
+    fun changePassword(
+        user: UserAccountData,
+        userName: String,
+        beforePassword: String,
+        changedPassword: String
+    ): ChangeUserDataResponse {
         if (toAccount(user).userId != userName) {
             return ChangeUserDataResponse(toAccount(user).userId, "아이디가 일치하지 않습니다.")
         }
-        if (!encoder.matches(beforePassword,toAccount(user).password)) {
+        if (!encoder.matches(beforePassword, toAccount(user).password)) {
             return ChangeUserDataResponse(toAccount(user).userId, "현재 비밀번호가 일치하지 않습니다.")
         }
         userAccountRepository.save(
@@ -107,8 +112,9 @@ class AuthenticateService(
         return userAccountRepository.findByUserId(userName).orElseGet { null }
     }
 
-    fun getUserData(user: UserAccountData) : UserDataDto{
-        val userData = userDataRepository.findByAccount_UserId(user.username).orElseThrow { BadCredentialsException("Not found") }
+    fun getUserData(user: UserAccountData): UserDataDto {
+        val userData =
+            userDataRepository.findByAccount_UserId(user.username).orElseThrow { BadCredentialsException("Not found") }
         return UserDataDto(userData.region.regionName, userData.name, userData.phone)
     }
 
@@ -116,8 +122,23 @@ class AuthenticateService(
         return userDataRepository.findByAccount_UserId(userId).orElseGet { null }
     }
 
-    fun findAllUser() : List<UserDataEntity> {
+    fun findAllUser(): List<UserDataEntity> {
         return userDataRepository.findAll()
+    }
+
+    fun fromEntity(entity: UserDataEntity): UserAccountData {
+        return UserAccountData(
+            entity.account.userId,
+            entity.account.password,
+            true,
+            accountNonExpired = true,
+            credentialsNonExpired = true,
+            accountNonLocked = true
+        )
+    }
+
+    fun findUserByPhone(phoneNumber: String): UserDataEntity? {
+        return userDataRepository.findByAccount_UserId(phoneNumber).orElseGet { null }
     }
 
 }
