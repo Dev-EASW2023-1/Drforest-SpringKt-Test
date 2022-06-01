@@ -1,5 +1,6 @@
 package kr.easw.drforestspringkt.controller.rest
 
+import kr.easw.drforestspringkt.annotations.Beta
 import kr.easw.drforestspringkt.model.dto.*
 import kr.easw.drforestspringkt.service.AnnouncementService
 import kr.easw.drforestspringkt.service.AuthenticateService
@@ -13,10 +14,10 @@ class PublicApiController(
     private val announcementService: AnnouncementService,
     private val authenticateService: AuthenticateService,
     private val regionManagementService: RegionManagementService,
-    ) {
+) {
 
     @PostMapping("/register")
-    fun onCheckDuplicate(@RequestBody data : RegisterDataRequest): ResponseEntity<RegisterDataResponse> {
+    fun onCheckDuplicate(@RequestBody data: RegisterDataRequest): ResponseEntity<RegisterDataResponse> {
         return ResponseEntity.ok(authenticateService.register(data))
     }
 
@@ -49,5 +50,14 @@ class PublicApiController(
     @GetMapping("/announcement/{id}")
     fun getAnnouncement(@PathVariable id: Long): ResponseEntity<AnnouncementData> {
         return ResponseEntity.ok(announcementService.getAnnouncement(id))
+    }
+
+    // TODO : Add user authentication
+    @Beta
+    @GetMapping("/find/id/phone/{phoneNumber}")
+    fun findIdByPhoneNumber(@PathVariable phoneNumber: String): ResponseEntity<FindUserByPhoneNumberResponse> {
+        return ResponseEntity.ok(authenticateService.findUserByPhone(phoneNumber)?.run {
+            FindUserByPhoneNumberResponse(true, phoneNumber)
+        } ?: FindUserByPhoneNumberResponse(false, null))
     }
 }
