@@ -38,6 +38,12 @@ class AuthenticateService(
         }
     }
 
+    fun toAccountWithoutLogin(userName: String): UserAccountEntity {
+        return userAccountRepository.findByUserId(userName).orElseThrow {
+            BadCredentialsException("Bad credential")
+        }
+    }
+
     fun changePassword(
         user: UserAccountData,
         userName: String,
@@ -56,6 +62,24 @@ class AuthenticateService(
             }
         )
         return ChangeUserDataResponse(toAccount(user).userId, "${toAccount(user).userId}님의 비밀번호가 변경되었습니다.")
+    }
+
+    fun changePasswordUsingPhoneNumber(
+        userName: String,
+        phoneNumber: String?,
+        changedPassword: String
+    ): ChangeUserDataResponse {
+        val userData =
+            userDataRepository.findByAccount_UserId(userName).orElseThrow { BadCredentialsException("Not found") }
+        if(userData.phone != phoneNumber){
+            ChangeUserDataResponse(userName, "아이디와 전화번호가 일치하지 않습니다.")
+        }
+        userAccountRepository.save(
+            toAccountWithoutLogin(userName).apply {
+                this.password = encoder.encode(changedPassword)
+            }
+        )
+        return ChangeUserDataResponse(userName, "${userName}님의 비밀번호가 변경되었습니다.")
     }
 
     fun refreshToken(dto: RefreshTokenRequest): RefreshTokenResponse {

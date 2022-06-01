@@ -36,6 +36,12 @@ class PublicApiController(
         return ResponseEntity.ok(authenticateService.checkValidationResponse(dto))
     }
 
+    @PatchMapping("/change-password")
+    fun onChangePasswordUsingPhone(
+        @RequestBody req: ChangeUserDataUsingPhoneNumberRequest
+    ): ResponseEntity<ChangeUserDataResponse> {
+        return ResponseEntity.ok(authenticateService.changePasswordUsingPhoneNumber(req.userName, req.phoneNumber!!, req.changedPassword))
+    }
 
     @PostMapping("/refresh")
     fun onRefreshToken(@RequestBody data: RefreshTokenRequest): ResponseEntity<Any> {
