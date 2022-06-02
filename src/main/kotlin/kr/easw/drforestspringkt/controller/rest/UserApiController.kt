@@ -62,10 +62,17 @@ class UserApiController(
 
     @PatchMapping("/change-password")
     fun onChangePassword(
-            @AuthenticationPrincipal user: UserAccountData,
-            @RequestBody req: ChangeUserDataRequest
+        @AuthenticationPrincipal user: UserAccountData,
+        @RequestBody req: ChangeUserDataRequest
     ): ResponseEntity<ChangeUserDataResponse> {
-        return ResponseEntity.ok(authenticateService.changePassword(user, req.userName, req.beforePassword, req.changedPassword))
+        return ResponseEntity.ok(
+            authenticateService.changePassword(
+                user,
+                req.userName,
+                req.beforePassword,
+                req.changedPassword
+            )
+        )
     }
 
     @GetMapping("/QnA/")
@@ -117,6 +124,24 @@ class UserApiController(
         @RequestBody req: AcceptShareRequest
     ): AcceptShareResponse {
         return sharedUserService.acceptShare(user, req)
+    }
+
+
+    @PutMapping("/share/cancel")
+    fun onCancelSharing(
+        @AuthenticationPrincipal user: UserAccountData,
+        @RequestBody req: CancelShareRequest
+    ): CancelShareResponse {
+        return sharedUserService.cancelShare(user, req)
+    }
+
+
+    @PutMapping("/share/cancel/request")
+    fun onCancelSharingRequest(
+        @AuthenticationPrincipal user: UserAccountData,
+        @RequestBody req: CancelShareRequestRequest
+    ): CancelShareRequestResponse {
+        return sharedUserService.cancelShareRequest(user, req)
     }
 
 

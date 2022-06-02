@@ -36,6 +36,7 @@ class UserActivityDataService(
     fun fetchResult(user: String, time: Long, duration: Long): UserActivityContainerData {
         val end = System.currentTimeMillis()
         val data = mutableMapOf<Long, MutableMap<String, Float>>()
+        println("Start time: ${end - time}, End time: ${end}, Duration: ${time}")
         repo.getAllByEntity_UserIdAndTimestampBetween(user, Date(end - time), Date(end)).forEach {
             val map = data.getOrPut(
                 it.timestamp!!.time - it.timestamp!!.time % duration
@@ -47,6 +48,7 @@ class UserActivityDataService(
         }
 
         // @TODO Too complex lambda; Separate to extra method later
+        println("Size: ${data.size}")
         data.values.forEach {
             it.putIfAbsent("Traffic", 0f)
             it.putIfAbsent("Step", 0f)

@@ -138,7 +138,7 @@ class AuthenticateService(
     }
 
     fun findUserByPhone(phoneNumber: String): UserDataEntity? {
-        return userDataRepository.findByAccount_UserId(phoneNumber).orElseGet { null }
+        return userDataRepository.findByPhone(phoneNumber).orElseGet { null }
     }
 
 }

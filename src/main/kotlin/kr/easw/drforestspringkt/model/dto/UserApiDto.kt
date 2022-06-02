@@ -49,6 +49,14 @@ data class AcceptShareRequest(val userId: String)
 
 data class AcceptShareResponse(val isSuccess: Boolean, val userId: String, val message: String)
 
+data class CancelShareRequest(val userId: String)
+
+data class CancelShareResponse(val isSuccess: Boolean, val userId: String, val message: String)
+
+data class CancelShareRequestRequest(val userId: String)
+
+data class CancelShareRequestResponse(val isSuccess: Boolean, val userId: String, val message: String)
+
 data class ShareToUserResponse(val userId: String, val success: Boolean, val message: String)
 
 data class ChangeUserDataRequest(val userName: String, val beforePassword: String, val changedPassword: String)

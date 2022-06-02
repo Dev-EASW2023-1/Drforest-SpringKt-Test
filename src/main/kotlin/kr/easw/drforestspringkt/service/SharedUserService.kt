@@ -27,9 +27,9 @@ class SharedUserService(
     }
 
     // 내가 공유받은 목록
-    fun findAllSharedUser(user: UserAccountData): SharedUserListResponse {
+    fun findAllSharedUser(user: UserAccountData, onlyAccepted: Boolean = false): SharedUserListResponse {
         return SharedUserListResponse(repo.findAllByTarget_Account_UserId(user.username).map {
-            SharedUserData(it.user.account.userId, it.user.name, it.user.phone, true)
+            SharedUserData(it.user.account.userId, it.user.name, it.user.phone, it.isShared)
         })
     }
 
@@ -37,7 +37,7 @@ class SharedUserService(
     // 나에게 공유 요청을 한 목록
     fun findAllIncomingSharedUser(user: UserAccountData): SharedUserListResponse {
         return SharedUserListResponse(repo.findAllByUser_Account_UserId(user.username).map {
-            SharedUserData(it.user.account.userId, it.user.name, it.user.phone, true)
+            SharedUserData(it.target.account.userId, it.target.name, it.target.phone, it.isShared)
         })
     }
 
@@ -56,7 +56,10 @@ class SharedUserService(
         val dataToSave = SharedUserEntity(
             userOrigin, userTarget, true
         )
-        val entity = repo.findAllByUser_Account_UserIdAndTarget_Account_UserId(req.userId, user.username)
+        val entity = repo.findAllByUserAndTarget(userOrigin, userTarget)
+        println("Origin Entity ${userOrigin.id}")
+        println("Target Entity ${userTarget.id}")
+        println("Target id ${req.userId}")
         if (entity.isNotEmpty()) {
             if (entity[0].isShared) {
                 return AcceptShareResponse(true, req.userId, "이미 공유를 수락하였습니다.")
@@ -76,7 +79,7 @@ class SharedUserService(
 
     // User -> Target Share Request
     fun addShareWithNotice(
-        user: UserAccountData, req: ShareToUserRequest, doShare: Boolean = false
+        user: UserAccountData, req: ShareToUserRequest, errorIfDuplicated: Boolean = false, doShare: Boolean = false
     ): ShareToUserResponse {
         val userOrigin = userService.findAccountByUserId(user.username) ?: return ShareToUserResponse(
             req.userId,
@@ -89,15 +92,21 @@ class SharedUserService(
             false,
             "대상 유저가 존재하지 않습니다."
         )
+
         if (!doShare) {
             noticeService.addNotice(user, "${userTarget.name}님에게 공유 신청이 완료되었습니다.")
             noticeService.addNotice(userService.fromEntity(userTarget), "${userOrigin.name}님에게서 공유 요청이 도착하였습니다.")
         }
-        return addShare(user, req, doShare)
+        return addShare(user, req, errorIfDuplicated, doShare)
     }
 
     // User -> Target Share Request
-    fun addShare(user: UserAccountData, req: ShareToUserRequest, doShare: Boolean = false): ShareToUserResponse {
+    fun addShare(
+        user: UserAccountData,
+        req: ShareToUserRequest,
+        errorIfDuplicated: Boolean,
+        doShare: Boolean = false
+    ): ShareToUserResponse {
         val userOrigin = userService.findAccountByUserId(user.username) ?: return ShareToUserResponse(
             req.userId,
             false,
@@ -111,11 +120,13 @@ class SharedUserService(
         )
 
 
-        val entity = repo.findAllByUser_Account_UserIdAndTarget_Account_UserId(user.username, req.userId)
+        val entity = repo.findAllByUser_Account_UserIdAndTarget_Account_UserId(req.userId, user.username)
         val dataToSave = SharedUserEntity(
             userTarget, userOrigin, doShare
         )
         if (entity.isNotEmpty()) {
+            if (errorIfDuplicated)
+                return ShareToUserResponse(req.userId, false, "이미 공유 신청이 된 유저입니다.")
             dataToSave.id = entity[0].id
         }
         repo.save(
@@ -150,8 +161,30 @@ class SharedUserService(
     ): ShareToUserWithPhoneNumberResponse {
         val target = userService.findUserByPhone(req.phoneNumber)
             ?: return ShareToUserWithPhoneNumberResponse(false, req.phoneNumber, "등록되지 않은 사용자입니다.")
-        val result = addShareWithNotice(user, ShareToUserRequest(target.account.userId), false)
+        val result = addShareWithNotice(
+            user, ShareToUserRequest(target.account.userId),
+            errorIfDuplicated = true,
+            doShare = false
+        )
         return ShareToUserWithPhoneNumberResponse(result.success, result.userId, result.message)
+    }
+
+    fun cancelShare(user: UserAccountData, req: CancelShareRequest): CancelShareResponse {
+        val entity = repo.findAllByUser_Account_UserIdAndTarget_Account_UserId(user.username, req.userId)
+        if (entity.isEmpty()) {
+            return CancelShareResponse(false, req.userId, "대상 유저는 공유를 신청하지 않았습니다.")
+        }
+        repo.delete(entity[0])
+        return CancelShareResponse(true, req.userId, "공유를 취소하였습니다.")
+    }
+
+    fun cancelShareRequest(user: UserAccountData, req: CancelShareRequestRequest): CancelShareRequestResponse {
+        val entity = repo.findAllByUser_Account_UserIdAndTarget_Account_UserId(req.userId, user.username)
+        if (entity.isEmpty()) {
+            return CancelShareRequestResponse(false, req.userId, "대상 유저에게 공유를 신청하지 않았습니다.")
+        }
+        repo.delete(entity[0])
+        return CancelShareRequestResponse(true, req.userId, "공유를 취소하였습니다.")
     }
 
 
