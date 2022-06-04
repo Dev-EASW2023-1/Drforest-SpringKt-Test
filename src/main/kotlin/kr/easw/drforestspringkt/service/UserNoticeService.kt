@@ -44,6 +44,7 @@ class UserNoticeService(
                 false
             )
         )
+        FCMUtility.sendPush(userAccountData.username, "닥터포레스트", notice, 0)
         return "알림을 추가하였습니다."
     }
 

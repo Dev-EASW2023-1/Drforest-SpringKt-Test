@@ -11,14 +11,9 @@ import org.springframework.web.client.RestTemplate
 object FCMUtility {
     private val template = RestTemplate()
 
-    @JvmStatic
-    fun main(args: Array<String>) {
-        sendPush("Test1", "Test", 4)
-    }
-
-    fun sendPush(title: String, contents: String, id: Int) {
+    fun sendPush(token: String, title: String, contents: String, id: Int) {
         val requestString = constructJson(
-            "to" to "/topics/notice",
+            "to" to "/topics/${token}",
             "data" to constructJsonObject(
                 "title" to title,
                 "message" to contents,

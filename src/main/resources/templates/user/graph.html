@@ -8,33 +8,42 @@
     </head>
 
     <body>
+        <!-- TODO - 그래프 순서 재정렬 -->
         <div style="height: 100%;width: 100%;">
-            <div style="height: 20%;width: 100%;">
-                <canvas id="line-chart1"></canvas>
-            </div>
-            <div style="height: 20%;width: 100%;">
-                <canvas id="line-chart2"></canvas>
+
+            <div style="height: 14.28%;width: 100%;">
+                <canvas id="line-chart-total"></canvas>
             </div>
 
-            <div style="height: 20%;width: 100%;">
-                <canvas id="line-chart3"></canvas>
-            </div>
-
-            <div style="height: 20%;width: 100%;">
+            <div style="height: 14.28%;width: 100%;">
                 <canvas id="line-chart4"></canvas>
             </div>
 
-            <div style="height: 20%;width: 100%;">
+            <div style="height: 14.28%;width: 100%;">
                 <canvas id="line-chart5"></canvas>
             </div>
 
-            <div style="height: 20%;width: 100%;">
+            <div style="height: 14.28%;width: 100%;">
                 <canvas id="line-chart6"></canvas>
             </div>
+
+            <div style="height: 14.28%;width: 100%;">
+                <canvas id="line-chart1"></canvas>
+            </div>
+            <div style="height: 14.28%;width: 100%;">
+                <canvas id="line-chart2"></canvas>
+            </div>
+
+            <div style="height: 14.28%;width: 100%;">
+                <canvas id="line-chart3"></canvas>
+            </div>
+
             <script lang="text/javascript" th:inline="javascript">
                 "use strict";
                 let startTimeCurrent = /*[[${start}]]*/ 'default';
                 let endTimeCurrent = /*[[${end}]]*/ 'default';
+                let startTimeCurrentDay = /*[[${startDay}]]*/ 'default';
+                let endTimeCurrentDay = /*[[${endDay}]]*/ 'default';
                 let data = /*[[${graph}]]*/ 'default';
                 let dataDate = /*[[${graphDay}]]*/ 'default';
                 let chartColors = {
@@ -63,17 +72,21 @@
                 let dateSocialArray = [];
                 let dateHealthArray = [];
                 let dateMentalArray = [];
+                let dateTotalArray = [];
                 let timeUnit = 15 * 60 * 1000
                 let timeUnitDate = 60 * 60 * 24 * 1000
 
-                let startTimeDate = startTimeCurrent - (startTimeCurrent % timeUnitDate)
-                let endTimeDate = startTimeCurrent + (timeUnit - (startTimeCurrent % timeUnitDate))
+                console.log("Before processing: " + startTimeCurrent)
+                let startTime = startTimeCurrent - (startTimeCurrent % timeUnit)
+                let endTime = endTimeCurrent + (timeUnit - (endTimeCurrent % timeUnit))
+                let startTimeDate = startTimeCurrentDay - (startTimeCurrentDay % timeUnitDate)
+                let endTimeDate = endTimeCurrentDay + (timeUnit - (endTimeCurrentDay % timeUnitDate))
 
-                let length = (endTimeCurrent - startTimeCurrent) / timeUnit
-                let lengthDate = (endTimeCurrent - startTimeCurrent) / timeUnitDate
+                let length = (endTime - startTime) / timeUnit
+                let lengthDate = (endTimeDate - startTimeDate) / timeUnitDate
 
                 for (let index = 0; index < length; index++) {
-                    timeArray.push(moment(startTimeDate + index * timeUnit))
+                    timeArray.push(moment(startTime + index * timeUnit))
                 }
 
                 for (let index = 0; index < lengthDate; index++) {
@@ -126,6 +139,8 @@
                     })
                 });
 
+                console.log(dataDate["list"])
+
                 dataDate["list"].forEach(dto => {
 
                     dateSocialArray.push({
@@ -144,6 +159,12 @@
                         x: moment(dto["time"]),
                         y: (dto["value"]["Mental"] ?? 0)
                     })
+
+
+                    dateTotalArray.push({
+                        x: moment(dto["time"]),
+                        y: (dto["value"]["Total"] ?? 0)
+                    })
                 })
                 makeFullChart("line-chart1", timeArray, [
                     {
@@ -154,7 +175,7 @@
                         name: "이동 거리",
                         data: minuteGpsArray,
                     }, {
-                        name: "트래픽",
+                        name: "데이터",
                         data: minuteTrafficArray,
                     },
                 ]);
@@ -188,7 +209,7 @@
                 ]);
 
 
-                makeSingleChart("line-chart4", timeArrayDate,
+                makeSingleChart("line-chart4", 4, timeArrayDate,
                     {
                         name: "사회 상태",
                         data: dateSocialArray,
@@ -196,7 +217,7 @@
                 );
 
 
-                makeSingleChart("line-chart5", timeArrayDate,
+                makeSingleChart("line-chart5", 4, timeArrayDate,
                     {
                         name: "신체 상태",
                         data: dateHealthArray,
@@ -204,10 +225,18 @@
                 );
 
 
-                makeSingleChart("line-chart6", timeArrayDate,
+                makeSingleChart("line-chart6", 4, timeArrayDate,
                     {
                         name: "정서 상태",
                         data: dateMentalArray,
+                    },
+                );
+
+
+                makeSingleChart("line-chart-total", 10, timeArrayDate,
+                    {
+                        name: "종합 점수",
+                        data: dateTotalArray,
                     },
                 );
                 window.test = minuteSocialArray;
@@ -255,18 +284,18 @@
                         data: {
                             labels: time,
                             datasets: [
-                                {
-                                    type: 'bar',
-                                    yAxisID: 'yAxisBg01',
-                                    label: charts[0].name,
-                                    borderWidth: 0.4,
-                                    data: charts[0].data,
-                                    fill: true,
-                                    backgroundColor: 'rgb(0, 162, 72)',
-                                    pointRadius: 0,
-                                    barThickness: 5,
-                                    spanGaps: false,
-                                },
+                                // {
+                                //     type: 'bar',
+                                //     yAxisID: 'yAxisBg01',
+                                //     label: charts[0].name,
+                                //     borderWidth: 0.4,
+                                //     data: charts[0].data,
+                                //     fill: true,
+                                //     backgroundColor: 'rgb(0, 162, 72)',
+                                //     pointRadius: 0,
+                                //     barThickness: 5,
+                                //     spanGaps: false,
+                                // },
                                 {
                                     type: 'line',
                                     backgroundColor: 'rgba(0,72,255, 0.4)',
@@ -356,8 +385,8 @@
                                             return (index % 15 === 0) ? tick : "";
                                         }
                                     },
-                                    min: startTimeCurrent,
-                                    max: endTimeCurrent
+                                    min: startTime,
+                                    max: endTime
                                 },
                                 yAxis01: {
                                     type: 'linear',
@@ -412,7 +441,7 @@
                  *                ]
                  *            }
                  */
-                function makeSingleChart(chartElementId, time, charts) {
+                function makeSingleChart(chartElementId, maxValue, time, charts) {
                     let ctx = document.getElementById(chartElementId);
                     let chart = new Chart(ctx, {
                         data: {
@@ -486,10 +515,10 @@
                                         drawOnChartArea: true
                                     },
                                     ticks: {
-                                      stepSize: 1
+                                        stepSize: 1
                                     },
-                                    min: startTimeCurrent,
-                                    max: endTimeCurrent
+                                    min: startTimeDate,
+                                    max: endTimeDate
                                 },
 
                                 y: {
@@ -498,7 +527,7 @@
                                     position: 'right',
                                     ticks: {
                                         min: 1,
-                                        max: 4,
+                                        max: maxValue,
                                     }
                                 },
                             },

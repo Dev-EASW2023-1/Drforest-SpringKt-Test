@@ -63,7 +63,7 @@ class PublicApiController(
     @GetMapping("/find/id/phone/{phoneNumber}")
     fun findIdByPhoneNumber(@PathVariable phoneNumber: String): ResponseEntity<FindUserByPhoneNumberResponse> {
         return ResponseEntity.ok(authenticateService.findUserByPhone(phoneNumber)?.run {
-            FindUserByPhoneNumberResponse(true, phoneNumber)
+            FindUserByPhoneNumberResponse(true, this.account.userId)
         } ?: FindUserByPhoneNumberResponse(false, null))
     }
 }

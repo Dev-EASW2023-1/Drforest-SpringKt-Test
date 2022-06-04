@@ -7,7 +7,6 @@ import kr.easw.drforestspringkt.model.repository.UserActivityDataRepository
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.abs
 
@@ -104,6 +103,14 @@ class UserActivityDataService(
             it["Health"] = foldScore(scoreMap["GPS"]!!) + foldScore(scoreMap["Step"]!!, true).toFloat()
 
             it["Mental"] = foldScore(scoreMap["OnOff"]!!) + foldScore(scoreMap["Idle"]!!).toFloat()
+
+            it["Total"] =
+                (foldScore(scoreMap["GPS"]!!) + foldScore(scoreMap["Traffic"]!!) + foldScore(
+                    scoreMap["Step"]!!,
+                    true
+                ) + foldScore(
+                    scoreMap["OnOff"]!!
+                ) + foldScore(scoreMap["Idle"]!!)).toFloat()
         }
 
         return UserActivityContainerData(data.map { x -> UserActivityDataData(Date(x.key), x.value) })

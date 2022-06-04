@@ -4,7 +4,6 @@ import kr.easw.drforestspringkt.model.dto.AnnouncementData
 import kr.easw.drforestspringkt.model.dto.AnnouncementResponse
 import kr.easw.drforestspringkt.model.entity.AnnouncementEntity
 import kr.easw.drforestspringkt.model.repository.AnnouncementRepository
-import kr.easw.drforestspringkt.util.FCMUtility
 import org.springframework.data.rest.webmvc.ResourceNotFoundException
 import org.springframework.stereotype.Service
 
@@ -32,11 +31,7 @@ class AnnouncementService(
     }
 
     fun addAnnouncement(title: String, contents: String) {
-        FCMUtility.sendPush(
-            title,
-            contents,
-            repo.save(AnnouncementEntity(title, contents)).id.toInt()
-        )
+        repo.save(AnnouncementEntity(title, contents)).id
     }
 }
 

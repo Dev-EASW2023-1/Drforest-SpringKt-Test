@@ -178,4 +178,12 @@ class UserApiController(
     }
 
 
+    @GetMapping("/summary")
+    fun onRequestSelfSummaryScore(
+        @AuthenticationPrincipal user: UserAccountData
+    ): ResponseEntity<UserSummaryResponse> {
+        return ResponseEntity.ok(UserSummaryResponse(userDataService.calculateTodayScore(user.username).score))
+    }
+
+
 }

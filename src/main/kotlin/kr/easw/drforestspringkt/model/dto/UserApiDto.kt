@@ -34,7 +34,6 @@ data class UserNoticeResponseDto(val notice: List<UserNoticeData>)
 
 data class NoticeReadMarkRequest(val id: Int)
 
-
 data class SharableUserListResponse(val users: List<SharableUserData>)
 
 data class SharedUserListResponse(val users: List<SharedUserData>)
@@ -43,7 +42,11 @@ data class ShareToUserRequest(val userId: String)
 
 data class ShareToUserWithPhoneNumberRequest(val phoneNumber: String)
 
-data class ShareToUserWithPhoneNumberResponse(val isSuccess: Boolean, val userId: String, val message: String)
+data class ShareToUserWithPhoneNumberResponse(
+    val isSuccess: Boolean,
+    val userId: String,
+    val message: String
+)
 
 data class AcceptShareRequest(val userId: String)
 
@@ -55,11 +58,19 @@ data class CancelShareResponse(val isSuccess: Boolean, val userId: String, val m
 
 data class CancelShareRequestRequest(val userId: String)
 
-data class CancelShareRequestResponse(val isSuccess: Boolean, val userId: String, val message: String)
+data class CancelShareRequestResponse(
+    val isSuccess: Boolean,
+    val userId: String,
+    val message: String
+)
 
 data class ShareToUserResponse(val userId: String, val success: Boolean, val message: String)
 
-data class ChangeUserDataRequest(val userName: String, val beforePassword: String, val changedPassword: String)
+data class ChangeUserDataRequest(
+    val userName: String,
+    val beforePassword: String,
+    val changedPassword: String
+)
 
 data class ChangeUserDataResponse(val userName: String, val msg: String)
 
@@ -73,13 +84,25 @@ data class UserNoticeData(
     val isRead: Boolean
 )
 
-data class SharedUserData(val userId: String, val userName: String, val phoneNumber: String?, val isShared: Boolean)
+data class UserSummaryResponse(val scores: Map<String, Int>)
+
+data class SharedUserData(
+    val userId: String,
+    val userName: String,
+    val phoneNumber: String?,
+    val isShared: Boolean
+)
 
 // ShareStatus
 // 0 - Not shared
 // 1 - Share request pending
 // 2 - Shared
-data class SharableUserData(val userId: String, val userName: String, val phoneNumber: String?, val shareStatus: Int)
+data class SharableUserData(
+    val userId: String,
+    val userName: String,
+    val phoneNumber: String?,
+    val shareStatus: Int
+)
 
 
 data class QnAQuestionData(val timestamp: Date, val title: String, val question: String)

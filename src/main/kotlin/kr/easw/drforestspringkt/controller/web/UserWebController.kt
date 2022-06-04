@@ -21,12 +21,15 @@ class UserWebController(val userActivityDataService: UserActivityDataService, va
     fun onRequestGraph(
         @AuthenticationPrincipal user: UserAccountData, model: Model
     ): String {
-        val time = 1000L * 60 * 60 * 24 * 5
+        val time = 1000L * 60 * 60 * 24 * 2
+        val timeDay = 1000L * 60 * 60 * 24 * 5
         val endTime = System.currentTimeMillis()
         model.addAttribute("start", endTime - time)
         model.addAttribute("end", endTime)
+        model.addAttribute("startDay", endTime - timeDay)
+        model.addAttribute("endDay", endTime)
         model.addAttribute("graph", userActivityDataService.fetchResult(user.username, time, 1000 * 60 * 15))
-        model.addAttribute("graphDay", userActivityDataService.fetchResult(user.username, time, 1000 * 60 * 60 * 24))
+        model.addAttribute("graphDay", userActivityDataService.fetchResult(user.username, timeDay, 1000 * 60 * 60 * 24))
         return "user/graph.html"
     }
 
@@ -38,12 +41,15 @@ class UserWebController(val userActivityDataService: UserActivityDataService, va
         model: Model,
         response: HttpServletResponse
     ): String? {
-        val time = 1000L * 60 * 60 * 24 * 5
+        val time = 1000L * 60 * 60 * 24 * 2
+        val timeDay = 1000L * 60 * 60 * 24 * 5
         val endTime = System.currentTimeMillis()
-        model.addAttribute("start", (endTime - time) - (endTime - time) % (15 * 60 * 1000))
-        model.addAttribute("end", endTime - endTime % (15 * 60 * 1000))
+        model.addAttribute("start", endTime - time)
+        model.addAttribute("end", endTime)
+        model.addAttribute("startDay", endTime - timeDay)
+        model.addAttribute("endDay", endTime)
         model.addAttribute("graph", userActivityDataService.fetchResult(userId, time, 1000 * 60 * 15))
-        model.addAttribute("graphDay", userActivityDataService.fetchResult(userId, time, 1000 * 60 * 60 * 24))
+        model.addAttribute("graphDay", userActivityDataService.fetchResult(userId, timeDay, 1000 * 60 * 60 * 24))
         return "user/graph.html"
     }
 
