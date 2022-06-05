@@ -166,21 +166,8 @@
                         y: (dto["value"]["Total"] ?? 0)
                     })
                 })
-                makeFullChart("line-chart1", timeArray, [
-                    {
-                        name: "사회 활동",
-                        data: minuteSocialArray,
-                    },
-                    {
-                        name: "이동 거리",
-                        data: minuteGpsArray,
-                    }, {
-                        name: "데이터",
-                        data: minuteTrafficArray,
-                    },
-                ]);
 
-                makeFullChart("line-chart2", timeArray, [
+                makeFullChart("line-chart1", timeArray, [
                     {
                         name: "신체 활동",
                         data: minuteHealthArray,
@@ -191,6 +178,20 @@
                     }, {
                         name: "걸음 수",
                         data: minuteStepArray,
+                    },
+                ]);
+
+                makeFullChart("line-chart2", timeArray, [
+                    {
+                        name: "사회 활동",
+                        data: minuteSocialArray,
+                    },
+                    {
+                        name: "이동 거리",
+                        data: minuteGpsArray,
+                    }, {
+                        name: "데이터",
+                        data: minuteTrafficArray,
                     },
                 ]);
 
@@ -211,19 +212,18 @@
 
                 makeSingleChart("line-chart4", 4, timeArrayDate,
                     {
-                        name: "사회 상태",
-                        data: dateSocialArray,
+                        name: "신체 활동",
+                        data: dateHealthArray,
                     },
                 );
 
 
                 makeSingleChart("line-chart5", 4, timeArrayDate,
                     {
-                        name: "신체 상태",
-                        data: dateHealthArray,
+                        name: "사회 활동",
+                        data: dateSocialArray,
                     },
                 );
-
 
                 makeSingleChart("line-chart6", 4, timeArrayDate,
                     {
@@ -235,7 +235,7 @@
 
                 makeSingleChart("line-chart-total", 10, timeArrayDate,
                     {
-                        name: "종합 점수",
+                        name: "정신건강 결과수치",
                         data: dateTotalArray,
                     },
                 );
