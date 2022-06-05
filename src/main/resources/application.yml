@@ -23,7 +23,7 @@ spring:
 #    url: 'jdbc:mysql://localhost:3306/drforest?createDatabaseIfNotExist=true&useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC'
 #    username: 'root'
 #    password: 'easw409'
-    url: 'jdbc:mysql://database-1-onlecture.clrcqre9faxp.ap-northeast-2.rds.amazonaws.com:3306/drforest?createDatabaseIfNotExist=true&useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC'
+    url: 'jdbc:mysql://database-3-onlecture.clrcqre9faxp.ap-northeast-2.rds.amazonaws.com:3306/drforest?createDatabaseIfNotExist=true&useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC'
     username: 'admin'
     password: '12345678'
     driver-class-name: com.mysql.cj.jdbc.Driver
