@@ -32,13 +32,13 @@ class UserActivityDataService(
         }
     }
 
-    fun fetchResult(user: String, time: Long, duration: Long): UserActivityContainerData {
+    fun fetchResult(user: String, amount: Long, tick: Long): UserActivityContainerData {
         val end = System.currentTimeMillis()
         val data = mutableMapOf<Long, MutableMap<String, Float>>()
-        println("Start time: ${end - time}, End time: ${end}, Duration: ${time}")
-        repo.getAllByEntity_UserIdAndTimestampBetween(user, Date(end - time), Date(end)).forEach {
+        println("Start time: ${end - amount}, End time: ${end}, Duration: ${amount}")
+        repo.getAllByEntity_UserIdAndTimestampBetween(user, Date(end - amount), Date(end)).forEach {
             val map = data.getOrPut(
-                it.timestamp!!.time - it.timestamp!!.time % duration
+                it.timestamp!!.time - it.timestamp!!.time % tick
                         + (1000 * 60 * 60 * 16)
             ) {
                 mutableMapOf()
@@ -56,47 +56,47 @@ class UserActivityDataService(
             it.putIfAbsent("GPS", 0f)
             // ..Convert as temporary score map..
             val scoreMap = mutableMapOf<String, Int>()
-
+            val multiplier = (1000 * 60 * 60 * 24) / tick
             // Multiply 96 (Time unit is 15 minute, 96 * 15 = 1440 (1 day))
             scoreMap["GPS"] = when {
-                it["GPS"]!! * 96 <= 3 * 1000 -> 1
-                it["GPS"]!! * 96 <= 10 * 1000 -> 2
-                it["GPS"]!! * 96 <= 60 * 1000 -> 3
-                it["GPS"]!! * 96 <= 100 * 1000 -> 4
+                it["GPS"]!! * multiplier <= 3 * 1000 -> 1
+                it["GPS"]!! * multiplier <= 10 * 1000 -> 2
+                it["GPS"]!! * multiplier <= 60 * 1000 -> 3
+                it["GPS"]!! * multiplier <= 100 * 1000 -> 4
                 else -> 5
             }
             scoreMap["OnOff"] = when {
-                it["OnOff"]!! * 96 <= 20 -> 1
-                it["OnOff"]!! * 96 <= 50 -> 2
-                it["OnOff"]!! * 96 <= 90 -> 3
-                it["OnOff"]!! * 96 <= 120 -> 4
+                it["OnOff"]!! * multiplier <= 20 -> 1
+                it["OnOff"]!! * multiplier <= 50 -> 2
+                it["OnOff"]!! * multiplier <= 90 -> 3
+                it["OnOff"]!! * multiplier <= 120 -> 4
                 else -> 5
             }
 
             scoreMap["Step"] = when {
-                it["Step"]!! * 96 >= 70001 -> 1
-                it["Step"]!! * 96 >= 2356 -> 2
-                it["Step"]!! * 96 >= 943 -> 3
-                it["Step"]!! * 96 >= 471 -> 4
+                it["Step"]!! * multiplier >= 70001 -> 1
+                it["Step"]!! * multiplier >= 2356 -> 2
+                it["Step"]!! * multiplier >= 943 -> 3
+                it["Step"]!! * multiplier >= 471 -> 4
                 else -> 5
             }
 
             scoreMap["Idle"] = when {
-                it["Idle"]!! * 96 < 6 * 60 * 60 -> 1
-                it["Idle"]!! * 96 < 7 * 60 * 60 -> 2
-                it["Idle"]!! * 96 < 8 * 60 * 60 -> 3
-                it["Idle"]!! * 96 < 9 * 60 * 60 -> 4
+                it["Idle"]!! * multiplier < 6 * 60 * 60 -> 1
+                it["Idle"]!! * multiplier < 7 * 60 * 60 -> 2
+                it["Idle"]!! * multiplier < 8 * 60 * 60 -> 3
+                it["Idle"]!! * multiplier < 9 * 60 * 60 -> 4
                 else -> 5
             }
 
             scoreMap["Traffic"] = when {
-                it["Traffic"]!! * 96 <= 34 * 1024 * 1024 -> 1
-                it["Traffic"]!! * 96 <= 307 * 1024 * 1024 -> 2
-                it["Traffic"]!! * 96 <= 887 * 1024 * 1024 -> 3
-                it["Traffic"]!! * 96 <= 1024 * 1024 * 1024 -> 4
+                it["Traffic"]!! * multiplier <= 34 * 1024 * 1024 -> 1
+                it["Traffic"]!! * multiplier <= 307 * 1024 * 1024 -> 2
+                it["Traffic"]!! * multiplier <= 887 * 1024 * 1024 -> 3
+                it["Traffic"]!! * multiplier <= 1024 * 1024 * 1024 -> 4
                 else -> 5
             }
-
+            Boolean
 
             it["Social"] = foldScore(scoreMap["GPS"]!!) + foldScore(scoreMap["Traffic"]!!).toFloat()
 
@@ -175,6 +175,13 @@ class UserActivityDataService(
 
         scoreMap["Mental"] = foldScore(scoreMap["OnOff"]!!) + foldScore(scoreMap["Idle"]!!)
 
+        scoreMap["Total"] =
+            (foldScore(scoreMap["GPS"]!!) + foldScore(scoreMap["Traffic"]!!) + foldScore(
+                scoreMap["Step"]!!,
+                true
+            ) + foldScore(
+                scoreMap["OnOff"]!!
+            ) + foldScore(scoreMap["Idle"]!!))
         return UserScoreData(user, scoreMap)
     }
 
