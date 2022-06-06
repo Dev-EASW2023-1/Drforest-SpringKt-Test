@@ -39,7 +39,7 @@ class UserActivityDataService(
         repo.getAllByEntity_UserIdAndTimestampBetween(user, Date(end - amount), Date(end)).forEach {
             val map = data.getOrPut(
                 it.timestamp!!.time - it.timestamp!!.time % tick
-                        + (1000 * 60 * 60 * 16)
+//                        + (1000 * 60 * 60 * 16)
             ) {
                 mutableMapOf()
             }
@@ -75,7 +75,7 @@ class UserActivityDataService(
 
             scoreMap["Step"] = when {
                 it["Step"]!! * multiplier >= 70001 -> 1
-                it["Step"]!! * multiplier >= 2356 -> 2
+                it["Step"]!! * multiplier >= 2356 -> 3
                 it["Step"]!! * multiplier >= 943 -> 3
                 it["Step"]!! * multiplier >= 471 -> 4
                 else -> 5
@@ -117,7 +117,7 @@ class UserActivityDataService(
     }
 
     fun calculateTodayScore(user: String): UserScoreData {
-        val fetch = fetchResult(user, 1000 * 60 * 60 * 24, 1000 * 60 * 15)
+        val fetch = fetchResult(user, 1000 * 60 * 60 * 24, 1000 * 60 * 60 * 24)
         val scoreMap = mutableMapOf<String, Int>()
         val totalMap = mutableMapOf<String, Float>()
         fetch.list.forEach { data ->
