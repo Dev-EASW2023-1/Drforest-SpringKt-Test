@@ -117,7 +117,7 @@ class UserActivityDataService(
     }
 
     fun calculateTodayScore(user: String): UserScoreData {
-        val fetch = fetchResult(user, 1000 * 60 * 60 * 24, 1000 * 60 * 60 * 24)
+        val fetch = fetchResult(user, (System.currentTimeMillis() % (1000 * 60 * 60 * 24)), 1000 * 60 * 60 * 24)
         val scoreMap = mutableMapOf<String, Int>()
         val totalMap = mutableMapOf<String, Float>()
         fetch.list.forEach { data ->
