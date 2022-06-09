@@ -84,7 +84,7 @@ data class UserNoticeData(
     val isRead: Boolean
 )
 
-data class UserSummaryResponse(val scores: Map<String, Int>)
+data class UserSummaryResponse(val scores: Map<String, Int>, val data: UserCreatedTimeDataDto)
 
 data class SharedUserData(
     val userId: String,

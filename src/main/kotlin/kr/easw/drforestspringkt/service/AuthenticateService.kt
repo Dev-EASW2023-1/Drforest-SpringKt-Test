@@ -142,6 +142,12 @@ class AuthenticateService(
         return UserDataDto(userData.region.regionName, userData.name, userData.phone)
     }
 
+    fun getUserCreatedTimeData(user: UserAccountData): UserCreatedTimeDataDto {
+        val userData =
+            userDataRepository.findByAccount_UserId(user.username).orElseThrow { BadCredentialsException("Not found") }
+        return UserCreatedTimeDataDto(userData.createdTimestamp!!)
+    }
+
     fun findAccountByUserId(userId: String): UserDataEntity? {
         return userDataRepository.findByAccount_UserId(userId).orElseGet { null }
     }

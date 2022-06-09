@@ -182,7 +182,7 @@ class UserApiController(
     fun onRequestSelfSummaryScore(
         @AuthenticationPrincipal user: UserAccountData
     ): ResponseEntity<UserSummaryResponse> {
-        return ResponseEntity.ok(UserSummaryResponse(userDataService.calculateTodayScore(user.username).score))
+        return ResponseEntity.ok(UserSummaryResponse(userDataService.calculateTodayScore(user.username).score,authenticateService.getUserCreatedTimeData(user)))
     }
 
 
