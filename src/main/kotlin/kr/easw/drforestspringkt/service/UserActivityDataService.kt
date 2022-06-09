@@ -139,7 +139,7 @@ class UserActivityDataService(
 
     fun calculateTodayScore(
         user: String,
-        dateHourAdjust: Int = 18 /* Default value = UTC + 18 (KST + 9) */,
+        dateHourAdjust: Int = 0 /* Default value = UTC + 18 (KST + 9) */,
         endMargin: Long = 1000 * 60 * 60 * 24
     ): UserScoreData {
         val fetch = fetchResult(
