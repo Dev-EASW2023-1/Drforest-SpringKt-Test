@@ -1,6 +1,7 @@
 package kr.easw.drforestspringkt.service
 
 import kr.easw.drforestspringkt.auth.UserAccountData
+import kr.easw.drforestspringkt.enumeration.Roles
 import kr.easw.drforestspringkt.model.dto.*
 import kr.easw.drforestspringkt.model.entity.UserAccountEntity
 import kr.easw.drforestspringkt.model.entity.UserDataEntity
@@ -71,7 +72,7 @@ class AuthenticateService(
     ): ChangeUserDataResponse {
         val userData =
             userDataRepository.findByAccount_UserId(userName).orElseThrow { BadCredentialsException("Not found") }
-        if(userData.phone != phoneNumber){
+        if (userData.phone != phoneNumber) {
             ChangeUserDataResponse(userName, "아이디와 전화번호가 일치하지 않습니다.")
         }
         userAccountRepository.save(
@@ -118,7 +119,8 @@ class AuthenticateService(
         val user = userAccountRepository.save(
             UserAccountEntity(
                 data.accountData.id,
-                encoder.encode(data.accountData.pw)
+                encoder.encode(data.accountData.pw),
+                Roles.allow(Roles.USER)
             )
         )
         userDataRepository.save(
