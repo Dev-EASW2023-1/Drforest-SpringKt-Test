@@ -32,14 +32,33 @@ class UserActivityDataService(
         }
     }
 
-    fun fetchResult(user: String, amount: Long, tick: Long): UserActivityContainerData {
-        val end = System.currentTimeMillis()
+    fun fetchResult(
+        user: String,
+        amount: Long,
+        tick: Long,
+        adjustHour: Int = 0 /* Default value = UTC + 0 */,
+        truncateToDay: Boolean = true
+    ): UserActivityContainerData {
+        val adjustTime = adjustHour * 1000 * 60 * 60
+        var end = System.currentTimeMillis()
+        var start = end - amount
         val data = mutableMapOf<Long, MutableMap<String, Float>>()
         println("Start time: ${end - amount}, End time: ${end}, Duration: ${amount}")
-        repo.getAllByEntity_UserIdAndTimestampBetween(user, Date(end - amount), Date(end)).forEach {
+        // Truncation.
+        // If true, end time / start time will force truncated.
+        if (truncateToDay) {
+            val dateThreshold = (1000 * 60 * 60 * 24)
+            // Starting time will be subtracted to start time of date on UTC
+            start -= start % dateThreshold
+            // Ending time will be expanded to end time of date on UTC
+            end += dateThreshold - (end % dateThreshold)
+        }
+        // Truncate complete. Adjusting value..
+        start += adjustTime
+        end += adjustTime
+        repo.getAllByEntity_UserIdAndTimestampBetween(user, Date(start), Date(end)).forEach {
             val map = data.getOrPut(
                 it.timestamp!!.time - it.timestamp!!.time % tick
-//                        + (1000 * 60 * 60 * 16)
             ) {
                 mutableMapOf()
             }
@@ -96,8 +115,6 @@ class UserActivityDataService(
                 it["Traffic"]!! * multiplier <= 1024 * 1024 * 1024 -> 4
                 else -> 5
             }
-            Boolean
-
             it["Social"] = foldScore(scoreMap["GPS"]!!) + foldScore(scoreMap["Traffic"]!!).toFloat()
 
             it["Health"] = foldScore(scoreMap["GPS"]!!) + foldScore(scoreMap["Step"]!!, true).toFloat()
@@ -116,8 +133,9 @@ class UserActivityDataService(
         return UserActivityContainerData(data.map { x -> UserActivityDataData(Date(x.key), x.value) })
     }
 
-    fun calculateTodayScore(user: String): UserScoreData {
-        val fetch = fetchResult(user, (System.currentTimeMillis() % (1000 * 60 * 60 * 24)), 1000 * 60 * 60 * 24)
+
+    fun calculateTodayScore(user: String, dateHourAdjust: Int = 18 /* Default value = UTC + 18 (KST + 9) */): UserScoreData {
+        val fetch = fetchResult(user, (System.currentTimeMillis() % (1000 * 60 * 60 * 24)), 1000 * 60 * 60 * 24, adjustHour = dateHourAdjust)
         val scoreMap = mutableMapOf<String, Int>()
         val totalMap = mutableMapOf<String, Float>()
         fetch.list.forEach { data ->
