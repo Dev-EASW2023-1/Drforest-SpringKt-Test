@@ -37,6 +37,7 @@ class UserActivityDataService(
         amount: Long,
         tick: Long,
         adjustHour: Int = 0 /* Default value = UTC + 0 */,
+        endMargin: Long = 0,
         truncateToDay: Boolean = true
     ): UserActivityContainerData {
         val adjustTime = adjustHour * 1000 * 60 * 60
@@ -53,6 +54,8 @@ class UserActivityDataService(
             // Ending time will be expanded to end time of date on UTC
             end += dateThreshold - (end % dateThreshold)
         }
+        start -= endMargin
+        end -= endMargin
         // Truncate complete. Adjusting value..
         start += adjustTime
         end += adjustTime
@@ -134,8 +137,18 @@ class UserActivityDataService(
     }
 
 
-    fun calculateTodayScore(user: String, dateHourAdjust: Int = 18 /* Default value = UTC + 18 (KST + 9) */): UserScoreData {
-        val fetch = fetchResult(user, (System.currentTimeMillis() % (1000 * 60 * 60 * 24)), 1000 * 60 * 60 * 24, adjustHour = dateHourAdjust)
+    fun calculateTodayScore(
+        user: String,
+        dateHourAdjust: Int = 18 /* Default value = UTC + 18 (KST + 9) */,
+        endMargin: Long = 1000 * 60 * 60 * 24
+    ): UserScoreData {
+        val fetch = fetchResult(
+            user,
+            (System.currentTimeMillis() % (1000 * 60 * 60 * 24)),
+            1000 * 60 * 60 * 24,
+            adjustHour = dateHourAdjust,
+            endMargin = endMargin
+        )
         val scoreMap = mutableMapOf<String, Int>()
         val totalMap = mutableMapOf<String, Float>()
         fetch.list.forEach { data ->
