@@ -61,7 +61,12 @@ class UserActivityDataService(
         end += adjustTime
         repo.getAllByEntity_UserIdAndTimestampBetween(user, Date(start), Date(end)).forEach {
             val map = data.getOrPut(
-                it.timestamp!!.time - it.timestamp!!.time % tick
+                when(tick){
+                    // In the daily average graph, the day graph represents data from the previous day.
+                    1000 * 60 * 60 * 24L -> (it.timestamp!!.time + 1000 * 60 * 60 * 24L) - (it.timestamp!!.time + 1000 * 60 * 60 * 24L) % tick
+                    // In the n-minute graph, the x-axis is the time as it is.
+                    else -> it.timestamp!!.time - it.timestamp!!.time % tick
+                }
             ) {
                 mutableMapOf()
             }
