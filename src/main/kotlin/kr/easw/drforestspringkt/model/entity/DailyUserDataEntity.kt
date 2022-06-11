@@ -5,11 +5,11 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
-@javax.persistence.Table(name = "UserActivity")
+@javax.persistence.Table(name = "DailyUserActivity")
 class DailyUserDataEntity(
     entity: UserAccountEntity,
     fieldName: String,
-    fieldValue: Float
+    fieldValue: Int
 ) {
     @Id
     @GeneratedValue
@@ -22,7 +22,7 @@ class DailyUserDataEntity(
     var fieldName: String = fieldName
 
     @Column
-    var fieldValue = fieldValue
+    var fieldValue : Int = fieldValue
 
     @CreationTimestamp
     var timestamp: Date? = null

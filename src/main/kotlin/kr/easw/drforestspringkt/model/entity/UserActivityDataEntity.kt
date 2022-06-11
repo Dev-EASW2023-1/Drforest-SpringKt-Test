@@ -5,7 +5,7 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
-@javax.persistence.Table(name = "UserActivity")
+@Table(name = "UserActivity")
 class UserActivityDataEntity(
     entity: UserAccountEntity,
     fieldName: String,

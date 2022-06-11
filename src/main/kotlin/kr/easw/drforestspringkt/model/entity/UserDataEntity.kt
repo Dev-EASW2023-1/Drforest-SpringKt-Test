@@ -29,5 +29,4 @@ class UserDataEntity(user: UserAccountEntity, name: String, phone: String, regio
     @CreationTimestamp
     var createdTimestamp: Date? = null
 
-
 }

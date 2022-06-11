@@ -3,10 +3,7 @@ package kr.easw.drforestspringkt.controller.web
 import kr.easw.drforestspringkt.auth.UserAccountData
 import kr.easw.drforestspringkt.enumeration.Roles
 import kr.easw.drforestspringkt.model.dto.ShareToUserRequest
-import kr.easw.drforestspringkt.service.AnnouncementService
-import kr.easw.drforestspringkt.service.AuthenticateService
-import kr.easw.drforestspringkt.service.SharedUserService
-import kr.easw.drforestspringkt.service.UserNoticeService
+import kr.easw.drforestspringkt.service.*
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -19,7 +16,8 @@ class TemporaryWebController(
     val userService: AuthenticateService,
     val share: SharedUserService,
     val noticeService: UserNoticeService,
-    val announcementService: AnnouncementService
+    val announcementService: AnnouncementService,
+    val dailyScoreLogService: DailyScoreLogService
 ) {
     @GetMapping("/regions")
     fun addRegions() = "init/add_region.html"
@@ -50,6 +48,22 @@ class TemporaryWebController(
     @GetMapping("/permissions")
     fun permissionsTemp(): String {
         return "temp/recalc_permission.html"
+    }
+
+
+    @GetMapping("/import-daily")
+    fun importDailyTemp(): String {
+        return "temp/instant_log_now.html"
+    }
+
+    @PostMapping("/log-daily-data-now/")
+    fun addNow() : String {
+        dailyScoreLogService.logScoreNow()
+        return "redirect:/import-daily?msg=${
+            URLEncoder.encode(
+                "추가되었습니다.", StandardCharsets.UTF_8
+            )
+        }"
     }
 
     @PostMapping("/add-share-temp")

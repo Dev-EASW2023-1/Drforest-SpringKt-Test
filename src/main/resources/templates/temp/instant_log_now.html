@@ -1,0 +1,17 @@
+<html>
+    <head>
+        <title> Test </title>
+        <script type="text/javascript">
+            let param = window.location.search.substr(1)
+            if (param.startsWith("msg=")) {
+                alert(decodeURI(window.location.search.replace("+", " ")).substr(5).replace("+", " "))
+            }
+        </script>
+    </head>
+    <body>
+        <form action="/log-daily-data-now/" method="post">
+
+            <input type="submit">
+        </form>
+    </body>
+</html>

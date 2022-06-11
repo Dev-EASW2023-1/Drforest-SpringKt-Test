@@ -60,21 +60,22 @@ class AdminApiController(
     }
 
 
-    @PutMapping("/announcement/")
+    @PutMapping("/announcement/global/")
     @Tag(
         name = "서버 공지사항 API", description = "서버에 등록된 공지사항을 관리합니다."
     )
     @Operation(
-        summary = "관리자 ID 토큰",
+        summary = "전역 공지사항 추가 API",
         security = [SecurityRequirement(name = "JWT")]
     )
     fun onCreateAnnouncement(@RequestBody request: AddGlobalAnnouncementRequest): ResponseEntity<AddAnnouncementResponse> {
         return ResponseEntity.ok(announcementService.addAnnouncement(request))
     }
 
-    @PutMapping("/announcement/{regionName}")
+
+    @PutMapping("/announcement/")
     @Tag(
-        name = "서버 API", description = "서버에 등록된 공지사항을 관리합니다."
+        name = "서버 공지사항 API", description = "서버에 등록된 공지사항을 관리합니다."
     )
     @Operation(
         summary = "지역 공지사항 추가 API",
@@ -88,7 +89,7 @@ class AdminApiController(
 
     @GetMapping("/announcement/")
     @Tag(
-        name = "서버 API", description = "서버에 등록된 공지사항을 관리합니다."
+        name = "서버 공지사항 API", description = "서버에 등록된 공지사항을 관리합니다."
     )
     @Operation(
         summary = "공지사항 목록 API",
@@ -106,7 +107,7 @@ class AdminApiController(
 
     @DeleteMapping("/announcement/{announcementId}")
     @Tag(
-        name = "서버 API", description = "서버에 등록된 공지사항을 관리합니다." +
+        name = "서버 공지사항 API", description = "서버에 등록된 공지사항을 관리합니다." +
                 "** 경고 ** GET API는 추후 Paging 형식으로 변경될 수 있습니다."
     )
     @Operation(

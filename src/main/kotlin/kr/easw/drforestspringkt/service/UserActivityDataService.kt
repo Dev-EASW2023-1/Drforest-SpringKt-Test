@@ -2,6 +2,7 @@ package kr.easw.drforestspringkt.service
 
 import kr.easw.drforestspringkt.auth.UserAccountData
 import kr.easw.drforestspringkt.model.dto.*
+import kr.easw.drforestspringkt.model.entity.UserAccountEntity
 import kr.easw.drforestspringkt.model.entity.UserActivityDataEntity
 import kr.easw.drforestspringkt.model.repository.UserActivityDataRepository
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -30,6 +31,10 @@ class UserActivityDataService(
                 UserActivityDataEntity(user, name, value)
             )
         }
+    }
+
+    fun findAllRecentUser(duration: Long): List<UserAccountEntity> {
+        return repo.findAllRecentUser(Date(System.currentTimeMillis() - duration))
     }
 
     fun fetchResult(
@@ -61,7 +66,7 @@ class UserActivityDataService(
         end += adjustTime
         repo.getAllByEntity_UserIdAndTimestampBetween(user, Date(start), Date(end)).forEach {
             val map = data.getOrPut(
-                when(tick){
+                when (tick) {
                     // In the daily average graph, the day graph represents data from the previous day.
                     1000 * 60 * 60 * 24L -> (it.timestamp!!.time + 1000 * 60 * 60 * 24L) - (it.timestamp!!.time + 1000 * 60 * 60 * 24L) % tick
                     // In the n-minute graph, the x-axis is the time as it is.
@@ -145,14 +150,16 @@ class UserActivityDataService(
     fun calculateTodayScore(
         user: String,
         dateHourAdjust: Int = 0 /* Default value = UTC + 18 (KST + 9) */,
-        endMargin: Long = 1000 * 60 * 60 * 24
+        endMargin: Long = 1000 * 60 * 60 * 24,
+        truncateToDay: Boolean = true
     ): UserScoreData {
         val fetch = fetchResult(
             user,
             (System.currentTimeMillis() % (1000 * 60 * 60 * 24)),
             1000 * 60 * 60 * 24,
             adjustHour = dateHourAdjust,
-            endMargin = endMargin
+            endMargin = endMargin,
+            truncateToDay = truncateToDay
         )
         val scoreMap = mutableMapOf<String, Int>()
         val totalMap = mutableMapOf<String, Float>()
@@ -167,42 +174,42 @@ class UserActivityDataService(
         val idle = totalMap.getOrElse("Idle") { 0f }
         val gps = totalMap.getOrElse("GPS") { 0f }
         scoreMap["GPS"] = when {
-            gps <= 3 * 1000 -> 2
-            gps <= 10 * 1000 -> 1
-            gps <= 60 * 1000 -> 0
-            gps <= 100 * 1000 -> 1
-            else -> 2
+            gps <= 3 * 1000 -> 1
+            gps <= 10 * 1000 -> 2
+            gps <= 60 * 1000 -> 3
+            gps <= 100 * 1000 -> 4
+            else -> 5
         }
         scoreMap["OnOff"] = when {
-            onOff <= 20 -> 2
-            onOff <= 50 -> 1
-            onOff <= 90 -> 0
-            onOff <= 120 -> 1
-            else -> 2
+            onOff <= 20 -> 1
+            onOff <= 50 -> 2
+            onOff <= 90 -> 3
+            onOff <= 120 -> 4
+            else -> 5
         }
 
         scoreMap["Step"] = when {
-            step >= 70001 -> 2
-            step >= 2356 -> 0
-            step >= 943 -> 0
-            step >= 471 -> 1
-            else -> 2
+            step >= 70001 -> 1
+            step >= 2356 -> 3
+            step >= 943 -> 3
+            step >= 471 -> 4
+            else -> 5
         }
 
         scoreMap["Idle"] = when {
-            idle < 6 * 60 * 60 -> 2
-            idle < 7 * 60 * 60 -> 1
-            idle < 8 * 60 * 60 -> 0
-            idle < 9 * 60 * 60 -> 1
-            else -> 2
+            idle < 6 * 60 * 60 -> 1
+            idle < 7 * 60 * 60 -> 2
+            idle < 8 * 60 * 60 -> 3
+            idle < 9 * 60 * 60 -> 4
+            else -> 5
         }
 
         scoreMap["Traffic"] = when {
-            traffic <= 34 * 1024 * 1024 -> 2
-            traffic <= 307 * 1024 * 1024 -> 1
-            traffic <= 887 * 1024 * 1024 -> 0
-            traffic <= 1024 * 1024 * 1024 -> 1
-            else -> 2
+            traffic <= 34 * 1024 * 1024 -> 1
+            traffic <= 307 * 1024 * 1024 -> 2
+            traffic <= 887 * 1024 * 1024 -> 3
+            traffic <= 1024 * 1024 * 1024 -> 4
+            else -> 5
         }
 
         scoreMap["Social"] = foldScore(scoreMap["GPS"]!!) + foldScore(scoreMap["Traffic"]!!)
@@ -239,8 +246,8 @@ class UserActivityDataService(
      * If it is step score, folding score will bi in next array: [2, 0, 0, 1, 2].
      */
     fun foldScore(score: Int, isStep: Boolean = false): Int {
-        if (isStep && score == 2)
-            return 0
+//        if (isStep && score == 2)
+//            return 0
         return abs(score - 3)
     }
 }
