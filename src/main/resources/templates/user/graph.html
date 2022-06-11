@@ -79,8 +79,8 @@
                 console.log("Before processing: " + startTimeCurrent)
                 let startTime = startTimeCurrent - (startTimeCurrent % timeUnit)
                 let endTime = endTimeCurrent + (timeUnit - (endTimeCurrent % timeUnit))
-                let startTimeDate = startTimeCurrentDay - (startTimeCurrentDay % timeUnitDate)
-                let endTimeDate = endTimeCurrentDay + (timeUnit - (endTimeCurrentDay % timeUnitDate))
+                let startTimeDate = startTimeCurrentDay - (startTimeCurrentDay % timeUnitDate) + 15 * 60 * 60 * 1000 // Show the daily average graph for 5 days
+                let endTimeDate = endTimeCurrentDay + (timeUnit - (endTimeCurrentDay % timeUnitDate)) - 9 * 60 * 60 * 1000 // Remove the cropped part on the right
 
                 let length = (endTime - startTime) / timeUnit
                 let lengthDate = (endTimeDate - startTimeDate) / timeUnitDate
@@ -97,7 +97,7 @@
                     // timeArray.push(dto["time"])
                     minuteGpsArray.push({
                         x: moment(dto["time"]),
-                        y: (dto["value"]["GPS"] ?? 0) / 1024
+                        y: (dto["value"]["GPS"] ?? 0) / 1000 // Change the standard correctly
                     })
 
                     minuteStepArray.push({
@@ -144,25 +144,25 @@
                 dataDate["list"].forEach(dto => {
 
                     dateSocialArray.push({
-                        x: moment(dto["time"]),
+                        x: moment(new Date(dto["time"]) - new Date(9 * 60 * 60 * 1000)), // Move the daily average graph to the center
                         y: (dto["value"]["Social"] ?? 0)
                     })
 
 
                     dateHealthArray.push({
-                        x: moment(dto["time"]),
+                        x: moment(new Date(dto["time"]) - new Date(9 * 60 * 60 * 1000)), // Move the daily average graph to the center
                         y: (dto["value"]["Health"] ?? 0)
                     })
 
 
                     dateMentalArray.push({
-                        x: moment(dto["time"]),
+                        x: moment(new Date(dto["time"]) - new Date(9 * 60 * 60 * 1000)), // Move the daily average graph to the center
                         y: (dto["value"]["Mental"] ?? 0)
                     })
 
 
                     dateTotalArray.push({
-                        x: moment(dto["time"]),
+                        x: moment(new Date(dto["time"]) - new Date(9 * 60 * 60 * 1000)), // Move the daily average graph to the center
                         y: (dto["value"]["Total"] ?? 0)
                     })
                 })
@@ -233,7 +233,7 @@
                 );
 
 
-                makeSingleChart("line-chart-total", 10, timeArrayDate,
+                makeSingleChart("line-chart-total", 10, timeArrayDate, // Set the daily average graph maximum
                     {
                         name: "정신건강 결과수치",
                         data: dateTotalArray,
@@ -299,27 +299,29 @@
                                 {
                                     type: 'line',
                                     backgroundColor: 'rgba(0,72,255, 0.4)',
-                                    borderColor: 'rgba(0,72,255, 0.4)',
+                                    borderColor: 'rgba(0,72,255, 1)',
                                     label: charts[1].name,
-                                    borderWidth: 3,
+                                    borderWidth: 1,
                                     data: charts[1].data,
                                     fill: false,
-                                    pointRadius: 0,
+                                    pointRadius: 1,
                                     spanGaps: false,
-                                    yAxisID: 'yAxis01'
+                                    // Remove the auxiliary shaft
+                                    //yAxisID: 'yAxis01'
                                 },
                                 {
                                     type: 'line',
-                                    backgroundColor: 'rgba(0,72,255, 0.4)',
-                                    borderColor: 'rgba(0,72,255, 0.4)',
+                                    backgroundColor: 'rgba(64,151,54, 0.4)',
+                                    borderColor: 'rgba(64,151,54, 1)',
                                     label: charts[2].name,
-                                    borderWidth: 3,
+                                    borderWidth: 1,
                                     data: charts[2].data,
                                     fill: false,
-                                    pointRadius: 0,
+                                    pointRadius: 1,
                                     barThickness: 5,
                                     spanGaps: false,
-                                    yAxisID: 'yAxis02'
+                                    // Remove the auxiliary shaft
+                                    //yAxisID: 'yAxis02'
                                 },
                             ],
 
@@ -370,7 +372,7 @@
                                     time: {
                                         unit: 'minute',
                                         displayFormats: {
-                                            minute: 'MM-DD\nH:mm',
+                                            minute: "MM-DD \n H:mm",
                                         },
                                         tooltipFormat: 'H:mm'
                                     },
@@ -382,12 +384,14 @@
                                     },
                                     ticks: {
                                         callback: function (tick, index, array) {
-                                            return (index % 15 === 0) ? tick : "";
+                                            return (index % 5 === 0) ? tick : ""; // Change the x-axis intervals
                                         }
                                     },
                                     min: startTime,
                                     max: endTime
                                 },
+                                // Remove the auxiliary shaft
+                                /*
                                 yAxis01: {
                                     type: 'linear',
                                     display: true,
@@ -406,15 +410,15 @@
                                         display: false
                                     }
                                 },
-
+                                */
                                 barChartY: {
                                     type: 'linear',
                                     display: true,
                                     position: 'right',
-                                    ticks: {
-                                        min: 1,
-                                        max: 4,
-                                    }
+                                    // ticks is not working :(
+                                    //ticks: {
+                                        min: 0,
+                                    //}
                                 },
                             },
                         }
@@ -450,9 +454,9 @@
                                 {
                                     type: 'bar',
                                     label: charts.name,
-                                    borderWidth: 3,
+                                    borderWidth: 1,
                                     data: charts.data,
-                                    backgroundColor: 'rgba(0,72,255, 1)',
+                                    backgroundColor: 'rgba(0,72,255, 0.4)',
                                     borderColor: 'rgba(0,72,255, 1)',
                                     pointRadius: 0,
                                     spanGaps: false,
@@ -507,6 +511,7 @@
                                         displayFormats: {
                                             day: 'MM-DD',
                                         },
+                                        tooltipFormat: 'YYYY-MM-DD' // Change the daily average graph tooltip to hide the hour
                                     },
                                     grid: {
                                         display: true,
@@ -525,10 +530,11 @@
                                     type: 'linear',
                                     display: true,
                                     position: 'right',
-                                    ticks: {
-                                        min: 1,
+                                    // ticks is not working :(
+                                    //ticks: {
+                                        min: 0,
                                         max: maxValue,
-                                    }
+                                    //}
                                 },
                             },
                         }
