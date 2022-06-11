@@ -6,13 +6,15 @@ data class AddUserNoticeRequest(val contents: String, val executeDeviceNotificat
 
 data class AddUserNoticeResponse(val isSuccess: Boolean, val message: String)
 
-data class AddAnnouncementRequest(val title: String, val contents: String)
+data class AddAnnouncementRequest(val region: String?, val title: String, val contents: String)
 
 data class AddAnnouncementResponse(val message: String)
 
-data class AddRegionRequest(val regionName: String)
+data class DeleteAnnouncementResponse(val isSuccess: Boolean)
 
-data class AddRegionResponse(val isSuccess: Boolean, val message: String)
+data class AddRegionResponse(val isSuccess: Boolean)
+
+data class DeleteRegionResponse(val isSuccess: Boolean)
 
 data class ListAnnouncementResponse(val announcements: List<AnnouncementEntityData>)
 

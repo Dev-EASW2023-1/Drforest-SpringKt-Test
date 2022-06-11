@@ -9,7 +9,7 @@ interface AnnouncementRepository : JpaRepository<AnnouncementEntity, Long> {
 //    fun findById(id: Long): Optional<AnnouncementEntity>
 
 
-    fun getAllByOrderByIdDesc() : List<AnnouncementEntity>
+    fun getAllByRegionOrderByIdDesc(region: String?): List<AnnouncementEntity>
 
 
 }

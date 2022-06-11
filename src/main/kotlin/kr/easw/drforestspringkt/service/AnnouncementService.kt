@@ -22,23 +22,42 @@ class AnnouncementService(
         return AnnouncementData(data.id, data.time!!, data.title, data.content)
     }
 
-    fun getAllAnnouncement(): AnnouncementResponse {
+    fun getAllAnnouncement(region: String? = null, includeGlobal: Boolean = true): AnnouncementResponse {
         return AnnouncementResponse(
-            LinkedHashMap<Long, AnnouncementData>().apply {
-                repo.getAllByOrderByIdDesc().forEach { data ->
+            LinkedHashMap<Long, AnnouncementData>().run {
+                repo.getAllByRegionOrderByIdDesc(region).forEach { data ->
                     put(data.id, AnnouncementData(data.id, data.time!!, data.title, data.content))
                 }
+                if (includeGlobal && region != null) {
+                    repo.getAllByRegionOrderByIdDesc(null).forEach { data ->
+                        put(data.id, AnnouncementData(data.id, data.time!!, data.title, data.content))
+                    }
+                    return@run sortedMapOf(reverseOrder(), *entries.map { x -> x.key to x.value }.toTypedArray())
+                }
+                return@run this
             }
         )
     }
 
-    fun addAnnouncement(title: String, contents: String) {
-        repo.save(AnnouncementEntity(title, contents)).id
+    fun addAnnouncement(region: String? = null, title: String, contents: String) {
+        repo.save(AnnouncementEntity(title, contents, region)).id
     }
 
-    fun addAnnouncement(request: AddAnnouncementRequest) : AddAnnouncementResponse {
-        addAnnouncement(request.title, request.contents)
+    fun addAnnouncement(request: AddAnnouncementRequest): AddAnnouncementResponse {
+        addAnnouncement(request.region, request.title, request.contents)
         return AddAnnouncementResponse("새 공지가 추가되었습니다.")
+    }
+
+    fun deleteAnnouncement(announcementId: Long): Boolean {
+        try {
+            repo.getById(announcementId)
+        } catch (e: Throwable) {
+            return false
+        }
+        repo.delete(AnnouncementEntity("", "", "").apply {
+            id = announcementId
+        })
+        return true
     }
 }
 

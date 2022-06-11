@@ -13,7 +13,11 @@ import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
 @Controller
-class TemporaryWebController(val share: SharedUserService, val noticeService: UserNoticeService, val announcementService: AnnouncementService) {
+class TemporaryWebController(
+    val share: SharedUserService,
+    val noticeService: UserNoticeService,
+    val announcementService: AnnouncementService
+) {
     @GetMapping("/regions")
     fun addRegions() = "init/add_region.html"
 
@@ -84,7 +88,7 @@ class TemporaryWebController(val share: SharedUserService, val noticeService: Us
         @RequestParam("title") title: String,
         @RequestParam("contents") contents: String,
     ): String {
-        announcementService.addAnnouncement(title, contents)
+        announcementService.addAnnouncement(null, title, contents)
         return "redirect:/announcement?msg=${
             URLEncoder.encode(
                 "공지사항이 추가되었습니다.", StandardCharsets.UTF_8
