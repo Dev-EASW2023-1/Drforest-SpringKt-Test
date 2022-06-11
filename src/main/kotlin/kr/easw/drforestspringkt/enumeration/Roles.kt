@@ -28,7 +28,7 @@ enum class Roles : GrantedAuthority {
     }
 
     override fun getAuthority(): String {
-        return "ROLE_$name"
+        return name
     }
 
     fun allow(origin: Int): Int {
