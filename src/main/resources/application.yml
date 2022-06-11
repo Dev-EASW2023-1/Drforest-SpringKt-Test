@@ -25,7 +25,7 @@ spring:
 #    password: 'easw409'
     url: 'jdbc:mysql://database-8-onlecture-recovered.clrcqre9faxp.ap-northeast-2.rds.amazonaws.com:3306/drforest?createDatabaseIfNotExist=true&useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC'
     username: 'admin'
-    password: '12345678'
+    password: 'easw409'
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     database: mysql

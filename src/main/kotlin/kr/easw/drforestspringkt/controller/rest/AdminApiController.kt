@@ -39,7 +39,7 @@ class AdminApiController(
     @DeleteMapping("/region/{regionName}")
     @Tag(name = "지역 API", description = "시스템에 등록된 지역을 관리합니다.")
     @Operation(
-        summary = "관리자 삭제 API",
+        summary = "지역 삭제 API",
         security = [SecurityRequirement(name = "JWT")]
     )
     fun onDeleteRegion(@PathVariable("regionName") regionName: String): ResponseEntity<DeleteRegionResponse> {
