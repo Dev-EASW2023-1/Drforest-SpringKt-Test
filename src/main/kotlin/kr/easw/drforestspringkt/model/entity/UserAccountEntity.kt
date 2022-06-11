@@ -9,7 +9,7 @@ import javax.persistence.Id
 
 @Entity
 @javax.persistence.Table(name = "UserAccount")
-class UserAccountEntity(id: String, password: String) {
+class UserAccountEntity(id: String, password: String, permission: Int) {
     @Id
     @GeneratedValue
     var id: Long = 0
@@ -19,6 +19,9 @@ class UserAccountEntity(id: String, password: String) {
 
     @Column(nullable = false)
     var password: String = password
+
+    @Column(nullable = false)
+    var permission: Int = permission
 
     @CreationTimestamp
     var timestamp: Date? = null

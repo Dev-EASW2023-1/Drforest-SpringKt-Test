@@ -1,12 +1,42 @@
 package kr.easw.drforestspringkt.enumeration
 
+import kr.easw.drforestspringkt.util.checkFlag
+import kr.easw.drforestspringkt.util.negative
+import kr.easw.drforestspringkt.util.positive
 import org.springframework.security.core.GrantedAuthority
 
-enum class Roles(private val authorityName: String) : GrantedAuthority {
-    ADMIN("ROLE_ADMIN"), USER("ROLE_USER"), API("ROLE_API");
+// Permission level can be duplicated, and will be reduced to one integer value.
+enum class Roles : GrantedAuthority {
+    API,
+    USER,
+    MANAGER,
+    ADMIN
+    ;
+
+    companion object {
+        fun listRoles(origin: Int): List<Roles> {
+            return values().filter { role -> checkFlag(origin, role.ordinal) }
+        }
+
+        fun allow(vararg roles: Roles): Int {
+            var allowed = 0
+            for (role in roles) {
+                allowed = role.allow(allowed)
+            }
+            return allowed
+        }
+    }
 
     override fun getAuthority(): String {
-        return authorityName
+        return name
+    }
+
+    fun allow(origin: Int): Int {
+        return origin positive ordinal
+    }
+
+    fun disallow(origin: Int): Int {
+        return origin negative ordinal
     }
 
 
