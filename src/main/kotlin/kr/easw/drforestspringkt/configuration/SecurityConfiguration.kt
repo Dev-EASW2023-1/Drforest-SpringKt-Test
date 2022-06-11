@@ -18,7 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Suppress("SpringJavaInjectionPointsAutowiringInspection")
 @EnableWebSecurity
 @Configuration
-class SecurityConfiguration(val jwtFilter : JwtAuthenticateFilter) : WebSecurityConfigurerAdapter() {
+class SecurityConfiguration(val jwtFilter: JwtAuthenticateFilter) : WebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity) {
         http
             .sessionManagement {
@@ -50,12 +50,12 @@ class SecurityConfiguration(val jwtFilter : JwtAuthenticateFilter) : WebSecurity
     private fun ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry.configureRoutePermission() {
         antMatchers("/api/public/**").permitAll()
         antMatchers("/api/auth/**").permitAll()
-        // 임시로 허용
-        antMatchers("/api/admin/**").permitAll()
-        antMatchers("/api/**").hasAnyRole(Roles.API.name)
+        antMatchers("/api/user/**").hasRole(Roles.USER.authority)
+        antMatchers("/api/admin/**").hasRole(Roles.API.authority)
+        antMatchers("/api/**").hasAnyRole(Roles.API.authority)
         antMatchers("/**").permitAll()
-        antMatchers("/board/admin/**").hasAnyRole(Roles.ADMIN.name)
-        antMatchers("/board/**").hasAnyRole(Roles.USER.name)
+        antMatchers("/board/admin/**").hasAnyRole(Roles.ADMIN.authority)
+        antMatchers("/board/**").hasAnyRole(Roles.USER.authority)
     }
 
 

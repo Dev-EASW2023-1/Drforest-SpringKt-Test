@@ -1,6 +1,7 @@
 package kr.easw.drforestspringkt.service
 
 import kr.easw.drforestspringkt.auth.UserAccountData
+import kr.easw.drforestspringkt.enumeration.Roles
 import kr.easw.drforestspringkt.model.repository.UserAccountRepository
 import lombok.extern.slf4j.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
@@ -27,7 +28,8 @@ class UserDetailService() : UserDetailsService {
                     accountNonExpired = true,
                     credentialsNonExpired = true,
                     accountNonLocked = true,
-                    enabled = true
+                    enabled = true,
+                    authorities = Roles.listRoles(permission).toTypedArray()
                 )
             }
     }
