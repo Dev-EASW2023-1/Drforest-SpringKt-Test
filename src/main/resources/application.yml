@@ -1,5 +1,5 @@
 server:
-  port: 60103
+  port: 80
 logging:
   file:
     path: '/logs'
