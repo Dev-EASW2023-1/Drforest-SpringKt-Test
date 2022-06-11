@@ -1,6 +1,8 @@
 package kr.easw.drforestspringkt.service
 
 import kr.easw.drforestspringkt.auth.UserAccountData
+import kr.easw.drforestspringkt.model.dto.AddUserNoticeRequest
+import kr.easw.drforestspringkt.model.dto.AddUserNoticeResponse
 import kr.easw.drforestspringkt.model.dto.UserNoticeData
 import kr.easw.drforestspringkt.model.dto.UserNoticeResponseDto
 import kr.easw.drforestspringkt.model.entity.UserNoticeEntity
@@ -46,6 +48,20 @@ class UserNoticeService(
         )
         FCMUtility.sendPush(userAccountData.username, "닥터포레스트", notice, 0)
         return "알림을 추가하였습니다."
+    }
+
+    fun addNotice(userName: String, request: AddUserNoticeRequest): AddUserNoticeResponse {
+        val user =
+            authenticateService.findAccountByUserId(userName) ?: return AddUserNoticeResponse(false, "등록된 유저가 아닙니다.")
+        repo.save(
+            UserNoticeEntity(
+                user,
+                request.contents,
+                false
+            )
+        )
+        FCMUtility.sendPush(userName, "닥터포레스트", request.contents, 0)
+        return AddUserNoticeResponse(true, "알림을 추가하였습니다.")
     }
 
 }

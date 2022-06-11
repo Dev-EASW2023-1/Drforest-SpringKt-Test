@@ -1,5 +1,7 @@
 package kr.easw.drforestspringkt.service
 
+import kr.easw.drforestspringkt.model.dto.AddAnnouncementRequest
+import kr.easw.drforestspringkt.model.dto.AddAnnouncementResponse
 import kr.easw.drforestspringkt.model.dto.AnnouncementData
 import kr.easw.drforestspringkt.model.dto.AnnouncementResponse
 import kr.easw.drforestspringkt.model.entity.AnnouncementEntity
@@ -32,6 +34,11 @@ class AnnouncementService(
 
     fun addAnnouncement(title: String, contents: String) {
         repo.save(AnnouncementEntity(title, contents)).id
+    }
+
+    fun addAnnouncement(request: AddAnnouncementRequest) : AddAnnouncementResponse {
+        addAnnouncement(request.title, request.contents)
+        return AddAnnouncementResponse("새 공지가 추가되었습니다.")
     }
 }
 
