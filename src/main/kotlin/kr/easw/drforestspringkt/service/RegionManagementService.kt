@@ -23,9 +23,8 @@ class RegionManagementService(val regionRepository: RegionRepository) {
     }
 
     fun deleteRegion(name: String): Boolean {
-        if (getRegion(name) == null)
-            return false
-        regionRepository.delete(RegionEntity(regionName = name))
+        val region = getRegion(name) ?: return false
+        regionRepository.delete(region)
         return true
     }
 

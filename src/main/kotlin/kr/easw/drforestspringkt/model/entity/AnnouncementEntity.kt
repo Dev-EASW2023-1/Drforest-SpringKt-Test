@@ -19,7 +19,7 @@ class AnnouncementEntity(author: String, region: String?, title: String, content
 
 
     @Column(nullable = true)
-    var author: String = author
+    var author: String? = author
 
     @Column(nullable = true)
     var region: String? = region
