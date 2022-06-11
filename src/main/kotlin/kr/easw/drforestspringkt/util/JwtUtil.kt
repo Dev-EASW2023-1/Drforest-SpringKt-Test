@@ -61,7 +61,6 @@ object JwtUtil {
     // Jwt 토큰 유효성 검사
     fun validateToken(token: String): ValidateStatus {
         return try {
-            println(token)
             Jwts.parserBuilder().setSigningKey(jwtSecretKey).build().parseClaimsJws(token)
             ValidateStatus.VALID
         } catch (ex: MalformedJwtException) {
@@ -74,6 +73,9 @@ object JwtUtil {
             ValidateStatus.EXPIRED
         } catch (ex: UnsupportedJwtException) {
             ValidateStatus.UNSUPPORTED
+        } catch (ex: Throwable) {
+            // Failed with unexpected exception..
+            return ValidateStatus.INVALID
         }
     }
 

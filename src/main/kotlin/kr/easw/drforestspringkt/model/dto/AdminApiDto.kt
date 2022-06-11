@@ -8,7 +8,9 @@ data class AddUserNoticeResponse(val isSuccess: Boolean, val message: String)
 
 data class AddAnnouncementRequest(val region: String?, val author: String, val title: String, val contents: String)
 
-data class AddAnnouncementResponse(val message: String)
+data class AddGlobalAnnouncementRequest(val author: String, val title: String, val contents: String)
+
+data class AddAnnouncementResponse(val isSuccess: Boolean, val message: String)
 
 data class DeleteAnnouncementResponse(val isSuccess: Boolean)
 
