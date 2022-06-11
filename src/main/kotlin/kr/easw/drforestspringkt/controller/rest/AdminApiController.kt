@@ -1,6 +1,9 @@
 package kr.easw.drforestspringkt.controller.rest
 
+import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import kr.easw.drforestspringkt.model.dto.*
 import kr.easw.drforestspringkt.service.AnnouncementService
@@ -11,7 +14,11 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/admin")
-@ApiResponse(responseCode = "403", description = "관리자 토큰이 아닌 토큰으로 접근할 경우, 권한 부족 오류가 발생합니다.")
+@ApiResponses(
+    ApiResponse(responseCode = "200", description = "요청한 작업이 성공할 때 해당 코드가 반환됩니다.\n해당 코드는 예측된 오류가 발생하였을 경우에도 발생하며, 이 경우에는 반환값의 isSuccess 필드를 이용해 분류합니다."),
+    ApiResponse(responseCode = "403", description = "관리자 토큰이 아닌 토큰으로 접근할 경우, 권한 부족으로 판단되어 해당 코드가 반환됩니다."),
+    ApiResponse(responseCode = "500", description = "서버에서 예상치 못한 오류가 발생했을 경우, 해당 코드가 반환됩니다."),
+)
 class AdminApiController(
     val regionManagementService: RegionManagementService,
     val noticeService: UserNoticeService,
@@ -20,6 +27,10 @@ class AdminApiController(
 
     @PutMapping("/region/{regionName}")
     @Tag(name = "지역 API", description = "시스템에 등록된 지역을 관리합니다.")
+    @Operation(
+        summary = "관리자 ID 토큰",
+        security = [SecurityRequirement(name = "JWT")]
+    )
     fun onCreateRegion(@PathVariable("regionName") regionName: String): ResponseEntity<AddRegionResponse> {
         return ResponseEntity.ok(AddRegionResponse(regionManagementService.registerRegion(regionName)))
     }
@@ -27,12 +38,20 @@ class AdminApiController(
 
     @DeleteMapping("/region/{regionName}")
     @Tag(name = "지역 API", description = "시스템에 등록된 지역을 관리합니다.")
+    @Operation(
+        summary = "관리자 ID 토큰",
+        security = [SecurityRequirement(name = "JWT")]
+    )
     fun onDeleteRegion(@PathVariable("regionName") regionName: String): ResponseEntity<DeleteRegionResponse> {
         return ResponseEntity.ok(DeleteRegionResponse(regionManagementService.deleteRegion(regionName)))
     }
 
     @PutMapping("/notice/{user}/")
     @Tag(name = "유저 개인 알림 API", description = "대상 유저에게 알림을 추가합니다.\n파라미터의 Boolean 값으로 기기에 알림을 보낼지의 여부를 지정할 수 있습니다.")
+    @Operation(
+        summary = "관리자 ID 토큰",
+        security = [SecurityRequirement(name = "JWT")]
+    )
     fun onCreateUserNotice(
         @PathVariable("user") user: String,
         @RequestBody request: AddUserNoticeRequest
@@ -46,6 +65,10 @@ class AdminApiController(
         name = "서버 API", description = "서버에 등록된 공지사항을 관리합니다." +
                 "** 경고 ** GET API는 추후 Paging 형식으로 변경될 수 있습니다."
     )
+    @Operation(
+        summary = "관리자 ID 토큰",
+        security = [SecurityRequirement(name = "JWT")]
+    )
     fun onCreateAnnouncement(@RequestBody request: AddAnnouncementRequest): ResponseEntity<AddAnnouncementResponse> {
         return ResponseEntity.ok(announcementService.addAnnouncement(request))
     }
@@ -54,6 +77,10 @@ class AdminApiController(
     @Tag(
         name = "서버 API", description = "서버에 등록된 공지사항을 관리합니다." +
                 "** 경고 ** GET API는 추후 Paging 형식으로 변경될 수 있습니다."
+    )
+    @Operation(
+        summary = "관리자 ID 토큰",
+        security = [SecurityRequirement(name = "JWT")]
     )
     fun onCreateAnnouncementForRegion(
         @RequestBody request: AddAnnouncementRequest,
@@ -66,6 +93,10 @@ class AdminApiController(
     @Tag(
         name = "서버 API", description = "서버에 등록된 공지사항을 관리합니다." +
                 "** 경고 ** GET API는 추후 Paging 형식으로 변경될 수 있습니다."
+    )
+    @Operation(
+        summary = "관리자 ID 토큰",
+        security = [SecurityRequirement(name = "JWT")]
     )
     fun onRequestAnnouncementList(): ResponseEntity<ListAnnouncementResponse> {
         return ResponseEntity.ok(
@@ -81,6 +112,10 @@ class AdminApiController(
     @Tag(
         name = "서버 API", description = "서버에 등록된 공지사항을 관리합니다." +
                 "** 경고 ** GET API는 추후 Paging 형식으로 변경될 수 있습니다."
+    )
+    @Operation(
+        summary = "관리자 ID 토큰",
+        security = [SecurityRequirement(name = "JWT")]
     )
     fun onDeleteAnnouncement(
         @RequestBody request: AddAnnouncementRequest,

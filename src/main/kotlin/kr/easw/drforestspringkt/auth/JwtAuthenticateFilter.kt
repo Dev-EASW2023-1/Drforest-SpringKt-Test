@@ -20,10 +20,9 @@ class JwtAuthenticateFilter(val userDetailService: UserDetailService) : OncePerR
         response: HttpServletResponse,
         filterChain: FilterChain,
     ) {
-
         if (request.getHeader("Authorization") != null) {
             // JWT Authorization request..
-            val token = request.getHeader("Authorization")
+            val token = getJwtFromRequest(request.getHeader("Authorization"))!!
             println("JWT header detected - $token")
             when (JwtUtil.validateToken(token)) {
                 VALID -> {
@@ -52,10 +51,9 @@ class JwtAuthenticateFilter(val userDetailService: UserDetailService) : OncePerR
     }
 
 
-    private fun getJwtFromRequest(token: String?): String? {
-        if (token == null) return null
+    private fun getJwtFromRequest(token: String): String {
         return if (token.startsWith("Bearer ")) {
             token.substring("Bearer ".length)
-        } else null
+        } else token
     }
 }

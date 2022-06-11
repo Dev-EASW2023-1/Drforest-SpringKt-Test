@@ -111,7 +111,6 @@ class TemporaryWebController(
         userService.addPermission(user, Roles.USER)
         if (admin)
             userService.addPermission(user, Roles.ADMIN)
-        println(Roles.listRoles(userService.findUserByName(user)!!.permission))
         return "redirect:/permissions?msg=${
             URLEncoder.encode(
                 "권한이 변경되었습니다.", StandardCharsets.UTF_8
