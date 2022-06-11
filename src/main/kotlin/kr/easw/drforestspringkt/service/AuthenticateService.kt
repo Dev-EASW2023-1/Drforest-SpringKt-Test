@@ -87,7 +87,7 @@ class AuthenticateService(
         if (!JwtUtil.validateRefreshToken(dto.refreshToken).valid) {
             throw BadCredentialsException("만료되었거나 잘못된 JWT 토큰")
         }
-        val user = JwtUtil.getUserFromToken(dto.refreshToken)
+        val user = JwtUtil.getUserFormRefreshToken(dto.refreshToken)
         logInfo("유저 ${user}의 토큰 재발급 요청 처리중..")
         userAccountRepository.findByUserId(user).orElseThrow {
             logInfo("사용자 ${user}의 토큰 재발급 요청이 거부되었습니다 : 등록되지 않은 사용자입니다.")
@@ -171,6 +171,13 @@ class AuthenticateService(
 
     fun findUserByPhone(phoneNumber: String): UserDataEntity? {
         return userDataRepository.findByPhone(phoneNumber).orElseGet { null }
+    }
+
+    fun addPermission(userName: String, role: Roles) {
+        userAccountRepository.findByUserId(userName).ifPresent {
+            it.permission = role.allow(it.permission)
+            userAccountRepository.save(it)
+        }
     }
 
 }

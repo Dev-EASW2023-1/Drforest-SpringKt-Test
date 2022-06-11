@@ -1,8 +1,10 @@
 package kr.easw.drforestspringkt.controller.web
 
 import kr.easw.drforestspringkt.auth.UserAccountData
+import kr.easw.drforestspringkt.enumeration.Roles
 import kr.easw.drforestspringkt.model.dto.ShareToUserRequest
 import kr.easw.drforestspringkt.service.AnnouncementService
+import kr.easw.drforestspringkt.service.AuthenticateService
 import kr.easw.drforestspringkt.service.SharedUserService
 import kr.easw.drforestspringkt.service.UserNoticeService
 import org.springframework.stereotype.Controller
@@ -14,6 +16,7 @@ import java.nio.charset.StandardCharsets
 
 @Controller
 class TemporaryWebController(
+    val userService: AuthenticateService,
     val share: SharedUserService,
     val noticeService: UserNoticeService,
     val announcementService: AnnouncementService
@@ -23,7 +26,6 @@ class TemporaryWebController(
 
     @GetMapping("/add-dummy/")
     fun addDummyData(@RequestParam("user") user: String): String {
-
         return "temp/request_complete.html"
     }
 
@@ -43,6 +45,11 @@ class TemporaryWebController(
     @GetMapping("/announcement")
     fun announcementTemp(): String {
         return "init/add_announcement.html"
+    }
+
+    @GetMapping("/permissions")
+    fun permissionsTemp(): String {
+        return "temp/recalc_permission.html"
     }
 
     @PostMapping("/add-share-temp")
@@ -92,6 +99,22 @@ class TemporaryWebController(
         return "redirect:/announcement?msg=${
             URLEncoder.encode(
                 "공지사항이 추가되었습니다.", StandardCharsets.UTF_8
+            )
+        }"
+    }
+
+    @PostMapping("/change-permission")
+    fun onChangePermission(
+        @RequestParam("user") user: String,
+        @RequestParam("admin") admin: Boolean,
+    ): String {
+        userService.addPermission(user, Roles.USER)
+        if (admin)
+            userService.addPermission(user, Roles.ADMIN)
+        println(Roles.listRoles(userService.findUserByName(user)!!.permission))
+        return "redirect:/permissions?msg=${
+            URLEncoder.encode(
+                "권한이 변경되었습니다.", StandardCharsets.UTF_8
             )
         }"
     }

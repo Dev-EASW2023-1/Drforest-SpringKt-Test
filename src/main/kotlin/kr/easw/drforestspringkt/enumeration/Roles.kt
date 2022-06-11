@@ -4,6 +4,7 @@ import kr.easw.drforestspringkt.util.checkFlag
 import kr.easw.drforestspringkt.util.negative
 import kr.easw.drforestspringkt.util.positive
 import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 
 // Permission level can be duplicated, and will be reduced to one integer value.
 enum class Roles : GrantedAuthority {
@@ -28,7 +29,7 @@ enum class Roles : GrantedAuthority {
     }
 
     override fun getAuthority(): String {
-        return name
+        return "ROLE_$name"
     }
 
     fun allow(origin: Int): Int {

@@ -29,7 +29,9 @@ class UserDetailService() : UserDetailsService {
                     credentialsNonExpired = true,
                     accountNonLocked = true,
                     enabled = true,
-                    authorities = Roles.listRoles(permission).toTypedArray()
+                    authorities = Roles.listRoles(permission).toTypedArray().apply {
+                        println("Role: $this")
+                    }
                 )
             }
     }

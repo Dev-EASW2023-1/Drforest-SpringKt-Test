@@ -32,7 +32,7 @@ class JwtAuthenticateFilter(val userDetailService: UserDetailService) : OncePerR
                     logInfo("Processing login with JWT token - Detail $details")
                     val passToken =
                         UserAccountToken(
-                            details, details.password, Roles.API
+                            details, details.password, *details.authorities.toTypedArray()
                         )
                     passToken.details = details
                     SecurityContextHolder.getContext().authentication = passToken
@@ -47,6 +47,7 @@ class JwtAuthenticateFilter(val userDetailService: UserDetailService) : OncePerR
             }
             return
         }
+
         filterChain.doFilter(request, response)
     }
 

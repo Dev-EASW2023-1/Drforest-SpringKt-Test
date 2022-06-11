@@ -18,7 +18,10 @@ class AuthApiController(
     @PostMapping("/login")
     @Tag(name = "인증 API", description = "ID와 PW를 기반으로 로그인을 진행합니다.")
     fun onLogin(@RequestBody data: LoginDataRequest): ResponseEntity<LoginDataResponse> {
-        return ResponseEntity.ok(authService.login(data))
+        println("Login with ID ${data.id}")
+        return ResponseEntity.ok(authService.login(data).apply {
+            println("Login success")
+        })
     }
 
 }

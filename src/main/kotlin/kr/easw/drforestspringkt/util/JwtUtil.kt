@@ -19,11 +19,11 @@ object JwtUtil {
         Keys.hmacShaKeyFor(Base64.getEncoder().encode(jwtRefreshSecret.toByteArray(StandardCharsets.UTF_8)))
 
     // 1 Hours
-    private val jwtExpire = 60 * 60 * 1000 * 300
+    private val jwtExpire = 1 * 60 * 60 * 1000
 
 
     // 24 Hours
-    private val jwtRefreshExpire = 60 * 60 * 1000
+    private val jwtRefreshExpire = 24 * 60 * 60 * 1000
 
     fun generateToken(userName: String): String {
         val current = Date()

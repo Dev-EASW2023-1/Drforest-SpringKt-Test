@@ -1,0 +1,21 @@
+<html>
+    <head>
+        <title> Test </title>
+        <script type="text/javascript">
+            let param = window.location.search.substr(1)
+            if (param.startsWith("msg=")) {
+                alert(decodeURI(window.location.search.replace("+", " ")).substr(5).replace("+", " "))
+            }
+        </script>
+    </head>
+    <body>
+        <form action="/change-permission/" method="post">
+            제목: <input type="text" id="user" name="user"><br>
+            어드민 권한: <select id="admin" name="admin">
+                <option>true</option>
+                <option>false</option>
+            </select>
+            <input type="submit">
+        </form>
+    </body>
+</html>
