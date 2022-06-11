@@ -17,13 +17,11 @@ class AnnouncementEntity(author: String, region: String?, title: String, content
     @CreationTimestamp
     var time: Date? = null
 
-
     @Column(nullable = true)
     var author: String? = author
 
     @Column(nullable = true)
     var region: String? = region
-
 
     @Column
     var title: String = title

@@ -10,6 +10,5 @@ import java.util.*
 interface UserDataRepository : JpaRepository<UserDataEntity, Long> {
     fun findByAccount_UserId(id: String): Optional<UserDataEntity>
 
-
     fun findByPhone(phone: String) : Optional<UserDataEntity>
 }

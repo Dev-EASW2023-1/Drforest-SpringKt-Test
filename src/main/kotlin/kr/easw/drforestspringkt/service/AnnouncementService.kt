@@ -19,18 +19,24 @@ class AnnouncementService(
         } catch (e: Exception) {
             throw ResourceNotFoundException("No announcement found for id $id")
         }
-        return AnnouncementData(data.id, data.time!!, data.author, data.region, data.title, data.content)
+        return AnnouncementData(data.id, data.time!!, data.author ?: "관리자", data.region, data.title, data.content)
     }
 
     fun getAllAnnouncement(region: String? = null, includeGlobal: Boolean = true): AnnouncementResponse {
         return AnnouncementResponse(
             LinkedHashMap<Long, AnnouncementData>().run {
                 repo.getAllByRegionOrderByIdDesc(region).forEach { data ->
-                    put(data.id, AnnouncementData(data.id, data.time!!, data.author, data.region, data.title, data.content))
+                    put(
+                        data.id,
+                        AnnouncementData(data.id, data.time!!, data.author ?: "관리자", data.region, data.title, data.content)
+                    )
                 }
                 if (includeGlobal && region != null) {
                     repo.getAllByRegionOrderByIdDesc(null).forEach { data ->
-                        put(data.id, AnnouncementData(data.id, data.time!!, data.author, data.region, data.title, data.content))
+                        put(
+                            data.id,
+                            AnnouncementData(data.id, data.time!!, data.author ?: "관리자", data.region, data.title, data.content)
+                        )
                     }
                     return@run sortedMapOf(reverseOrder(), *entries.map { x -> x.key to x.value }.toTypedArray())
                 }
