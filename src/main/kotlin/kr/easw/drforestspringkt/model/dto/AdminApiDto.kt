@@ -6,7 +6,7 @@ data class AddUserNoticeRequest(val contents: String, val executeDeviceNotificat
 
 data class AddUserNoticeResponse(val isSuccess: Boolean, val message: String)
 
-data class AddAnnouncementRequest(val region: String?, val title: String, val contents: String)
+data class AddAnnouncementRequest(val region: String?, val author: String, val title: String, val contents: String)
 
 data class AddAnnouncementResponse(val message: String)
 

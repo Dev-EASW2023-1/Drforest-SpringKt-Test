@@ -88,7 +88,7 @@ class TemporaryWebController(
         @RequestParam("title") title: String,
         @RequestParam("contents") contents: String,
     ): String {
-        announcementService.addAnnouncement(null, title, contents)
+        announcementService.addAnnouncement("관리자", null, title, contents)
         return "redirect:/announcement?msg=${
             URLEncoder.encode(
                 "공지사항이 추가되었습니다.", StandardCharsets.UTF_8

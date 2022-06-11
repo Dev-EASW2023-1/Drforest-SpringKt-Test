@@ -9,7 +9,7 @@ import javax.persistence.Id
 
 @Entity
 @javax.persistence.Table(name = "Announcement")
-class AnnouncementEntity(title: String, content: String, region: String?) {
+class AnnouncementEntity(author: String, region: String?, title: String, content: String) {
     @Id
     @GeneratedValue
     var id: Long = 0
@@ -17,8 +17,13 @@ class AnnouncementEntity(title: String, content: String, region: String?) {
     @CreationTimestamp
     var time: Date? = null
 
+
+    @Column(nullable = true)
+    var author: String = author
+
     @Column(nullable = true)
     var region: String? = region
+
 
     @Column
     var title: String = title
