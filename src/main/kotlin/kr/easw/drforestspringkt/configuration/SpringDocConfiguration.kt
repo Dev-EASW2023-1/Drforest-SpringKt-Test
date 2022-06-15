@@ -55,7 +55,7 @@ class SpringDocConfiguration {
     fun authApi(): GroupedOpenApi? {
         return GroupedOpenApi.builder()
             .group("drforest-auth-api")
-            .pathsToMatch("/api/auth/**")
+            .pathsToMatch("/api/auth/**", "/api/public/**")
             .addOpenApiMethodFilter { method -> method.declaringClass == AuthApiController::class.java }
             .addOpenApiCustomiser {
                 it.info(
