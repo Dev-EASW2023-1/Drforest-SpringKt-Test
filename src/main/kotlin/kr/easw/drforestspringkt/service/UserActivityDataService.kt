@@ -34,7 +34,7 @@ class UserActivityDataService(
     }
 
     fun findAllRecentUser(duration: Long): List<UserAccountEntity> {
-        return repo.findAllRecentUser(Date(System.currentTimeMillis() - duration))
+        return repo.findAllRecentUserBetween(Date(System.currentTimeMillis() - (System.currentTimeMillis() % (24 * 60 * 60 * 1000)) - duration), Date(System.currentTimeMillis() - (System.currentTimeMillis() % (24 * 60 * 60 * 1000)) - duration + (24 * 60 * 60 * 1000)))
     }
 
     fun fetchResult(
