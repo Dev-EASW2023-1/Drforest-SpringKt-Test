@@ -24,6 +24,6 @@ interface UserActivityDataRepository : JpaRepository<UserActivityDataEntity, Lon
 
     fun getAllByFieldName(fieldName: String)
 
-    @Query("select u.entity from UserActivityDataEntity u where u.timestamp > :#{#timeAtLeast} group by u.entity")
-    fun findAllRecentUser(@Param("timeAtLeast") timeAtLeast: Date) : List<UserAccountEntity>
+    @Query("select u.entity from UserActivityDataEntity u where u.timestamp >= :#{#timeAtLeast} AND u.timestamp <= :#{#timeAtEnd} group by u.entity")
+    fun findAllRecentUserBetween(@Param("timeAtLeast") timeAtLeast: Date, @Param("timeAtEnd") timeAtEnd : Date) : List<UserAccountEntity>
 }

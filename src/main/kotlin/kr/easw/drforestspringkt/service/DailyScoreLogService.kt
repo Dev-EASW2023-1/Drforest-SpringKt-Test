@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit
 @Service
 class DailyScoreLogService(val repo: UserActivityDataService, val dailyScoreRepository: DailyUserDataRepository) {
 
-    @Scheduled(cron = "0 0 9 * * * *", zone = "KST")
+    @Scheduled(cron = "0 0 0 * * * ")
     fun logScore() {
         logScoreNow()
     }
@@ -22,7 +22,7 @@ class DailyScoreLogService(val repo: UserActivityDataService, val dailyScoreRepo
     fun logScoreNow() {
         val dataToSave = mutableListOf<DailyUserDataEntity>()
         for (x in fetchRecentUsers()) {
-            repo.calculateTodayScore(x.userId, 0, 0, false).score.forEach {
+            repo.calculateTodayScore(x.userId, 0, 1000 * 60 * 60 * 24 * 1, true).score.forEach {
                 dataToSave += DailyUserDataEntity(x, it.key, it.value)
             }
         }
