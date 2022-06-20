@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit
 @Service
 class DailyScoreLogService(val repo: UserActivityDataService, val dailyScoreRepository: DailyUserDataRepository) {
 
-    @Scheduled(cron = "0 0 9 * * * *", zone = "KST")
+    @Scheduled(cron = "0 0 9 * * *", zone = "GMT+9")
     fun logScore() {
         logScoreNow()
     }

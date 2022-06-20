@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import kr.easw.drforestspringkt.model.dto.*
 import kr.easw.drforestspringkt.service.AnnouncementService
 import kr.easw.drforestspringkt.service.RegionManagementService
+import kr.easw.drforestspringkt.service.RegionPermissionService
 import kr.easw.drforestspringkt.service.UserNoticeService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -15,14 +16,18 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api/admin")
 @ApiResponses(
-    ApiResponse(responseCode = "200", description = "요청한 작업이 성공할 때 해당 코드가 반환됩니다.\n해당 코드는 예측된 오류가 발생하였을 경우에도 발생하며, 이 경우에는 반환값의 isSuccess 필드를 이용해 분류합니다."),
+    ApiResponse(
+        responseCode = "200",
+        description = "요청한 작업이 성공할 때 해당 코드가 반환됩니다.\n해당 코드는 예측된 오류가 발생하였을 경우에도 발생하며, 이 경우에는 반환값의 isSuccess 필드를 이용해 분류합니다."
+    ),
     ApiResponse(responseCode = "403", description = "관리자 토큰이 아닌 토큰으로 접근할 경우, 권한 부족으로 판단되어 해당 코드가 반환됩니다."),
     ApiResponse(responseCode = "500", description = "서버에서 예상치 못한 오류가 발생했을 경우, 해당 코드가 반환됩니다."),
 )
 class AdminApiController(
     val regionManagementService: RegionManagementService,
     val noticeService: UserNoticeService,
-    val announcementService: AnnouncementService
+    val announcementService: AnnouncementService,
+    val regionPermissionService: RegionPermissionService,
 ) {
 
     @PutMapping("/region/{regionName}")
@@ -120,4 +125,52 @@ class AdminApiController(
     ): ResponseEntity<DeleteAnnouncementResponse> {
         return ResponseEntity.ok(DeleteAnnouncementResponse(announcementService.deleteAnnouncement(announcementId)))
     }
+
+    @PutMapping("/manager/")
+    @Tag(
+        name = "서버 관리자 API", description = "지역 관리자를 관리합니다."
+    )
+    @Operation(
+        summary = "서버 관리자 추가 API",
+        security = [SecurityRequirement(name = "JWT")],
+        description = "지역 관리자를 설정합니다.\n지역 관리자는 지역이 할당되었더라도, 해당 API를 통해 관리자 등록이 진행되지 않았다면 관리자로 취급되지 않습니다."
+    )
+    fun onAddManager(
+        @RequestBody request: AddManagerRequest,
+    ): ResponseEntity<AddManagerResponse> {
+        return ResponseEntity.ok(regionPermissionService.setManager(request))
+    }
+
+
+    @DeleteMapping("/manager/")
+    @Tag(
+        name = "서버 관리자 API", description = "지역 관리자를 관리합니다."
+    )
+    @Operation(
+        summary = "서버 관리자 삭제 API",
+        security = [SecurityRequirement(name = "JWT")],
+        description = "지역 관리자를 삭제합니다.\n지역 관리자가 삭제된 경우, 연결된 모든 관할 지역도 해제됩니다."
+    )
+    fun onDeleteManager(
+        @RequestBody request: DeleteManagerRequest,
+    ): ResponseEntity<DeleteManagerResponse> {
+        return ResponseEntity.ok(regionPermissionService.deleteManager(request))
+    }
+
+
+    @PutMapping("/manager/region/")
+    @Tag(
+        name = "서버 관리자 API", description = "지역 관리자를 관리합니다."
+    )
+    @Operation(
+        summary = "서버 관리자 추가 API",
+        security = [SecurityRequirement(name = "JWT")],
+        description = "대상 유저에게 지역을 할당합니다."
+    )
+    fun onAddRegion(
+        @RequestBody request: AddRegionToManagerRequest,
+    ): ResponseEntity<AddRegionToManagerResponse> {
+        return ResponseEntity.ok(regionPermissionService.addRegionPermission(request))
+    }
+
 }

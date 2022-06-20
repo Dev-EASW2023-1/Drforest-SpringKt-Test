@@ -4,11 +4,13 @@ import kr.easw.drforestspringkt.configuration.ExternalConfiguration
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication
+import org.springframework.scheduling.annotation.EnableScheduling
 import java.time.ZoneId
 import java.util.*
 
 @SpringBootApplication
 @EnableConfigurationProperties(ExternalConfiguration::class)
+@EnableScheduling
 class DrforestSpringKtApplication
 
 fun main(args: Array<String>) {

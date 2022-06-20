@@ -93,7 +93,7 @@ class AuthenticateService(
             logInfo("사용자 ${user}의 토큰 재발급 요청이 거부되었습니다 : 등록되지 않은 사용자입니다.")
             BadCredentialsException("사용자 존재하지 않음")
         }.apply {
-            return RefreshTokenResponse(JwtUtil.generateRefreshToken(user))
+            return RefreshTokenResponse(JwtUtil.generateToken(user))
         }
     }
 
@@ -138,6 +138,11 @@ class AuthenticateService(
         return userAccountRepository.findByUserId(userName).orElseGet { null }
     }
 
+
+    fun findUserDataByName(userName: String): UserDataEntity? {
+        return userDataRepository.findByAccount_UserId(userName).orElseGet { null }
+    }
+
     fun getUserData(user: UserAccountData): UserDataDto {
         val userData =
             userDataRepository.findByAccount_UserId(user.username).orElseThrow { BadCredentialsException("Not found") }
@@ -176,6 +181,13 @@ class AuthenticateService(
     fun addPermission(userName: String, role: Roles) {
         userAccountRepository.findByUserId(userName).ifPresent {
             it.permission = role.allow(it.permission)
+            userAccountRepository.save(it)
+        }
+    }
+
+    fun removePermission(userName: String, role: Roles) {
+        userAccountRepository.findByUserId(userName).ifPresent {
+            it.permission = role.disallow(it.permission)
             userAccountRepository.save(it)
         }
     }
