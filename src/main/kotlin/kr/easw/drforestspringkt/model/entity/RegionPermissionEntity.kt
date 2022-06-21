@@ -8,7 +8,7 @@ import javax.persistence.ManyToOne
 
 
 @Entity
-@javax.persistence.Table(name = "UserAccount")
+@javax.persistence.Table(name = "RegionPermission")
 class RegionPermissionEntity (user: UserDataEntity, region: RegionEntity) {
     @Id
     @GeneratedValue

@@ -6,7 +6,9 @@ import kr.easw.drforestspringkt.model.entity.RegionEntity
 import kr.easw.drforestspringkt.model.entity.RegionPermissionEntity
 import kr.easw.drforestspringkt.model.entity.UserDataEntity
 import kr.easw.drforestspringkt.model.repository.RegionPermissionRepository
+import org.springframework.stereotype.Service
 
+@Service
 class RegionPermissionService(
     val authenticateService: AuthenticateService,
     val regionService: RegionManagementService,
@@ -75,5 +77,9 @@ class RegionPermissionService(
             return AddRegionToManagerResponse(false, "이미 추가된 관리 지역입니다.")
         permissionRepository.save(RegionPermissionEntity(user, region))
         return AddRegionToManagerResponse(true, "관리 지역이 추가되었습니다.")
+    }
+
+    fun getAccessibleRegions(userData: UserDataEntity): List<RegionEntity> {
+        return permissionRepository.getAllByUser(userData).map { x -> x.region }
     }
 }

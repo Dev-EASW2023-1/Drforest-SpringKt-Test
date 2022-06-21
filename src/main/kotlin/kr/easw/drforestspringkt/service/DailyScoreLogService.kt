@@ -5,6 +5,7 @@ import kr.easw.drforestspringkt.model.entity.UserAccountEntity
 import kr.easw.drforestspringkt.model.repository.DailyUserDataRepository
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.concurrent.TimeUnit
 
 @Service
@@ -19,10 +20,11 @@ class DailyScoreLogService(val repo: UserActivityDataService, val dailyScoreRepo
         return repo.findAllRecentUser(TimeUnit.DAYS.toMillis(1))
     }
 
+    @Transactional
     fun logScoreNow() {
         val dataToSave = mutableListOf<DailyUserDataEntity>()
         for (x in fetchRecentUsers()) {
-            repo.calculateTodayScore(x.userId, 0, 0, false).score.forEach {
+            repo.calculateTodayScore(x.userId, 0, TimeUnit.DAYS.toMillis(1), false).score.forEach {
                 dataToSave += DailyUserDataEntity(x, it.key, it.value)
             }
         }

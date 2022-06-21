@@ -52,6 +52,7 @@ class SecurityConfiguration(val jwtFilter: JwtAuthenticateFilter) : WebSecurityC
         antMatchers("/api/auth/**").permitAll()
         antMatchers("/api/user/**").hasAuthority(Roles.USER.authority)
         antMatchers("/api/admin/**").hasAuthority(Roles.ADMIN.authority)
+        antMatchers("/api/manager/**").hasAnyAuthority(Roles.MANAGER.authority, Roles.ADMIN.authority)
         antMatchers("/**").permitAll()
         antMatchers("/board/admin/**").hasAuthority(Roles.ADMIN.authority)
         antMatchers("/board/**").hasAuthority(Roles.USER.authority)
