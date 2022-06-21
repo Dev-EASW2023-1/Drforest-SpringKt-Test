@@ -35,9 +35,9 @@ class RegionPermissionService(
 
     fun setManagerPermission(user: UserDataEntity, isManager: Boolean) {
         if (isManager)
-            authenticateService.addPermission(user.name, Roles.MANAGER)
+            authenticateService.addPermission(user.account.userId, Roles.MANAGER)
         else {
-            authenticateService.removePermission(user.name, Roles.MANAGER)
+            authenticateService.removePermission(user.account.userId, Roles.MANAGER)
             permissionRepository.deleteAll(permissionRepository.getAllByUser(user))
         }
     }

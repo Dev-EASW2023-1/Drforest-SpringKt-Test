@@ -82,6 +82,17 @@ class SpringDocConfiguration {
                         .title("Drforest Manager API")
                         .description("닥터포레스트 관리자 API")
                         .version("v1")
+                ).addSecurityItem(
+                    SecurityRequirement()
+                        .addList("JWT Token Authorization")
+                ).components.addSecuritySchemes(
+                    "JWT",
+                    SecurityScheme()
+                        .name("Authorization")
+                        .type(SecurityScheme.Type.HTTP)
+                        .`in`(SecurityScheme.In.HEADER)
+                        .bearerFormat("JWT")
+                        .scheme("bearer")
                 )
             }
             .build()
