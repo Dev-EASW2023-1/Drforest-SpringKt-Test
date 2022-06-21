@@ -24,7 +24,7 @@ class DailyScoreLogService(val repo: UserActivityDataService, val dailyScoreRepo
     fun logScoreNow() {
         val dataToSave = mutableListOf<DailyUserDataEntity>()
         for (x in fetchRecentUsers()) {
-            repo.calculateTodayScore(x.userId, 0, TimeUnit.DAYS.toMillis(1), false).score.forEach {
+            repo.calculateTodayScore(x.userId, 0, TimeUnit.DAYS.toMillis(1), true).score.forEach {
                 dataToSave += DailyUserDataEntity(x, it.key, it.value)
             }
         }
