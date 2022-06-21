@@ -17,7 +17,7 @@ class RegionPermissionEntity (user: UserDataEntity, region: RegionEntity) {
     @ManyToOne
     var user: UserDataEntity = user
 
-    @ManyToOne(cascade = [CascadeType.REMOVE], optional = true)
+    @ManyToOne()
     var region: RegionEntity = region
 
 
