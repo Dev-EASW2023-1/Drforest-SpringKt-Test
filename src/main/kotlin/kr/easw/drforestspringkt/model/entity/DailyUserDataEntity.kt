@@ -9,7 +9,8 @@ import javax.persistence.*
 class DailyUserDataEntity(
     entity: UserAccountEntity,
     fieldName: String,
-    fieldValue: Int
+    fieldValue: Int,
+    timeStamp: Long
 ) {
     @Id
     @GeneratedValue
@@ -24,6 +25,5 @@ class DailyUserDataEntity(
     @Column
     var fieldValue : Int = fieldValue
 
-    @CreationTimestamp
-    var timestamp: Date? = null
+    var timestamp: Date? = Date(timeStamp)
 }

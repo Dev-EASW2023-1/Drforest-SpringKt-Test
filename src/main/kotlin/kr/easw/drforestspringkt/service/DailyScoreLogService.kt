@@ -22,10 +22,22 @@ class DailyScoreLogService(val repo: UserActivityDataService, val dailyScoreRepo
 
     @Transactional
     fun logScoreNow() {
+        // 1 day
+        val timeDay = TimeUnit.DAYS.toMillis(1)
+        // UTC+0 Based time
+        var time = System.currentTimeMillis()
+        // If time is AM, truncate to 00:00
+        if (time % timeDay < timeDay / 2) {
+            time -= time % timeDay
+        }
+        // If time is PM, truncate to 24:00
+        else {
+            time += (timeDay - time % timeDay)
+        }
         val dataToSave = mutableListOf<DailyUserDataEntity>()
         for (x in fetchRecentUsers()) {
             repo.calculateTodayScore(x.userId, 0, TimeUnit.DAYS.toMillis(1), true).score.forEach {
-                dataToSave += DailyUserDataEntity(x, it.key, it.value)
+                dataToSave += DailyUserDataEntity(x, it.key, it.value, time)
             }
         }
         dailyScoreRepository.saveAllAndFlush(dataToSave)
