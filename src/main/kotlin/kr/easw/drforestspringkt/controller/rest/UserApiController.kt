@@ -1,5 +1,6 @@
 package kr.easw.drforestspringkt.controller.rest
 
+import io.swagger.v3.oas.annotations.Hidden
 import kr.easw.drforestspringkt.auth.UserAccountData
 import kr.easw.drforestspringkt.model.dto.*
 import kr.easw.drforestspringkt.service.*
@@ -15,6 +16,7 @@ class UserApiController(
     val notificationService: UserNoticeService,
     val sharedUserService: SharedUserService,
     val qnaManagementService: QnAManagementService,
+    val announcementService: AnnouncementService
 ) {
     @PutMapping("/upload")
     fun onUploadData(
@@ -176,5 +178,10 @@ class UserApiController(
         return ResponseEntity.ok(UserSummaryResponse(userDataService.calculateTodayScore(user.username).score,authenticateService.getUserCreatedTimeData(user)))
     }
 
+    @GetMapping("/announcement/")
+    @Hidden
+    fun getAnnouncement(@AuthenticationPrincipal user: UserAccountData): ResponseEntity<AnnouncementResponse> {
+        return ResponseEntity.ok(announcementService.getUserAnnouncement(user))
+    }
 
 }

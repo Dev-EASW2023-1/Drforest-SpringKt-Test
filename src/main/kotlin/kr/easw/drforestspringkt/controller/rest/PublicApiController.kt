@@ -67,11 +67,6 @@ class PublicApiController(
         return ResponseEntity.ok(authenticateService.refreshToken(data))
     }
 
-    @GetMapping("/announcement/")
-    @Hidden
-    fun getAnnouncement(@AuthenticationPrincipal user: UserAccountData): ResponseEntity<AnnouncementResponse> {
-        return ResponseEntity.ok(announcementService.getUserAnnouncement(user))
-    }
 
     @GetMapping("/announcement/{id}")
     @Hidden

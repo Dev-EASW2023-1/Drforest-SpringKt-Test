@@ -16,6 +16,7 @@ class AnnouncementService(
     val permissionService: RegionPermissionService,
     val authenticateService: AuthenticateService
 ) {
+    // TODO 보안 추가
     fun getAnnouncement(id: Long): AnnouncementData {
         val data = try {
             repo.getById(id)
