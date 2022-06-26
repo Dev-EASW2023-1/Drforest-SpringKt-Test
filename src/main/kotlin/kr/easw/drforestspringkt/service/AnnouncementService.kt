@@ -138,5 +138,10 @@ class AnnouncementService(
         regions.sortedByDescending { x -> x.id }
         return AnnouncementResponse(announcementList.associateBy { it.id })
     }
+
+    fun getUserAnnouncement(user: UserAccountData): AnnouncementResponse {
+        val userData = authenticateService.getUserData(user)
+        return getAllAnnouncement(region = userData.region, true)
+    }
 }
 

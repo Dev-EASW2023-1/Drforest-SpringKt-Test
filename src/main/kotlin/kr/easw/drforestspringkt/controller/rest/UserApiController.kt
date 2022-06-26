@@ -153,15 +153,6 @@ class UserApiController(
     }
 
 
-    @PatchMapping("/user/")
-    fun onChangeUserDAta(
-        @AuthenticationPrincipal user: UserAccountData,
-        @RequestBody req: ChangeUserDataRequest
-    ): ChangeUserDataResponse {
-        return TODO()
-    }
-
-
     @GetMapping("/score/")
     fun onRequestSelfScore(
         @AuthenticationPrincipal user: UserAccountData

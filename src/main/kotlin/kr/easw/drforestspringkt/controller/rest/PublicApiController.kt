@@ -4,11 +4,13 @@ import io.swagger.v3.oas.annotations.Hidden
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import kr.easw.drforestspringkt.annotations.Beta
+import kr.easw.drforestspringkt.auth.UserAccountData
 import kr.easw.drforestspringkt.model.dto.*
 import kr.easw.drforestspringkt.service.AnnouncementService
 import kr.easw.drforestspringkt.service.AuthenticateService
 import kr.easw.drforestspringkt.service.RegionManagementService
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -49,7 +51,13 @@ class PublicApiController(
     fun onChangePasswordUsingPhone(
         @RequestBody req: ChangeUserDataUsingPhoneNumberRequest
     ): ResponseEntity<ChangeUserDataResponse> {
-        return ResponseEntity.ok(authenticateService.changePasswordUsingPhoneNumber(req.userName, req.phoneNumber!!, req.changedPassword))
+        return ResponseEntity.ok(
+            authenticateService.changePasswordUsingPhoneNumber(
+                req.userName,
+                req.phoneNumber!!,
+                req.changedPassword
+            )
+        )
     }
 
     @PostMapping("/refresh")
@@ -61,8 +69,8 @@ class PublicApiController(
 
     @GetMapping("/announcement/")
     @Hidden
-    fun getAnnouncement(): ResponseEntity<AnnouncementResponse> {
-        return ResponseEntity.ok(announcementService.getAllAnnouncement())
+    fun getAnnouncement(@AuthenticationPrincipal user: UserAccountData): ResponseEntity<AnnouncementResponse> {
+        return ResponseEntity.ok(announcementService.getUserAnnouncement(user))
     }
 
     @GetMapping("/announcement/{id}")
