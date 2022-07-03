@@ -107,7 +107,7 @@
 
                     minuteOnOffArray.push({
                         x: moment(dto["time"]),
-                        y: (dto["value"]["OnOff"] ?? 0) / 60
+                        y: (dto["value"]["OnOff"] ?? 0)  // Change the standard correctly
                     })
 
                     minuteDozeArray.push({
@@ -167,7 +167,7 @@
                     })
                 })
 
-                makeFullChart("line-chart1", timeArray, [
+                makeHealthFullChart("line-chart1", timeArray, [ // Separating functions to insert units
                     {
                         name: "신체 활동",
                         data: minuteHealthArray,
@@ -181,7 +181,7 @@
                     },
                 ]);
 
-                makeFullChart("line-chart2", timeArray, [
+                makeSocialFullChart("line-chart2", timeArray, [ // Separating functions to insert units
                     {
                         name: "사회 활동",
                         data: minuteSocialArray,
@@ -195,7 +195,7 @@
                     },
                 ]);
 
-                makeFullChart("line-chart3", timeArray, [
+                makeMentalFullChart("line-chart3", timeArray, [ // Separating functions to insert units
                     {
                         name: "정서 상태",
                         data: minuteMentalArray,
@@ -278,7 +278,7 @@
                  *              }
                  *          ]
                  */
-                function makeFullChart(chartElementId, time, charts) {
+                function makeHealthFullChart(chartElementId, time, charts) { // Separating functions to insert units
                     let ctx = document.getElementById(chartElementId);
                     let chart = new Chart(ctx, {
                         data: {
@@ -344,16 +344,35 @@
                         options: {
                             spanGaps: false,
                             maintainAspectRatio: false,
-                            title: {
-                                display: true,
-                                text: '정신 건강 데이터 (0-5, 정상 상태 3)'
-                            },
                             plugins: {
+                                title: { // Add title
+                                    display: true,
+                                    text: '신체 활동'
+                                },
                                 legend: {
                                     reverse: true,
                                 },
                                 tooltip: {
-                                    callbacks: {}
+                                    callbacks: {  // The callback function to insert units
+                                        label: function(context) {
+                                            let label = context.dataset.label || '';
+
+                                            const isStep = label === '걸음 수';
+                                            const isGPS = label === '이동 거리';
+
+                                            if (label) {
+                                                label = isStep
+                                                    ? ' 걸음 수 : '
+                                                    : (' ' + label + ' : ');
+                                            }
+                                            if (context.parsed.y !== null) {
+                                                label += isStep
+                                                    ? new Intl.NumberFormat().format(context.parsed.y) + ' 걸음'
+                                                    : new Intl.NumberFormat().format(context.parsed.y) + ' km';
+                                            }
+                                            return label;
+                                        }
+                                    }
                                 },
                             },
                             axis: {
@@ -374,7 +393,7 @@
                                         displayFormats: {
                                             minute: "MM-DD \n H:mm",
                                         },
-                                        tooltipFormat: 'H:mm'
+                                        tooltipFormat: 'YYYY-MM-DD H:mm' // Add year to display in a tooltip
                                     },
                                     grid: {
                                         display: true,
@@ -422,7 +441,339 @@
                                 },
                             },
                         }
-                    })
+                    });
+                }
+
+                function makeSocialFullChart(chartElementId, time, charts) { // Separating functions to insert units
+                    let ctx = document.getElementById(chartElementId);
+                    let chart = new Chart(ctx, {
+                        data: {
+                            labels: time,
+                            datasets: [
+                                // {
+                                //     type: 'bar',
+                                //     yAxisID: 'yAxisBg01',
+                                //     label: charts[0].name,
+                                //     borderWidth: 0.4,
+                                //     data: charts[0].data,
+                                //     fill: true,
+                                //     backgroundColor: 'rgb(0, 162, 72)',
+                                //     pointRadius: 0,
+                                //     barThickness: 5,
+                                //     spanGaps: false,
+                                // },
+                                {
+                                    type: 'line',
+                                    backgroundColor: 'rgba(0,72,255, 0.4)',
+                                    borderColor: 'rgba(0,72,255, 1)',
+                                    label: charts[1].name,
+                                    borderWidth: 1,
+                                    data: charts[1].data,
+                                    fill: false,
+                                    pointRadius: 1,
+                                    spanGaps: false,
+                                    // Remove the auxiliary shaft
+                                    //yAxisID: 'yAxis01'
+                                },
+                                {
+                                    type: 'line',
+                                    backgroundColor: 'rgba(64,151,54, 0.4)',
+                                    borderColor: 'rgba(64,151,54, 1)',
+                                    label: charts[2].name,
+                                    borderWidth: 1,
+                                    data: charts[2].data,
+                                    fill: false,
+                                    pointRadius: 1,
+                                    barThickness: 5,
+                                    spanGaps: false,
+                                    // Remove the auxiliary shaft
+                                    //yAxisID: 'yAxis02'
+                                },
+                            ],
+
+
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        let label = context.dataset.label || '';
+
+                                        if (context.parsed.y !== null) {
+                                            label = moment(context.parsed.x).utcOffset(+540).format("HH:mm:ss");
+                                        }
+                                        return label;
+                                    }
+                                }
+                            },
+                        },
+                        options: {
+                            spanGaps: false,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                title: { // Add title
+                                    display: true,
+                                    text: '사회 활동'
+                                },
+                                legend: {
+                                    reverse: true,
+                                },
+                                tooltip: {
+                                    callbacks: { // The callback function to insert units
+                                        label: function(context) {
+                                            let label = context.dataset.label || '';
+
+                                            const isGPS = label === '이동 거리';
+                                            const isTraffic = label === '데이터';
+
+                                            if (label) {
+                                                label = isGPS
+                                                    ? ' 이동 거리 : '
+                                                    : (' ' + label + ' : ');
+                                            }
+                                            if (context.parsed.y !== null) {
+                                                label += isGPS
+                                                    ? new Intl.NumberFormat().format(context.parsed.y) + ' km'
+                                                    : new Intl.NumberFormat().format(context.parsed.y) + ' MB';
+                                            }
+                                            return label;
+                                        }
+                                    }
+                                },
+                            },
+                            axis: {
+                                x: {
+                                    autoSkip: true,
+                                    gridLines: {
+                                        display: false,
+                                        drawOnChartArea: false
+                                    }
+                                },
+                            },
+                            scales: {
+                                x: {
+                                    display: true,
+                                    type: 'timeseries',
+                                    time: {
+                                        unit: 'minute',
+                                        displayFormats: {
+                                            minute: "MM-DD \n H:mm",
+                                        },
+                                        tooltipFormat: 'YYYY-MM-DD H:mm' // Add year to display in a tooltip
+                                    },
+                                    grid: {
+                                        display: true,
+                                        drawBorder: true,
+                                        drawTicks: true,
+                                        drawOnChartArea: true
+                                    },
+                                    ticks: {
+                                        callback: function (tick, index, array) {
+                                            return (index % 5 === 0) ? tick : ""; // Change the x-axis intervals
+                                        }
+                                    },
+                                    min: startTime,
+                                    max: endTime
+                                },
+                                // Remove the auxiliary shaft
+                                /*
+                                yAxis01: {
+                                    type: 'linear',
+                                    display: true,
+                                    position: 'left',
+                                },
+                                yAxis02: {
+                                    type: 'linear',
+                                    display: true,
+                                    position: 'right',
+                                },
+
+                                yAxisBg01: {
+                                    type: 'linear',
+                                    display: false,
+                                    ticks: {
+                                        display: false
+                                    }
+                                },
+                                */
+                                barChartY: {
+                                    type: 'linear',
+                                    display: true,
+                                    position: 'right',
+                                    // ticks is not working :(
+                                    //ticks: {
+                                    min: 0,
+                                    //}
+                                },
+                            },
+                        }
+                    });
+                }
+
+                function makeMentalFullChart(chartElementId, time, charts) { // Separating functions to insert units
+                    let ctx = document.getElementById(chartElementId);
+                    let chart = new Chart(ctx, {
+                        data: {
+                            labels: time,
+                            datasets: [
+                                // {
+                                //     type: 'bar',
+                                //     yAxisID: 'yAxisBg01',
+                                //     label: charts[0].name,
+                                //     borderWidth: 0.4,
+                                //     data: charts[0].data,
+                                //     fill: true,
+                                //     backgroundColor: 'rgb(0, 162, 72)',
+                                //     pointRadius: 0,
+                                //     barThickness: 5,
+                                //     spanGaps: false,
+                                // },
+                                {
+                                    type: 'line',
+                                    backgroundColor: 'rgba(0,72,255, 0.4)',
+                                    borderColor: 'rgba(0,72,255, 1)',
+                                    label: charts[1].name,
+                                    borderWidth: 1,
+                                    data: charts[1].data,
+                                    fill: false,
+                                    pointRadius: 1,
+                                    spanGaps: false,
+                                    // Remove the auxiliary shaft
+                                    //yAxisID: 'yAxis01'
+                                },
+                                {
+                                    type: 'line',
+                                    backgroundColor: 'rgba(64,151,54, 0.4)',
+                                    borderColor: 'rgba(64,151,54, 1)',
+                                    label: charts[2].name,
+                                    borderWidth: 1,
+                                    data: charts[2].data,
+                                    fill: false,
+                                    pointRadius: 1,
+                                    barThickness: 5,
+                                    spanGaps: false,
+                                    // Remove the auxiliary shaft
+                                    //yAxisID: 'yAxis02'
+                                },
+                            ],
+
+
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        let label = context.dataset.label || '';
+
+                                        if (context.parsed.y !== null) {
+                                            label = moment(context.parsed.x).utcOffset(+540).format("HH:mm:ss");
+                                        }
+                                        return label;
+                                    }
+                                }
+                            },
+                        },
+                        options: {
+                            spanGaps: false,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                title: { // Add title
+                                    display: true,
+                                    text: '정서 상태'
+                                },
+                                legend: {
+                                    reverse: true,
+                                },
+                                tooltip: {
+                                    callbacks: { // The callback function to insert units
+                                        label: function(context) {
+                                            let label = context.dataset.label || '';
+
+                                            const isIdle = label === '대기 시간';
+                                            const isOnOff = label === '기기 활성화 수치';
+
+                                            if (label) {
+                                                label = isIdle
+                                                    ? ' 대기 시간 : '
+                                                    : (' ' + label + ' : ');
+                                            }
+                                            if (context.parsed.y !== null) {
+                                                label += isIdle
+                                                    ? new Intl.NumberFormat().format(context.parsed.y) + ' 분'
+                                                    : new Intl.NumberFormat().format(context.parsed.y) + ' 회';
+                                            }
+                                            return label;
+                                        }
+                                    }
+                                },
+                            },
+                            axis: {
+                                x: {
+                                    autoSkip: true,
+                                    gridLines: {
+                                        display: false,
+                                        drawOnChartArea: false
+                                    }
+                                },
+                            },
+                            scales: {
+                                x: {
+                                    display: true,
+                                    type: 'timeseries',
+                                    time: {
+                                        unit: 'minute',
+                                        displayFormats: {
+                                            minute: "MM-DD \n H:mm",
+                                        },
+                                        tooltipFormat: 'YYYY-MM-DD H:mm' // Add year to display in a tooltip
+                                    },
+                                    grid: {
+                                        display: true,
+                                        drawBorder: true,
+                                        drawTicks: true,
+                                        drawOnChartArea: true
+                                    },
+                                    ticks: {
+                                        callback: function (tick, index, array) {
+                                            return (index % 5 === 0) ? tick : ""; // Change the x-axis intervals
+                                        }
+                                    },
+                                    min: startTime,
+                                    max: endTime
+                                },
+                                // Remove the auxiliary shaft
+                                /*
+                                yAxis01: {
+                                    type: 'linear',
+                                    display: true,
+                                    position: 'left',
+                                },
+                                yAxis02: {
+                                    type: 'linear',
+                                    display: true,
+                                    position: 'right',
+                                },
+
+                                yAxisBg01: {
+                                    type: 'linear',
+                                    display: false,
+                                    ticks: {
+                                        display: false
+                                    }
+                                },
+                                */
+                                barChartY: {
+                                    type: 'linear',
+                                    display: true,
+                                    position: 'right',
+                                    // ticks is not working :(
+                                    //ticks: {
+                                    min: 0,
+                                    //}
+                                },
+                            },
+                        }
+                    });
                 }
 
                 /**
@@ -538,7 +889,7 @@
                                 },
                             },
                         }
-                    })
+                    });
                 }
             </script>
         </div>
