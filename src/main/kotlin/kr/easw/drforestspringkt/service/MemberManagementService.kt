@@ -48,9 +48,9 @@ class MemberManagementService(
         userActivityDataRepository.deleteAllByEntity_UserId(userId)
         dailyUserDataRepository.deleteAllByEntity_UserId(userId)
         qnARepository.deleteAllByUser_UserId(userId)
-        userDataRepository.deleteAllByAccount_UserId(userId)
         sharedUserRepository.deleteAllByUser_Account_UserId(userId)
         sharedUserRepository.deleteAllByTarget_Account_UserId(userId)
+        userDataRepository.deleteAllByAccount_UserId(userId)
 
         // 최종적으로 연결된 ID를 마지막에 삭제한다.
         userAccountRepository.deleteAllByUserId(userId)
