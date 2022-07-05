@@ -12,4 +12,5 @@ interface AnnouncementRepository : JpaRepository<AnnouncementEntity, Long> {
     fun getAllByRegionOrderByIdDesc(region: String?): List<AnnouncementEntity>
 
 
+
 }

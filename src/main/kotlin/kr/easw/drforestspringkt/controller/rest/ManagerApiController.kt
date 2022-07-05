@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import kr.easw.drforestspringkt.auth.UserAccountData
 import kr.easw.drforestspringkt.model.dto.*
 import kr.easw.drforestspringkt.service.AnnouncementService
+import kr.easw.drforestspringkt.service.AuthenticateService
+import kr.easw.drforestspringkt.service.MemberManagementService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
@@ -25,7 +27,20 @@ import org.springframework.web.bind.annotation.*
 )
 class ManagerApiController(
     val announcementService: AnnouncementService,
+    val userService: AuthenticateService,
+    val memberManagementService: MemberManagementService
 ) {
+
+    @DeleteMapping
+    @Tag(name = "사용자 API", description = "사용자를 관리합니다.")
+    @Operation(summary = "사용자 삭제 API", security = [SecurityRequirement(name = "JWT")])
+    fun onDeleteUser(
+        @Parameter(hidden = true)
+        @AuthenticationPrincipal user: UserAccountData,
+        @RequestBody request: DeleteUserRequest) {
+        memberManagementService.deleteUser(user, request)
+    }
+
     @PutMapping("/announcement/")
     @Tag(
         name = "지역 공지사항 API", description = "지역에 등록된 공지사항을 관리합니다."
@@ -78,6 +93,14 @@ class ManagerApiController(
         @RequestBody request: AddAnnouncementRequest,
         @PathVariable announcementId: Long
     ): ResponseEntity<DeleteAnnouncementResponse> {
-        return ResponseEntity.ok(DeleteAnnouncementResponse(announcementService.deleteAnnouncement(user, announcementId)))
+        return ResponseEntity.ok(
+            DeleteAnnouncementResponse(
+                announcementService.deleteAnnouncement(
+                    user,
+                    announcementId
+                )
+            )
+        )
     }
+
 }

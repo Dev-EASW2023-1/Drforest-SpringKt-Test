@@ -18,7 +18,7 @@ class AuthenticateService(
     private val userAccountRepository: UserAccountRepository,
     private val userDataRepository: UserDataRepository,
     private val regionManagementService: RegionManagementService,
-    private val encoder: BCryptPasswordEncoder
+    private val encoder: BCryptPasswordEncoder,
 ) {
     fun login(dto: LoginDataRequest): LoginDataResponse {
         userAccountRepository.findByUserId(dto.id)

@@ -1,16 +1,16 @@
 package kr.easw.drforestspringkt.controller.rest
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
+import kr.easw.drforestspringkt.auth.UserAccountData
 import kr.easw.drforestspringkt.model.dto.*
-import kr.easw.drforestspringkt.service.AnnouncementService
-import kr.easw.drforestspringkt.service.RegionManagementService
-import kr.easw.drforestspringkt.service.RegionPermissionService
-import kr.easw.drforestspringkt.service.UserNoticeService
+import kr.easw.drforestspringkt.service.*
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -24,10 +24,12 @@ import org.springframework.web.bind.annotation.*
     ApiResponse(responseCode = "500", description = "서버에서 예상치 못한 오류가 발생했을 경우, 해당 코드가 반환됩니다."),
 )
 class AdminApiController(
+    val authenticateService: AuthenticateService,
     val regionManagementService: RegionManagementService,
     val noticeService: UserNoticeService,
     val announcementService: AnnouncementService,
     val regionPermissionService: RegionPermissionService,
+    val memberManagementService: MemberManagementService
 ) {
 
     @PutMapping("/region/{regionName}")
@@ -173,4 +175,13 @@ class AdminApiController(
         return ResponseEntity.ok(regionPermissionService.addRegionPermission(request))
     }
 
+    @DeleteMapping
+    @Tag(name = "사용자 API", description = "사용자를 관리합니다.")
+    @Operation(summary = "사용자 삭제 API", security = [SecurityRequirement(name = "JWT")])
+    fun onDeleteUser(
+        @Parameter(hidden = true)
+        @AuthenticationPrincipal user: UserAccountData,
+        @RequestBody request: DeleteUserRequest) : ResponseEntity<DeleteUserResponse> {
+        return ResponseEntity.ok(memberManagementService.deleteUser(user, request))
+    }
 }

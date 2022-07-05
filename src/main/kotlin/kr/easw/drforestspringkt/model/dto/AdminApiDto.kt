@@ -35,4 +35,6 @@ data class AddRegionToManagerRequest(val userId: String, val region: String)
 
 data class AddRegionToManagerResponse(val success: Boolean, val message: String)
 
+data class DeleteUserRequest(val userId: String)
 
+data class DeleteUserResponse(val success: Boolean, val message: String)

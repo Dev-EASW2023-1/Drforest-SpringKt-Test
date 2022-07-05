@@ -34,7 +34,10 @@ class UserActivityDataService(
     }
 
     fun findAllRecentUser(duration: Long): List<UserAccountEntity> {
-        return repo.findAllRecentUserBetween(Date(System.currentTimeMillis() - (System.currentTimeMillis() % (24 * 60 * 60 * 1000)) - duration), Date(System.currentTimeMillis() - (System.currentTimeMillis() % (24 * 60 * 60 * 1000)) - duration + (24 * 60 * 60 * 1000)))
+        return repo.findAllRecentUserBetween(
+            Date(System.currentTimeMillis() - (System.currentTimeMillis() % (24 * 60 * 60 * 1000)) - duration),
+            Date(System.currentTimeMillis() - (System.currentTimeMillis() % (24 * 60 * 60 * 1000)) - duration + (24 * 60 * 60 * 1000))
+        )
     }
 
     fun fetchResult(
@@ -49,7 +52,6 @@ class UserActivityDataService(
         var end = System.currentTimeMillis()
         var start = end - amount
         val data = mutableMapOf<Long, MutableMap<String, Float>>()
-        println("Start time: ${end - amount}, End time: ${end}, Duration: ${amount}")
         // Truncation.
         // If true, end time / start time will force truncated.
         if (truncateToDay) {
