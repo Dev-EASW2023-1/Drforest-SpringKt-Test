@@ -33,6 +33,15 @@ class PublicApiController(
         return ResponseEntity.ok(authenticateService.checkAccountDuplicatesResponse(id))
     }
 
+    @GetMapping("/phone-exists/{phone}")
+    @Hidden
+    fun onCheckDuplicatePhone(@PathVariable phone: String): ResponseEntity<CheckPhoneDuplicateResponse> {
+        return ResponseEntity.ok(authenticateService.findUserByPhone(phone)?.run {
+            CheckPhoneDuplicateResponse(true)
+        } ?: CheckPhoneDuplicateResponse(false)
+        )
+    }
+
     @GetMapping("/regions")
     @Hidden
     fun onRequestListRegions(): ResponseEntity<ListRegionResponse> {

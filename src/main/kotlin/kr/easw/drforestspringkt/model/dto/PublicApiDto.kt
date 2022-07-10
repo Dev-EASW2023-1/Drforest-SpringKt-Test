@@ -10,6 +10,8 @@ data class ListRegionResponse(val regions: List<String>)
 data class CheckTokenValidRequest(val token: String)
 data class CheckTokenValidResponse(val isValid: Boolean)
 
+data class CheckPhoneDuplicateResponse(val duplicated: Boolean)
+
 
 data class AnnouncementResponse(val announcement: Map<Long, AnnouncementData>)
 
