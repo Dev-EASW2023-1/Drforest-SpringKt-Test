@@ -45,8 +45,8 @@ class MemberManagementService(
     fun deleteUser(userId: String) {
         // 종속 관계의 끝부터 삭제한다.
         userNoticeRepository.deleteAllByUser_Account_UserId(userId)
-        userActivityDataRepository.deleteAllByEntity_UserId(userId)
-        dailyUserDataRepository.deleteAllByEntity_UserId(userId)
+//        userActivityDataRepository.deleteAllByEntity_UserId(userId)
+//        dailyUserDataRepository.deleteAllByEntity_UserId(userId)
         qnARepository.deleteAllByUser_UserId(userId)
         sharedUserRepository.deleteAllByUser_Account_UserId(userId)
         sharedUserRepository.deleteAllByTarget_Account_UserId(userId)
