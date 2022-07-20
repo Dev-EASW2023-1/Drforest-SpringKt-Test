@@ -14,7 +14,7 @@ interface UserNoticeRepository : JpaRepository<UserNoticeEntity, Long> {
 //    fun findById(id: Long): Optional<AnnouncementEntity>
 
 
-    fun getAllByUser_Account_UserId(userId: String, pageable: Pageable) : List<UserNoticeEntity>
+    fun getAllByUser_Account_UserIdOrderByIdDesc(userId: String, pageable: Pageable) : List<UserNoticeEntity>
 
     @Transactional
     fun deleteAllByUser_Account_UserId(userId: String)
