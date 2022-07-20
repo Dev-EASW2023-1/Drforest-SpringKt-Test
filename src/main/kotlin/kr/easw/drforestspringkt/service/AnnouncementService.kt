@@ -1,13 +1,16 @@
 package kr.easw.drforestspringkt.service
 
+import com.github.kimcore.inko.Inko
 import kr.easw.drforestspringkt.auth.UserAccountData
 import kr.easw.drforestspringkt.enumeration.Roles
 import kr.easw.drforestspringkt.model.dto.*
 import kr.easw.drforestspringkt.model.entity.AnnouncementEntity
 import kr.easw.drforestspringkt.model.repository.AnnouncementRepository
+import kr.easw.drforestspringkt.util.FCMUtility
 import org.springframework.data.rest.webmvc.ResourceNotFoundException
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class AnnouncementService(
@@ -67,15 +70,23 @@ class AnnouncementService(
         repo.save(AnnouncementEntity(author, region, title, contents)).id
     }
 
+    @Transactional
     fun addAnnouncement(request: AddAnnouncementRequest): AddAnnouncementResponse {
+        val inko = Inko()
         if (regionService.getRegion(request.region!!) == null)
             return AddAnnouncementResponse(false, "등록되지 않은 지역입니다.")
         addAnnouncement(request.author, request.region, request.title, request.contents)
+        FCMUtility.sendPush(
+            inko.ko2en(request.region),
+            request.title,
+            request.contents, 0)
         return AddAnnouncementResponse(true, "새 공지가 추가되었습니다.")
     }
 
+    @Transactional
     fun addAnnouncement(request: AddGlobalAnnouncementRequest): AddAnnouncementResponse {
         addAnnouncement(request.author, null, request.title, request.contents)
+        FCMUtility.sendPush("notice", request.title, request.contents, 0)
         return AddAnnouncementResponse(true, "새 공지가 추가되었습니다.")
     }
 
@@ -91,7 +102,9 @@ class AnnouncementService(
         return true
     }
 
+    @Transactional
     fun addAnnouncement(user: UserAccountData, request: AddAnnouncementRequest): AddAnnouncementResponse {
+        val inko = Inko()
         if (request.region == null && !user.authorities.contains(Roles.ADMIN))
             throw BadCredentialsException("해당 사용자는 전역 공지사항에 접근할 수 있는 권한이 존재하지 않습니다.")
         val region =
@@ -103,6 +116,10 @@ class AnnouncementService(
         if (region != null && !permissionService.isRegionManager(userData!!, region)) {
             throw BadCredentialsException("해당 유저는 대상 지역 공지사항에 접근할 수 있는 권한이 존재하지 않습니다.")
         }
+        FCMUtility.sendPush(
+            inko.ko2en(request.region!!),
+            request.title,
+            request.contents, 0)
         return addAnnouncement(request)
     }
 

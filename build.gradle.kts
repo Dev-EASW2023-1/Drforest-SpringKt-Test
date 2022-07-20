@@ -14,6 +14,7 @@ java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
     mavenCentral()
+    maven { url = uri("https://www.jitpack.io" ) }
 }
 
 
@@ -59,6 +60,7 @@ dependencies {
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("org.springframework.security:spring-security-test")
+    implementation("im.kimcore:inko.kt:1.1")
 }
 
 tasks.withType<KotlinCompile> {

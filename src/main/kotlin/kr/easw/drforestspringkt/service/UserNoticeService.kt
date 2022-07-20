@@ -17,7 +17,7 @@ class UserNoticeService(
     val authenticateService: AuthenticateService,
 ) {
     fun getNotice(user: UserAccountData, amount: Int): UserNoticeResponseDto {
-        return UserNoticeResponseDto(repo.getAllByUser_Account_UserId(
+        return UserNoticeResponseDto(repo.getAllByUser_Account_UserIdOrderByIdDesc(
             user.username,
             PageRequest.of(0, amount)
         ).map { x -> UserNoticeData(x.id.toInt(), x.time!!, x.content, x.isRead) })
