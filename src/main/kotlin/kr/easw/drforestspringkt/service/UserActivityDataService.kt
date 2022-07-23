@@ -18,11 +18,6 @@ class UserActivityDataService(
     val sharedUserService: SharedUserService
 ) {
     @Transactional
-    fun get(entity: UserAccountData) {
-
-    }
-
-    @Transactional
     fun upload(@AuthenticationPrincipal entity: UserAccountData, data: UserDataUploadRequest) {
         println("User ${entity.username} uploaded / ${data.data}")
         val user = authService.toAccount(entity)
@@ -30,6 +25,18 @@ class UserActivityDataService(
             repo.save(
                 UserActivityDataEntity(user, name, value)
             )
+        }
+    }
+
+    @Transactional
+    fun upload(@AuthenticationPrincipal entity: UserAccountData, data: List<UserDataUploadRequest>) {
+        val user = authService.toAccount(entity)
+        data.forEach {
+            it.data.forEach { (name, value) ->
+                repo.save(
+                    UserActivityDataEntity(user, name, value)
+                )
+            }
         }
     }
 
