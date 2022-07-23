@@ -19,7 +19,6 @@ class UserActivityDataService(
 ) {
     @Transactional
     fun upload(@AuthenticationPrincipal entity: UserAccountData, data: UserDataUploadRequest) {
-        println("User ${entity.username} uploaded / ${data.data}")
         val user = authService.toAccount(entity)
         data.data.forEach { (name, value) ->
             repo.save(
@@ -87,8 +86,6 @@ class UserActivityDataService(
             map[it.fieldName] = map.getOrDefault(it.fieldName, 0f) + it.fieldValue
         }
 
-        // @TODO Too complex lambda; Separate to extra method later
-        println("Size: ${data.size}")
         data.values.forEach {
             it.putIfAbsent("Traffic", 0f)
             it.putIfAbsent("Step", 0f)
