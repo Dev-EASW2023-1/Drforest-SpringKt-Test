@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/v2/user")
-class UserApiController(
+class UserApiControllerV2(
     val authenticateService: AuthenticateService,
     val userDataService: UserActivityDataService,
 ) {
