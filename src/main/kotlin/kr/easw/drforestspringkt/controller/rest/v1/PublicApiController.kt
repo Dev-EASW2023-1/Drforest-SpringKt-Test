@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/v1/api/public")
+@RequestMapping("/api/v1/public")
 class PublicApiController(
     private val announcementService: AnnouncementService,
     private val authenticateService: AuthenticateService,

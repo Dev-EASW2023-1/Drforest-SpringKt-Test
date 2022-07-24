@@ -9,7 +9,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/v1/api/user")
+@RequestMapping("/api/v1/user")
 class UserApiController(
     val authenticateService: AuthenticateService,
     val userDataService: UserActivityDataService,

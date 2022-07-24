@@ -16,7 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/v1/api/manager")
+@RequestMapping("/api/v1/manager")
 @ApiResponses(
     ApiResponse(
         responseCode = "200",
