@@ -48,11 +48,11 @@ class SecurityConfiguration(val jwtFilter: JwtAuthenticateFilter) : WebSecurityC
     }
 
     private fun ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry.configureRoutePermission() {
-        antMatchers("/api/public/**").permitAll()
-        antMatchers("/api/auth/**").permitAll()
-        antMatchers("/api/user/**").hasAuthority(Roles.USER.authority)
-        antMatchers("/api/admin/**").hasAuthority(Roles.ADMIN.authority)
-        antMatchers("/api/manager/**").hasAnyAuthority(Roles.MANAGER.authority, Roles.ADMIN.authority)
+        antMatchers("/api/v1/public/**").permitAll()
+        antMatchers("/api/v1/auth/**").permitAll()
+        antMatchers("/api/v1/user/**").hasAuthority(Roles.USER.authority)
+        antMatchers("/api/v1/admin/**").hasAuthority(Roles.ADMIN.authority)
+        antMatchers("/api/v1/manager/**").hasAnyAuthority(Roles.MANAGER.authority, Roles.ADMIN.authority)
         antMatchers("/**").permitAll()
         antMatchers("/board/admin/**").hasAuthority(Roles.ADMIN.authority)
         antMatchers("/board/**").hasAuthority(Roles.USER.authority)

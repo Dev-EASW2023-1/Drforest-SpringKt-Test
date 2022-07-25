@@ -29,7 +29,7 @@ class SpringDocConfiguration {
     fun adminApi(): GroupedOpenApi? {
         return GroupedOpenApi.builder()
             .group("drforest-admin-api")
-            .pathsToMatch("/api/admin/**")
+            .pathsToMatch("/api/v1/admin/**")
             .addOpenApiMethodFilter { method -> method.declaringClass == AdminApiController::class.java }
             .addOpenApiCustomiser {
                 it.info(
@@ -57,7 +57,7 @@ class SpringDocConfiguration {
     fun authApi(): GroupedOpenApi? {
         return GroupedOpenApi.builder()
             .group("drforest-auth-api")
-            .pathsToMatch("/api/auth/**", "/api/public/**")
+            .pathsToMatch("/api/v1/auth/**", "/api/v1/public/**")
             .addOpenApiMethodFilter { method -> method.declaringClass == AuthApiController::class.java || method.declaringClass == PublicApiController::class.java }
             .addOpenApiCustomiser {
                 it.info(
@@ -74,7 +74,7 @@ class SpringDocConfiguration {
     fun managerApi(): GroupedOpenApi? {
         return GroupedOpenApi.builder()
             .group("drforest-manager-api")
-            .pathsToMatch("/api/manager/**")
+            .pathsToMatch("/api/v1/manager/**")
             .addOpenApiMethodFilter { method -> method.declaringClass == ManagerApiController::class.java }
             .addOpenApiCustomiser {
                 it.info(
