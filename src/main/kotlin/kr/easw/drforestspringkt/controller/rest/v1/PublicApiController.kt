@@ -1,20 +1,18 @@
-package kr.easw.drforestspringkt.controller.rest
+package kr.easw.drforestspringkt.controller.rest.v1
 
 import io.swagger.v3.oas.annotations.Hidden
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import kr.easw.drforestspringkt.annotations.Beta
-import kr.easw.drforestspringkt.auth.UserAccountData
 import kr.easw.drforestspringkt.model.dto.*
 import kr.easw.drforestspringkt.service.AnnouncementService
 import kr.easw.drforestspringkt.service.AuthenticateService
 import kr.easw.drforestspringkt.service.RegionManagementService
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/api/public")
+@RequestMapping("/api/v1/public")
 class PublicApiController(
     private val announcementService: AnnouncementService,
     private val authenticateService: AuthenticateService,

@@ -3,10 +3,10 @@ package kr.easw.drforestspringkt.configuration
 import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.security.SecurityRequirement
 import io.swagger.v3.oas.models.security.SecurityScheme
-import kr.easw.drforestspringkt.controller.rest.AdminApiController
-import kr.easw.drforestspringkt.controller.rest.AuthApiController
-import kr.easw.drforestspringkt.controller.rest.ManagerApiController
-import kr.easw.drforestspringkt.controller.rest.PublicApiController
+import kr.easw.drforestspringkt.controller.rest.v1.AdminApiController
+import kr.easw.drforestspringkt.controller.rest.v1.AuthApiController
+import kr.easw.drforestspringkt.controller.rest.v1.ManagerApiController
+import kr.easw.drforestspringkt.controller.rest.v1.PublicApiController
 import org.springdoc.core.GroupedOpenApi
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

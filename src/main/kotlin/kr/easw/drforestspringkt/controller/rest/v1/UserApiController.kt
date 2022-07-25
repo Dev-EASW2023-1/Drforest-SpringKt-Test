@@ -1,4 +1,4 @@
-package kr.easw.drforestspringkt.controller.rest
+package kr.easw.drforestspringkt.controller.rest.v1
 
 import io.swagger.v3.oas.annotations.Hidden
 import kr.easw.drforestspringkt.auth.UserAccountData
@@ -9,7 +9,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/v1/user")
 class UserApiController(
     val authenticateService: AuthenticateService,
     val userDataService: UserActivityDataService,

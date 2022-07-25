@@ -1,4 +1,4 @@
-package kr.easw.drforestspringkt.controller.rest
+package kr.easw.drforestspringkt.controller.rest.v1
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -16,7 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/api/manager")
+@RequestMapping("/api/v1/manager")
 @ApiResponses(
     ApiResponse(
         responseCode = "200",

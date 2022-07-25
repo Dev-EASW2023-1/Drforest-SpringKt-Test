@@ -57,9 +57,6 @@ class SharedUserService(
             userOrigin, userTarget, true
         )
         val entity = repo.findAllByUserAndTarget(userOrigin, userTarget)
-        println("Origin Entity ${userOrigin.id}")
-        println("Target Entity ${userTarget.id}")
-        println("Target id ${req.userId}")
         if (entity.isNotEmpty()) {
             if (entity[0].isShared) {
                 return AcceptShareResponse(true, req.userId, "이미 공유를 수락하였습니다.")
