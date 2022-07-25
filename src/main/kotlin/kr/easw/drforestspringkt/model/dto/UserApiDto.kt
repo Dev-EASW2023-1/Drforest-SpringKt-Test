@@ -11,6 +11,12 @@ data class UserDataUploadRequest(
 
 data class UserDataUploadResponse(val isSuccess: Boolean)
 
+data class BulkUserDataUploadRequest(
+    val requests: List<UserDataUploadRequest>
+)
+
+data class BulkUserDataUploadResponse(val isSuccess: Boolean)
+
 data class UserStatusResponse(val data: UserScoreData)
 
 data class SharedUserScoreResponse(val data: List<UserScoreData>)

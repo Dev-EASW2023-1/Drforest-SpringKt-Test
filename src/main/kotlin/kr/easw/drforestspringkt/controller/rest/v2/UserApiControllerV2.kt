@@ -1,6 +1,8 @@
 package kr.easw.drforestspringkt.controller.rest.v2
 
 import kr.easw.drforestspringkt.auth.UserAccountData
+import kr.easw.drforestspringkt.model.dto.BulkUserDataUploadRequest
+import kr.easw.drforestspringkt.model.dto.BulkUserDataUploadResponse
 import kr.easw.drforestspringkt.model.dto.UserDataUploadRequest
 import kr.easw.drforestspringkt.model.dto.UserDataUploadResponse
 import kr.easw.drforestspringkt.service.*
@@ -20,9 +22,9 @@ class UserApiControllerV2(
     @PutMapping("/upload")
     fun onUploadData(
         @AuthenticationPrincipal user: UserAccountData,
-        @RequestBody dto: List<UserDataUploadRequest>,
-    ): ResponseEntity<UserDataUploadResponse> {
+        @RequestBody dto: BulkUserDataUploadRequest,
+    ): ResponseEntity<BulkUserDataUploadResponse> {
         userDataService.upload(user, dto)
-        return ResponseEntity.ok(UserDataUploadResponse(true))
+        return ResponseEntity.ok(BulkUserDataUploadResponse(true))
     }
 }

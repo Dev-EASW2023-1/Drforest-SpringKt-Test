@@ -28,9 +28,9 @@ class UserActivityDataService(
     }
 
     @Transactional
-    fun upload(@AuthenticationPrincipal entity: UserAccountData, data: List<UserDataUploadRequest>) {
+    fun upload(@AuthenticationPrincipal entity: UserAccountData, data: BulkUserDataUploadRequest) {
         val user = authService.toAccount(entity)
-        data.forEach {
+        data.requests.forEach {
             it.data.forEach { (name, value) ->
                 repo.save(
                     UserActivityDataEntity(user, name, value)
