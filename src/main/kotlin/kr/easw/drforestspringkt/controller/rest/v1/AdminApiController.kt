@@ -184,4 +184,15 @@ class AdminApiController(
         @RequestBody request: DeleteUserRequest) : ResponseEntity<DeleteUserResponse> {
         return ResponseEntity.ok(memberManagementService.deleteUser(user, request))
     }
+
+    @PutMapping("/region/{regionName}/{userId}")
+    @Tag(name = "사용자 API", description = "사용자를 관리합니다.")
+    @Operation(summary = "사용자 지역 이전 API", security = [SecurityRequirement(name = "JWT")])
+    fun onUpdateRegionToUser(
+        @Parameter(hidden = true)
+        @AuthenticationPrincipal user: UserAccountData,
+        @PathVariable("regionName") regionName: String,
+        @PathVariable("userId") userId: String) : ResponseEntity<UpdateRegionToUserResponse> {
+        return ResponseEntity.ok(regionManagementService.updateRegionToUser(regionName,userId))
+    }
 }

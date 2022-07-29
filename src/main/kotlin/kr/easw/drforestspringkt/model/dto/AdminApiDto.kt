@@ -18,6 +18,8 @@ data class AddRegionResponse(val isSuccess: Boolean)
 
 data class DeleteRegionResponse(val isSuccess: Boolean)
 
+data class UpdateRegionToUserResponse(val isSuccess: Boolean, val message: String)
+
 data class ListAnnouncementResponse(val announcements: List<AnnouncementEntityData>)
 
 data class AnnouncementEntityData(val id: Long, val time: Date, val title: String, val contents: String)
