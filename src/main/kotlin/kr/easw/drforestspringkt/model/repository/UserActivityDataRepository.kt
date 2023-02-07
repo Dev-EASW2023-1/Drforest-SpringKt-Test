@@ -28,6 +28,12 @@ interface UserActivityDataRepository : JpaRepository<UserActivityDataEntity, Lon
     @Query("select u.entity from UserActivityDataEntity u where u.timestamp >= :#{#timeAtLeast} AND u.timestamp <= :#{#timeAtEnd} group by u.entity")
     fun findAllRecentUserBetween(@Param("timeAtLeast") timeAtLeast: Date, @Param("timeAtEnd") timeAtEnd : Date) : List<UserAccountEntity>
 
+    fun existsByEntity_UserIdAndTimestampBetween(
+        userName: String,
+        from: Date,
+        to: Date
+    ): Boolean
+
     @Transactional
     fun deleteAllByEntity_UserId(userId: String)
 }

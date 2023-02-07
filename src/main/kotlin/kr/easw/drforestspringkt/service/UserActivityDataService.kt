@@ -47,6 +47,13 @@ class UserActivityDataService(
         )
     }
 
+    fun findAllRecentUserForFCM(duration: Long): List<UserAccountEntity> {
+        return repo.findAllRecentUserBetween(
+            Date(System.currentTimeMillis() - (System.currentTimeMillis() % (24 * 60 * 60 * 1000)) - duration), // From duration
+            Date(System.currentTimeMillis()) // to the present.
+        )
+    }
+
     fun fetchResult(
         user: String,
         amount: Long,
