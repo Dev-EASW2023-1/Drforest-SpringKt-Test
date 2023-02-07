@@ -9,6 +9,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 
 @Service
@@ -58,6 +59,8 @@ class UserActivityDataService(
         var end = System.currentTimeMillis()
         var start = end - amount
         val data = mutableMapOf<Long, MutableMap<String, Float>>()
+        val morningData = LinkedHashMap<Long, MutableMap<String, Float>>()
+        val afternoonData = LinkedHashMap<Long, MutableMap<String, Float>>()
         // Truncation.
         // If true, end time / start time will force truncated.
         if (truncateToDay) {
@@ -73,17 +76,55 @@ class UserActivityDataService(
         start += adjustTime
         end += adjustTime
         repo.getAllByEntity_UserIdAndTimestampBetween(user, Date(start), Date(end)).forEach {
-            val map = data.getOrPut(
+            val spareTime = (it.timestamp!!.time) % tick
+            val halfDay = TimeUnit.DAYS.toMillis(1) / 2
+
+            val totalMap = data.getOrPut(
                 when (tick) {
                     // In the daily average graph, the day graph represents data from the previous day.
-                    1000 * 60 * 60 * 24L -> (it.timestamp!!.time + 1000 * 60 * 60 * 24L) - (it.timestamp!!.time + 1000 * 60 * 60 * 24L) % tick
+                    1000 * 60 * 60 * 24L ->
+                        (it.timestamp!!.time + TimeUnit.DAYS.toMillis(1)) - spareTime
                     // In the n-minute graph, the x-axis is the time as it is.
-                    else -> it.timestamp!!.time - it.timestamp!!.time % tick
+                    else ->
+                        it.timestamp!!.time - spareTime
                 }
             ) {
                 mutableMapOf()
             }
-            map[it.fieldName] = map.getOrDefault(it.fieldName, 0f) + it.fieldValue
+            totalMap[it.fieldName] = totalMap.getOrDefault(it.fieldName, 0f) + it.fieldValue
+
+            if(tick == 1000 * 60 * 60 * 24L && it.fieldName == "Idle") { // Apply calculated Idle data only to the day graph.
+                if(spareTime <= halfDay){ // AM Idle data.
+                    val morningMap = morningData.getOrPut(
+                        (it.timestamp!!.time + TimeUnit.DAYS.toMillis(1)) - spareTime
+                    ) {
+                        mutableMapOf()
+                    }
+                    morningMap[it.fieldName] = morningMap.getOrDefault(it.fieldName, 0f) + it.fieldValue
+
+                } else { // PM Idle data.
+                    val afternoonMap = afternoonData.getOrPut(
+                        (it.timestamp!!.time + TimeUnit.DAYS.toMillis(1)) - spareTime
+                    ) {
+                        mutableMapOf()
+                    }
+                    afternoonMap[it.fieldName] = afternoonMap.getOrDefault(it.fieldName, 0f) + it.fieldValue
+
+                }
+            }
+        }
+
+        if(tick == 1000 * 60 * 60 * 24L) { // Apply calculated Idle data only to the day graph.
+            data.keys.forEach {// Idle data is the largest value among AM and PM.
+                val morningIdleData = morningData[it]?.getValue("Idle") ?: 0f
+                val afternoonIdleData = afternoonData[it]?.getValue("Idle") ?: 0f
+
+                if (morningIdleData > afternoonIdleData) {
+                    data[it] = (data[it]!! + mapOf("Idle" to morningIdleData)) as MutableMap<String, Float>
+                } else if (morningIdleData < afternoonIdleData) {
+                    data[it] = (data[it]!! + mapOf("Idle" to afternoonIdleData)) as MutableMap<String, Float>
+                }
+            }
         }
 
         data.values.forEach {
