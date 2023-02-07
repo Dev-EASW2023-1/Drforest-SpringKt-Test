@@ -2,8 +2,10 @@ package kr.easw.drforestspringkt.controller.web
 
 import kr.easw.drforestspringkt.auth.UserAccountData
 import kr.easw.drforestspringkt.enumeration.Roles
+import kr.easw.drforestspringkt.model.dto.AddRegionResponse
 import kr.easw.drforestspringkt.model.dto.ShareToUserRequest
 import kr.easw.drforestspringkt.service.*
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -17,6 +19,7 @@ class TemporaryWebController(
     val share: SharedUserService,
     val noticeService: UserNoticeService,
     val announcementService: AnnouncementService,
+    val regionManagementService: RegionManagementService,
     val dailyScoreLogService: DailyScoreLogService
 ) {
     @GetMapping("/regions")
@@ -117,7 +120,7 @@ class TemporaryWebController(
         }"
     }
 
-    @PostMapping("/change-permission")
+    @PostMapping("/change-permission") // 처음 환경 세팅 때 필요, 권한 없이 접근할 수 있는 Admin 권한 부여 API
     fun onChangePermission(
         @RequestParam("user") user: String,
         @RequestParam("admin") admin: Boolean,
@@ -131,4 +134,10 @@ class TemporaryWebController(
             )
         }"
     }
+
+    @PostMapping("/region") // 처음 환경 세팅 때 필요, 권한 없이 접근할 수 있는 지역 추가 API
+    fun onCreateRegion(@RequestParam regionName: String): ResponseEntity<AddRegionResponse> {
+        return ResponseEntity.ok(AddRegionResponse(regionManagementService.registerRegion(regionName)))
+    }
+
 }
