@@ -86,7 +86,7 @@ class AnnouncementService(
     @Transactional
     fun addAnnouncement(request: AddGlobalAnnouncementRequest): AddAnnouncementResponse {
         addAnnouncement(request.author, null, request.title, request.contents)
-        FCMUtility.sendPush("notice", request.title, request.contents, 0)
+        FCMUtility.sendPush("globalNotice", request.title, request.contents, 0)
         return AddAnnouncementResponse(true, "새 공지가 추가되었습니다.")
     }
 
@@ -104,7 +104,6 @@ class AnnouncementService(
 
     @Transactional
     fun addAnnouncement(user: UserAccountData, request: AddAnnouncementRequest): AddAnnouncementResponse {
-        val inko = Inko()
         if (request.region == null && !user.authorities.contains(Roles.ADMIN))
             throw BadCredentialsException("해당 사용자는 전역 공지사항에 접근할 수 있는 권한이 존재하지 않습니다.")
         val region =
@@ -116,10 +115,6 @@ class AnnouncementService(
         if (region != null && !permissionService.isRegionManager(userData!!, region)) {
             throw BadCredentialsException("해당 유저는 대상 지역 공지사항에 접근할 수 있는 권한이 존재하지 않습니다.")
         }
-        FCMUtility.sendPush(
-            inko.ko2en(request.region!!),
-            request.title,
-            request.contents, 0)
         return addAnnouncement(request)
     }
 
