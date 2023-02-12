@@ -41,6 +41,12 @@ class SharedUserService(
         })
     }
 
+    /**
+     * '유저'가 '타켓'의 정신건강 점수를 가져오기 위해서,
+     * 1, addShareWithNotice 함수로 '타겟'에게 공유요청을 한다.
+     * 2, acceptShare 함수로 '타겟'이 공유요청 수락을 한다.
+     * 3, 공유요청 수락의 전제 조건은 '타겟'에게 공유요청이 가있어야 한다. (findAllByUserAndTarget(userOrigin, userTarget)으로 공유요청 유무 확인)
+     */
 
     // Target -> User Share Accept Request
     fun acceptShare(user: UserAccountData, req: AcceptShareRequest): AcceptShareResponse {
@@ -152,6 +158,10 @@ class SharedUserService(
         })
     }
 
+    /**
+     * '타겟'에게 공유요청하기 전에 전화번호부의 폰넘버로 '타켓'을 찾아야 한다. (findUserByPhone(req.phoneNumber) 타켓 유무 확인)
+     */
+
     fun addShareWithNotice(
         user: UserAccountData,
         req: ShareToUserWithPhoneNumberRequest
@@ -165,6 +175,10 @@ class SharedUserService(
         )
         return ShareToUserWithPhoneNumberResponse(result.success, result.userId, result.message)
     }
+
+    /**
+     * 이미 공유했거나 공유요청 온 것을 취소할 수 있다.
+     */
 
     fun cancelShare(user: UserAccountData, req: CancelShareRequest): CancelShareResponse {
         val entity = repo.findAllByUser_Account_UserIdAndTarget_Account_UserId(user.username, req.userId)
