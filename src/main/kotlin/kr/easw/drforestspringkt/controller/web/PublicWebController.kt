@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping
 @Controller
 class PublicWebController {
     @GetMapping("/")
-    fun index() = "index.html"
+    fun index() = "user/monitoringGraph.html"
 
     @GetMapping("/register")
     fun register() = "auth/register.html"
