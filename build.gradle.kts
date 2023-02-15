@@ -61,6 +61,8 @@ dependencies {
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("org.springframework.security:spring-security-test")
     implementation("im.kimcore:inko.kt:1.1")
+    implementation("org.json:json:20200518") // JSON 라이브러리
+    implementation("com.google.code.gson:gson:2.8.6") // Gson 라이브러리
 }
 
 tasks.withType<KotlinCompile> {
