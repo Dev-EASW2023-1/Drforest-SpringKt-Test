@@ -1,12 +1,17 @@
 <!DOCTYPE HTML>
 <html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Highcharts Example</title>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Highcharts Example</title>
 
-    <style type="text/css">
-@import "https://code.highcharts.com/css/highcharts.css"; //highChart css 불러옴 -> 색 고정 바꾸려면 따로 만들어서 import해야됨
+        <style type="text/css">
+/* highChart css 불러옴 -> 색 고정 바꾸려면 따로 만들어서 import해야됨 */
+@import "https://code.highcharts.com/css/highcharts.css";
+
+#container {
+    height: 400px;
+}
 
 .highcharts-figure,
 .highcharts-data-table table {
@@ -82,228 +87,353 @@
     fill: #90ed7d;
 }
 
-.highcharts-color-32 {
-    fill: red;
-    stroke: #000000;
-}
+/*.highcharts-color-32 {*/
+/*    fill: red;*/
+/*    stroke: #000000;*/
+/*}*/
 
-.highcharts-axis.highcharts-color-32 .highcharts-axis-line {
-    stroke: #000000;
-}
+/*.highcharts-axis.highcharts-color-32 .highcharts-axis-line {*/
+/*    stroke: #000000;*/
+/*}*/
 
-.highcharts-axis.highcharts-color-32 text {
-    fill: #000000;
-}
+/*.highcharts-axis.highcharts-color-32 text {*/
+/*    fill: #000000;*/
+/*}*/
 
-/**
+/*
     색변경시 기존 highchart에 있는 css를 가져오는데 local파일 css와 이름이 같은 경우
     ex)highcharts-color-1는 highchat css이름과 동일한데 이런경우 로컬파일이 우선순위가 높아 로컬 파일 기준으로 색이 바뀐다.
     그리고 적용한 부분마다 highcharts-color-0~n번째까지 명시된 색으로 순차적으로 적용이 된다.
- */
+*/
 
     </style>
-</head>
-<body>
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/modules/series-label.js"></script>
-    <script src="https://code.highcharts.com/modules/exporting.js"></script>
-    <script src="https://code.highcharts.com/modules/export-data.js"></script>
-    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
-    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    </head>
+    <body>
+        <script src="https://code.highcharts.com/highcharts.js"></script>
+        <script src="https://code.highcharts.com/modules/series-label.js"></script>
+        <script src="https://code.highcharts.com/modules/exporting.js"></script>
+        <script src="https://code.highcharts.com/modules/export-data.js"></script>
+        <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+        <script src="http://code.jquery.com/jquery-latest.js"></script>
 
-    <figure class="highcharts-figure">
-        <div id="weightandBMI"></div>
-        <div id="smartPhone"></div>
-        <div id="labdrink"></div>
-        <div id="Music"></div>
-        <div id="Chicken"></div>
+        <figure class="highcharts-figure">
+            <div id="monitoringSystem"></div>
+            <div id="comparisonGraph"></div>
+            <div id="container"></div>
 
+            <p class="highcharts-description">
+                Charts can be styled using CSS, allowing designers and
+                developers to more easily collaborate on chart configuration.
+                This example shows how the base Highcharts styling is imported
+                using CSS, and modified without the need for Javascript.
+            </p>
+        </figure>
 
-        <p class="highcharts-description">
-            Charts can be styled using CSS, allowing designers and
-            developers to more easily collaborate on chart configuration.
-            This example shows how the base Highcharts styling is imported
-            using CSS, and modified without the need for Javascript.
-        </p>
-    </figure>
+        <script type="text/javascript">
+            // 백 단으로부터 JSON 데이터 가져오기
+            $.ajax({
+                type : "GET",
+                url : "/user/graph3?userId=testID2",
+                success: [
+                    function (result) {
+                        const start = JSON.parse(result).start;
+                        const end = JSON.parse(result).end;
+                        const graph = JSON.parse(result).graph;
+                        Pretreatment(start, end, graph);
+                        drawChart(start, end, graph, "monitoringSystem");
+                        SensorDataChart(start, end, graph, "comparisonGraph");
+                        test();
+                    }
+                ],
+                error : [
+                    function (errorThrown) {
+                        alert(errorThrown.statusText);
+                    }
+                ]
+            })
 
-    <script type="text/javascript">
-        // 백 단으로부터 JSON 데이터 가져오기
-        $.ajax({
-            type : "GET",
-            url : "/user/graph3?userId=testID2",
-            success: [
-                function (result) {
-                    const start = JSON.parse(result).start;
-                    const end = JSON.parse(result).end;
-                    const graph = JSON.parse(result).graph;
-                    console.log(start);
-                    console.log(end);
-                    drawChart(start, end, graph, "weightandBMI");
-                    drawChart(start, end, graph, "smartPhone");
-                    drawChart(start, end, graph, "labdrink");
-                    drawChart(start, end, graph, "Music");
-                    drawChart(start, end, graph, "Chicken");
+            const array2DGraph = [];
+            const filteredGraph = [];
+            const filteredGraphX = [];
+            const filteredGraphY = [];
+            const each15Minutes = [];
+
+            // 센서 그래프
+            function putValueInGraph(graph) {
+                for (let i = 0; i < graph.length; i++) {
+                    array2DGraph.push({
+                        x : new Date(graph[i].time).getTime(),
+                        y : graph[i].value["Traffic"]
+                    });
                 }
-            ],
-            error : [
-                function (errorThrown) {
-                    alert(errorThrown.statusText);
-                }
-            ]
-        })
-
-        const array2DGraph = [];
-        const filteredGraph = [];
-        const filteredGraphX = [];
-        const filteredGraphY = [];
-        const each15Minutes = [];
-
-        // 센서 그래프
-        function putValueInGraph(graph) {
-            for (let i = 0; i < graph.length; i++) {
-                array2DGraph.push({
-                    x : new Date(graph[i].time).getTime(),
-                    y : graph[i].value["Traffic"]
-                });
-            }
-        }
-
-        // 총 그래프
-        function makeXAxis(start, end){
-            const truncateStart = start - (end % (1000 * 60 * 60 * 24)) - (1000 * 60 * 60 * 9);
-            const truncate = (end - truncateStart) / (1000 * 60 * 15)
-
-            for (let i = 0; i <= truncate; i++) {
-                const date = new Date(truncateStart);
-                each15Minutes.push({
-                    x : date.setMinutes(date.getMinutes()+ 15*i),
-                    y : 0
-                });
-            }
-        }
-
-        // 센서 그래프가 차지하는 비율을 확인하기 위한 모니터링 그래프
-        function monitoring(start, end, array2DGraph){
-            const fillStart  = array2DGraph[0].x - start;
-            const startGap = fillStart / (1000 * 60 * 15);
-            const fillEnd = end - array2DGraph[array2DGraph.length-1].x;
-            const endGap = fillEnd / (1000 * 60 * 15);
-
-            // 센서 데이터가 공백이 있을 경우 값을 1로 한다.
-            for (let i = 0; i < startGap; i++) {
-                filteredGraph.push({
-                    x : start + (1000 * 60 * 15 * i),
-                    y : 1
-                });
             }
 
-            for (let i = 0; i < array2DGraph.length; i++) {
-                // 센서 데이터가 존재할 경우 값을 0으로 한다.
-                if(array2DGraph[i].y > 0){
-                    filteredGraph.push({
-                        x : array2DGraph[i].x,
+            // 총 그래프
+            function makeXYAxis(start, end){
+                const truncateStart = start - (end % (1000 * 60 * 60 * 24)) - (1000 * 60 * 60 * 9);
+                const truncate = (end - truncateStart) / (1000 * 60 * 15)
+
+                for (let i = 0; i <= truncate; i++) {
+                    const date = new Date(truncateStart);
+                    each15Minutes.push({
+                        x : date.setMinutes(date.getMinutes()+ 15*i),
                         y : 0
                     });
                 }
+            }
 
-                // 센서 데이터 마지막 인덱스에 접근하기 직전까지 데이터 공백이 있는지 확인한다.
-                if(i < (array2DGraph.length - 1)){
-                    const gap = (array2DGraph[i+1].x
-                        - array2DGraph[i].x) / (1000 * 60 * 15);
+            function dataCount(graph) {
+                return graph.length;
+            }
 
-                    // 센서 데이터가 공백이 있을 경우 값을 1로 한다.
-                    for (let j = 1; j < gap; j++) {
+            // 센서 그래프가 차지하는 비율을 확인하기 위한 모니터링 그래프
+            function putValueInMonitoringGraph(start, end, array2DGraph){
+                const fillStart  = array2DGraph[0].x - start;
+                const startGap = fillStart / (1000 * 60 * 15);
+                const fillEnd = end - array2DGraph[array2DGraph.length-1].x;
+                const endGap = fillEnd / (1000 * 60 * 15);
+
+                // 센서 데이터가 공백이 있을 경우 값을 1로 한다.
+                for (let i = 0; i < startGap; i++) {
+                    filteredGraph.push({
+                        x : start + (1000 * 60 * 15 * i),
+                        y : 1
+                    });
+                }
+
+                for (let i = 0; i < array2DGraph.length; i++) {
+                    // 센서 데이터가 존재할 경우 값을 0으로 한다.
+                    if(array2DGraph[i].y > 0){
                         filteredGraph.push({
-                            x : array2DGraph[i].x + (1000 * 60 * 15 * j),
-                            y : 1
+                            x : array2DGraph[i].x,
+                            y : 0
                         });
                     }
+
+                    // 센서 데이터 마지막 인덱스에 접근하기 직전까지 데이터 공백이 있는지 확인한다.
+                    if(i < (array2DGraph.length - 1)){
+                        // i번째 인덱스와 i+1번째 인덱스 사이에 데이터 공백이 있는지 확인한다.
+                        const gap = (array2DGraph[i+1].x
+                            - array2DGraph[i].x) / (1000 * 60 * 15);
+
+                        // 센서 데이터가 공백이 있을 경우 값을 1로 한다.
+                        for (let j = 1; j < gap; j++) {
+                            filteredGraph.push({
+                                x : array2DGraph[i].x + (1000 * 60 * 15 * j),
+                                y : 1
+                            });
+                        }
+                    }
+                }
+
+                // 센서 데이터가 공백이 있을 경우 값을 1로 한다.
+                for (let i = 0; i < endGap; i++) {
+                    filteredGraph.push({
+                        x : array2DGraph[array2DGraph.length-1].x + (1000 * 60 * 15 * i),
+                        y : 1
+                    });
                 }
             }
 
-            // 센서 데이터가 공백이 있을 경우 값을 1로 한다.
-            for (let i = 0; i < endGap; i++) {
-                filteredGraph.push({
-                    x : array2DGraph[array2DGraph.length-1].x + (1000 * 60 * 15 * i),
-                    y : 1
+            // 모니터링 그래프를 최종 시각화하기 위한 함수
+            function finalMonitoring(filteredGraph) {
+                for (let i = 0; i < filteredGraph.length; i++) {
+                    filteredGraphX.push(filteredGraph[i].x);
+                    filteredGraphY.push(filteredGraph[i].y);
+                }
+            }
+
+            function Pretreatment(start, end, graph) {
+                makeXYAxis(start,end);
+                putValueInGraph(graph);
+                putValueInMonitoringGraph(start,end,array2DGraph);
+                finalMonitoring(filteredGraph);
+
+                console.log(array2DGraph);
+                console.log(each15Minutes);
+                console.log(filteredGraph);
+            }
+
+            function drawChart(start, end, graph, container) {
+                Highcharts.chart(`${container}`, {
+                    chart: {
+                        type: 'column',
+                        styledMode: true
+                    },
+
+                    title: {
+                        text: 'Average weight and BMI in some countries, women',
+                        align: 'left'
+                    },
+
+                    subtitle: {
+                        text: 'Source: ' +
+                            '<a href="https://www.worlddata.info/average-bodyheight.php"' +
+                            'target="_blank">WorldData</a>',
+                        align: 'left'
+                    },
+
+                    xAxis: {
+                        categories: filteredGraphX
+                    },
+
+                    yAxis: [{ // Primary axis
+                        /*
+                            값이 상시로도 뜨게 바꿨으나 Y범위때문에 값과 그래프가 겹침
+                            위 문제를 Y값을 max로 줘서 해결, max를 명시 안하면 최대 값에서 제일 가까운 5의 배수로 적용됨
+                         */
+                        max : 1,
+                        className: 'highcharts-color-0',
+                        title: {
+                            text: 'Weight'
+                        }
+                    }, { // Secondary axis
+                        className: 'highcharts-color-1',
+                        opposite: true,
+                        title: {
+                            text: 'BMI'
+                        }
+                    }],
+
+                    plotOptions: {
+                        // series:{
+                        //     dataLabels:{
+                        //         enabled : true, // 데이터 값
+                        //         color:'black' // 데이터 값을 나타낼 때 색
+                        //     }
+                        // },
+                        // connectNulls : true, // null인 지점 표시(지금은 X)
+                        column: {
+                            borderRadius: 5
+                        }
+                    },
+
+                    series: [{
+                        name: 'Weight',
+                        data: filteredGraphY,
+                        tooltip: {
+                            valueSuffix: ' kg'
+                        }
+                    }
+                    // , {
+                    //     name: 'BMI',
+                    //     data: [],
+                    //     yAxis: 1
+                    // }
+                    ]
+
                 });
             }
-        }
 
-        // 모니터링 그래프를 최종 시각화하기 위한 함수
-        function putValueInMonitoringGraph(filteredGraph) {
-            for (let i = 0; i < filteredGraph.length; i++) {
-                filteredGraphX.push(filteredGraph[i].x);
-                filteredGraphY.push(filteredGraph[i].y);
+            function SensorDataChart(start, end, graph, container) {
+                const dataResult = dataCount(array2DGraph);
+                const totalResult = dataCount(each15Minutes);
+
+                Highcharts.chart(`${container}`, {
+                    chart: {
+                        type: 'column',
+                        styledMode: true
+                    },
+
+                    title: {
+                        text: 'Average weight and BMI in some countries, women',
+                        align: 'left'
+                    },
+
+                    subtitle: {
+                        text: 'Source: ' +
+                            '<a href="https://www.worlddata.info/average-bodyheight.php"' +
+                            'target="_blank">WorldData</a>',
+                        align: 'left'
+                    },
+
+                    xAxis: {
+                        categories: ["센서 데이터", "총 데이터"]
+                    },
+
+                    yAxis: [{ // Primary axis
+                        /*
+                            값이 상시로도 뜨게 바꿨으나 Y범위때문에 값과 그래프가 겹침
+                            위 문제를 Y값을 max로 줘서 해결, max를 명시 안하면 최대 값에서 제일 가까운 5의 배수로 적용됨
+                         */
+                        // max : 1,
+                        className: 'highcharts-color-0',
+                        title: {
+                            text: 'Weight'
+                        }
+                    }, { // Secondary axis
+                        className: 'highcharts-color-1',
+                        opposite: true,
+                        title: {
+                            text: 'BMI'
+                        }
+                    }],
+
+                    plotOptions: {
+                        series:{
+                            dataLabels:{
+                                enabled : true, // 데이터 값
+                                color:'black' // 데이터 값을 나타낼 때 색
+                            }
+                        },
+                        connectNulls : true, // null인 지점 표시(지금은 X)
+                        column: {
+                            borderRadius: 5
+                        }
+                    },
+
+                    series: [{
+                        name: 'Weight',
+                        data: [dataResult, totalResult],
+                        tooltip: {
+                            valueSuffix: ' kg'
+                        }
+                    }
+                    // , {
+                    //     name: 'BMI',
+                    //     data: [],
+                    //     yAxis: 1
+                    // }
+                    ]
+
+                });
             }
-        }
 
-        function drawChart(start, end, graph, container){
-            makeXAxis(start,end);
-            putValueInGraph(graph);
-            monitoring(start,end,array2DGraph);
-            putValueInMonitoringGraph(filteredGraph)
-
-            console.log(array2DGraph);
-            console.log(each15Minutes);
-            console.log(filteredGraph);
-
-            Highcharts.chart(`${container}`, {
-                chart: {
-                    type: 'column',
-                    styledMode: true
-                },
-
-                title: {
-                    text: 'Average weight and BMI in some countries, women',
-                    align: 'left'
-                },
-
-                subtitle: {
-                    text: 'Source: ' +
-                        '<a href="https://www.worlddata.info/average-bodyheight.php"' +
-                        'target="_blank">WorldData</a>',
-                    align: 'left'
-                },
-
-                xAxis: {
-                    categories: filteredGraphX
-                },
-
-                yAxis: [{ // Primary axis
-                    className: 'highcharts-color-0',
+            function test() {
+                Highcharts.chart('container', {
+                    chart: {
+                        type: 'column'
+                    },
                     title: {
-                        text: 'Weight'
-                    }
-                }, { // Secondary axis
-                    className: 'highcharts-color-1',
-                    opposite: true,
-                    title: {
-                        text: 'BMI'
-                    }
-                }],
-
-                plotOptions: {
-                    column: {
-                        borderRadius: 5
-                    }
-                },
-
-                series: [{
-                    name: 'Weight',
-                    data: filteredGraphY,
+                        text: 'UEFA CL most assists by season'
+                    },
+                    xAxis: {
+                        categories: ['2021/22', '2020/21', '2019/20', '2018/19', '2017/18']
+                    },
+                    yAxis: {
+                        min: 0,
+                        title: {
+                            text: 'Assists'
+                        }
+                    },
                     tooltip: {
-                        valueSuffix: ' kg'
-                    }
-                }, {
-                    name: 'BMI',
-                    data: [],
-                    yAxis: 1
-                }]
-
-            });
-        }
-    </script>
+                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>',
+                        shared: true
+                    },
+                    plotOptions: {
+                        column: {
+                            stacking: 'percent'
+                        }
+                    },
+                    series: [{
+                        name: 'Kevin De Bruyne',
+                        data: [4, 4, 2, 4, 4]
+                    }, {
+                        name: 'Sadio Mané',
+                        data: [1, 2, 2, 1, 2]
+                    }]
+                });
+            }
+        </script>
     </body>
 </html>
