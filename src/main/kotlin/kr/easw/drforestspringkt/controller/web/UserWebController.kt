@@ -3,12 +3,14 @@ package kr.easw.drforestspringkt.controller.web
 import kr.easw.drforestspringkt.auth.UserAccountData
 import kr.easw.drforestspringkt.service.UserActivityDataService
 import kr.easw.drforestspringkt.service.UserDataService
+import org.json.simple.JSONObject
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseBody
 import java.time.ZoneId
 import javax.servlet.http.HttpServletResponse
 
@@ -53,5 +55,40 @@ class UserWebController(val userActivityDataService: UserActivityDataService, va
         return "user/graph.html"
     }
 
+    @RequestMapping("/paper")
+    fun showGraph()
+    : String? {
+        return "user/monitoringGraph.html"
+    }
 
+    @GetMapping("/graph3")
+    @ResponseBody
+    fun graphPage3(
+        @RequestParam("timeZone") timeZone: ZoneId?,
+        @RequestParam("userId") userId: String,
+        response: HttpServletResponse
+    ): String? {
+        val time = 1000L * 60 * 60 * 24 * 2
+        val endTime = System.currentTimeMillis()
+        val each15Minutes = endTime % (1000 * 60 * 15)
+        val mapOfTime = hashMapOf<String, Long>()
+        val listOfSensor = userActivityDataService.fetchResult(userId, time, 1000 * 60 * 15)
+        val jsonRes = JSONObject()
+        mapOfTime["start"] = endTime - time - each15Minutes
+        mapOfTime["end"] = endTime - each15Minutes
+        val objs = arrayOf(
+            userActivityDataService.jsonParseFunction(mapOfTime),
+            userActivityDataService.jsonParseFunctionForSensor("graph", listOfSensor.list)
+        )
+
+        for(obj in objs){
+            val it = obj.keys.iterator()
+            while (it.hasNext()) {
+                val key = it.next()
+                jsonRes[key] = obj[key]
+            }
+        }
+
+       return jsonRes.toJSONString()
+    }
 }
