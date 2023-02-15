@@ -1,5 +1,9 @@
 package kr.easw.drforestspringkt.service
 
+import com.google.gson.Gson
+import org.json.JSONException
+import org.json.simple.JSONObject
+import org.json.simple.parser.JSONParser
 import kr.easw.drforestspringkt.auth.UserAccountData
 import kr.easw.drforestspringkt.model.dto.*
 import kr.easw.drforestspringkt.model.entity.UserAccountEntity
@@ -294,6 +298,28 @@ class UserActivityDataService(
         return SharedUserScoreResponse(map)
     }
 
+    fun jsonParseFunction(value : Map<String, Long>): JSONObject {
+        val jsonObject = JSONObject()
+        try{
+            value.forEach { (t, u) ->
+                jsonObject[t] = u
+            }
+        } catch (e : JSONException) {
+            e.printStackTrace()
+        }
+        return jsonObject
+    }
+
+    fun jsonParseFunctionForSensor(key : String, value : List<UserActivityDataData>): JSONObject {
+        val jsonObject = JSONObject()
+        try{
+            val data = Gson().toJson(value)
+            jsonObject[key] = JSONParser().parse(data)
+        } catch (e : Exception) {
+            e.printStackTrace()
+        }
+        return jsonObject
+    }
 
     /**
      * Fold 1-5 score to 0-2.
