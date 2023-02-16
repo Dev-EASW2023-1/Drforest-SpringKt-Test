@@ -158,6 +158,10 @@
             const filteredGraphY = [];
             const each15Minutes = [];
 
+            /*
+                백 단에서 가져오는 JSON 데이터는 truncateStart(현재 시각으로부터 이틀 전 00:00) ~ end(현재 시각) 까지다.
+             */
+
             // 센서 그래프
             function putValueInGraph(graph) {
                 for (let i = 0; i < graph.length; i++) {
@@ -188,7 +192,8 @@
 
             // 센서 그래프가 차지하는 비율을 확인하기 위한 모니터링 그래프
             function putValueInMonitoringGraph(start, end, array2DGraph){
-                const fillStart  = array2DGraph[0].x - start;
+                const truncateStart = start - (end % (1000 * 60 * 60 * 24)) - (1000 * 60 * 60 * 9);
+                const fillStart  = array2DGraph[0].x - truncateStart;
                 const startGap = fillStart / (1000 * 60 * 15);
                 const fillEnd = end - array2DGraph[array2DGraph.length-1].x;
                 const endGap = fillEnd / (1000 * 60 * 15);
@@ -196,7 +201,7 @@
                 // 센서 데이터가 공백이 있을 경우 값을 1로 한다.
                 for (let i = 0; i < startGap; i++) {
                     filteredGraph.push({
-                        x : start + (1000 * 60 * 15 * i),
+                        x : truncateStart + (1000 * 60 * 15 * i),
                         y : 1
                     });
                 }
