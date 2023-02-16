@@ -208,7 +208,7 @@
 
                 for (let i = 0; i < array2DGraph.length; i++) {
                     // 센서 데이터가 존재할 경우 값을 0으로 한다.
-                    if(array2DGraph[i].y > 0){
+                    if(array2DGraph[i].y > 0) {
                         filteredGraph.push({
                             x : array2DGraph[i].x,
                             y : 0
@@ -216,7 +216,7 @@
                     }
 
                     // 센서 데이터 마지막 인덱스에 접근하기 직전까지 데이터 공백이 있는지 확인한다.
-                    if(i < (array2DGraph.length - 1)){
+                    if(i < (array2DGraph.length - 1)) {
                         // i번째 인덱스와 i+1번째 인덱스 사이에 데이터 공백이 있는지 확인한다.
                         const gap = (array2DGraph[i+1].x
                             - array2DGraph[i].x) / (1000 * 60 * 15);
@@ -228,11 +228,19 @@
                                 y : 1
                             });
                         }
+                    } else {
+                        // 센서 데이터 마지막 인덱스에서 데이터 공백이 있는지 확인한다.
+                        if(array2DGraph[i].y === 0){
+                            filteredGraph.push({
+                                x : array2DGraph[i].x,
+                                y : 1
+                            });
+                        }
                     }
                 }
 
                 // 센서 데이터가 공백이 있을 경우 값을 1로 한다.
-                for (let i = 0; i < endGap; i++) {
+                for (let i = 1; i <= endGap; i++) {
                     filteredGraph.push({
                         x : array2DGraph[array2DGraph.length-1].x + (1000 * 60 * 15 * i),
                         y : 1
