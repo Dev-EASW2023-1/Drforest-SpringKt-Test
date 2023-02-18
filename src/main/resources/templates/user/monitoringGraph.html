@@ -250,11 +250,21 @@
 
             // 모니터링 그래프를 최종 시각화하기 위한 함수
             function finalMonitoring(filteredGraph) {
+
+
+            let date, year, month, day, hours, minutes, formattedDate;
                 for (let i = 0; i < filteredGraph.length; i++) {
-                    filteredGraphX.push(filteredGraph[i].x);
-                    filteredGraphY.push(filteredGraph[i].y);
-                }
+                  date = new Date(filteredGraph[i].x); // millisecond를 Date 객체로 변환
+                  year = date.getFullYear(); // 연도를 가져옴
+                  month = String(date.getMonth() + 1).padStart(2, '0'); // 월을 가져오고 2자리로 맞춤
+                  day = String(date.getDate()).padStart(2, '0'); // 일을 가져오고 2자리로 맞춤
+                  hours = String(date.getHours()).padStart(2, '0'); // 시간을 가져오고 2자리로 맞춤
+                  minutes = String(date.getMinutes()).padStart(2, '0'); // 분을 가져오고 2자리로 맞춤
+                  formattedDate = `${year}-${month}-${day} ${hours}:${minutes}`; // 연-월-일 시:분 형식 문자열 생성
+                  filteredGraphX.push(formattedDate);
+                  filteredGraphY.push(filteredGraph[i].y);
             }
+                }
 
             function Pretreatment(start, end, graph) {
                 makeXYAxis(start,end);
