@@ -20,9 +20,9 @@ spring:
     prefix: classpath:/templates/
     suffix: .html
   datasource:
-    url: 'jdbc:mysql://localhost:3306/drforest?createDatabaseIfNotExist=true&useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC'
+    url: 'jdbc:mysql://172.17.0.30:3306/drforest?createDatabaseIfNotExist=true&useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC'
     username: 'root'
-    password: 'easw409'
+    password: 'root'
 #    url: 'jdbc:mysql://database-8-onlecture-recovered.clrcqre9faxp.ap-northeast-2.rds.amazonaws.com:3306/drforest?createDatabaseIfNotExist=true&useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC'
 #    username: 'admin'
 #    password: 'easw409'
