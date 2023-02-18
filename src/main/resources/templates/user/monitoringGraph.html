@@ -159,7 +159,9 @@
             const each15Minutes = [];
 
             /*
-                백 단에서 가져오는 JSON 데이터는 truncateStart(현재 시각으로부터 이틀 전 00:00) ~ end(현재 시각) 까지다.
+                백 단에서 가져오는 그래프 데이터는 truncateStart(현재 시각으로부터 이틀 전 00:00) ~ end(현재 시각) 까지다.
+                1, 측정된 센서 데이터 비율을 시각화한다.
+                2, 시간별 센서 데이터 공백을 시각화한다.
              */
 
             // 센서 그래프
@@ -186,11 +188,12 @@
                 }
             }
 
+            // 배열의 크기를 확인하는 함수
             function dataCount(graph) {
                 return graph.length;
             }
 
-            // 센서 그래프가 차지하는 비율을 확인하기 위한 모니터링 그래프
+            // 시간별 센서 데이터 공백을 확인하기 위한 모니터링 그래프
             function putValueInMonitoringGraph(start, end, array2DGraph){
                 const truncateStart = start - (end % (1000 * 60 * 60 * 24)) - (1000 * 60 * 60 * 9);
                 const fillStart  = array2DGraph[0].x - truncateStart;
@@ -198,7 +201,7 @@
                 const fillEnd = end - array2DGraph[array2DGraph.length-1].x;
                 const endGap = fillEnd / (1000 * 60 * 15);
 
-                // 센서 데이터가 공백이 있을 경우 값을 1로 한다.
+                // 센서 데이터가 없으면 값을 1로 한다.
                 for (let i = 0; i < startGap; i++) {
                     filteredGraph.push({
                         x : truncateStart + (1000 * 60 * 15 * i),
@@ -207,7 +210,7 @@
                 }
 
                 for (let i = 0; i < array2DGraph.length; i++) {
-                    // 센서 데이터가 존재할 경우 값을 0으로 한다.
+                    // 센서 데이터가 있으면 값을 0으로 한다.
                     if(array2DGraph[i].y > 0) {
                         filteredGraph.push({
                             x : array2DGraph[i].x,
@@ -215,13 +218,13 @@
                         });
                     }
 
-                    // 센서 데이터 마지막 인덱스에 접근하기 직전까지 데이터 공백이 있는지 확인한다.
+                    // 센서 데이터 마지막 직전까지 데이터를 확인한다.
                     if(i < (array2DGraph.length - 1)) {
-                        // i번째 인덱스와 i+1번째 인덱스 사이에 데이터 공백이 있는지 확인한다.
+                        // 인덱스 사이에 데이터를 확인한다.
                         const gap = (array2DGraph[i+1].x
                             - array2DGraph[i].x) / (1000 * 60 * 15);
 
-                        // 센서 데이터가 공백이 있을 경우 값을 1로 한다.
+                        // 센서 데이터가 없으면 값을 1로 한다.
                         for (let j = 1; j < gap; j++) {
                             filteredGraph.push({
                                 x : array2DGraph[i].x + (1000 * 60 * 15 * j),
@@ -229,7 +232,7 @@
                             });
                         }
                     } else {
-                        // 센서 데이터 마지막 인덱스에서 데이터 공백이 있는지 확인한다.
+                        // 센서 데이터 마지막에서 데이터를 확인한다.
                         if(array2DGraph[i].y === 0){
                             filteredGraph.push({
                                 x : array2DGraph[i].x,
@@ -239,7 +242,7 @@
                     }
                 }
 
-                // 센서 데이터가 공백이 있을 경우 값을 1로 한다.
+                // 센서 데이터가 없으면 값을 1로 한다.
                 for (let i = 1; i <= endGap; i++) {
                     filteredGraph.push({
                         x : array2DGraph[array2DGraph.length-1].x + (1000 * 60 * 15 * i),
@@ -250,7 +253,6 @@
 
             // 모니터링 그래프를 최종 시각화하기 위한 함수
             function finalMonitoring(filteredGraph) {
-
 
             let date, year, month, day, hours, minutes, formattedDate;
                 for (let i = 0; i < filteredGraph.length; i++) {
@@ -263,8 +265,8 @@
                   formattedDate = `${year}-${month}-${day} ${hours}:${minutes}`; // 연-월-일 시:분 형식 문자열 생성
                   filteredGraphX.push(formattedDate);
                   filteredGraphY.push(filteredGraph[i].y);
-            }
                 }
+            }
 
             function Pretreatment(start, end, graph) {
                 makeXYAxis(start,end);
